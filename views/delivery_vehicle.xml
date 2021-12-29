@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_partner_vehicle" model="ir.ui.view">
+            <field name="name">res.partner.vehicle</field>
+            <field name="model">res.partner</field>
+            <field name="priority">2</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="groups_id" eval="[(5,)]"/>
+            <field name="arch" type="xml">
+                <page name="sales_purchases" position="after">
+                    <page string="Vehicles" name="vehicles"
+                          attrs="{'invisible': [('delivery_company', '=', False)]}">
+                        <field name="vehicle_ids" widget="section_and_note_one2many" mode="tree">
+                            <tree string="Vehicles" editable="bottom">
+                                <field name="sequence" widget="handle"/>
+                                <field name="vehicle_number"/>
+                                <field name="engine_number"/>
+                                <field name="active"/>
+                                <field name="note"/>
+                            </tree>
+                        </field>
+                    </page>
+                </page>
+            </field>
+        </record>
+
+    </data>
+</odoo>
