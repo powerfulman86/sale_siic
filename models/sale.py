@@ -52,7 +52,6 @@ class SaleOrder(models.Model):
     state = fields.Selection([
         ('draft', 'Draft'),
         ('sale', 'Sale'),
-        ('approved', 'Approved'),
         ('sent', 'Quotation Sent'),
         ('ondelivery', 'On Delivery'),
         ('delivered', 'Delivered'),
@@ -62,20 +61,26 @@ class SaleOrder(models.Model):
 
     delivery_company = fields.Many2one(comodel_name="res.partner", string="Delivery Company", required=False,
                                        domain="[('delivery_company','=',True)]",
-                                       states={'draft': [('readonly', False)]})
+                                       states={'ondelivery': [('readonly', False)]})
 
-    delivery_date = fields.Datetime('Delivery Date', states={'draft': [('readonly', False)]},
+    delivery_date = fields.Datetime('Delivery Date', states={'ondelivery': [('readonly', False)]},
                                     copy=False, readonly=True, )
-    delivery_receipt_number = fields.Char(string="Delivery Number", states={'draft': [('readonly', False)]})
+    delivery_receipt_number = fields.Char(string="Delivery Number", states={'ondelivery': [('readonly', False)]})
     delivery_vehicle = fields.Many2one(comodel_name="sale.delivery.vehicle", string="Delivery Vehicle", required=False,
                                        domain="[('partner_id','=',delivery_company)]",
-                                       states={'draft': [('readonly', False)]})
+                                       states={'ondelivery': [('readonly', False)]})
     sale_contract = fields.Many2one(comodel_name="sale.contract", string="Sale Contract", required=False,
                                     domain="[('state','=','progress')]", states={'draft': [('readonly', False)]})
     partner_shipping_id = fields.Many2one(
         'res.partner', string='Delivery Address', readonly=True, required=True,
         states={'draft': [('readonly', False)]},
         domain="[('parent_id', '=', partner_id),('type','=','delivery')]", )
+
+    def action_ondelivery(self):
+        self.state = 'ondelivery'
+
+    def action_delivered(self):
+        self.state = 'delivered'
 
     @api.onchange('discount_type', 'discount_rate', 'order_line')
     def supply_rate(self):
