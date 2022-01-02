@@ -4,3 +4,9 @@ access_sale_delivery_vehicle_user,access_sale_delivery_vehicle User,model_sale_d
 access_sale_contract,sale.contract Manager,model_sale_contract,sales_team.group_sale_salesman,1,1,1,1
 access_sale_contract,sale.contract,model_sale_contract,sales_team.group_sale_salesman,1,1,1,0
 access_sale_contract_line,sale.contract.line,model_sale_contract_line,sales_team.group_sale_salesman,1,1,1,1
+access_sale_return,sale_return,model_sale_return,sales_team.group_sale_salesman,1,1,1,1
+access_sale_return_line,sale_return_line,model_sale_return_line,sales_team.group_sale_salesman,1,1,1,1
+access_sale_return_report_salesman,sale_return_report,model_sale_return_report,sales_team.group_sale_salesman,1,1,1,0
+access_sale_return_report_manager,sale_return_report,model_sale_return_report,sales_team.group_sale_manager,1,1,1,1
+access_sale_net_report_salesman,sale_net_report,model_sale_net_report,sales_team.group_sale_salesman,1,1,1,0
+access_sale_net_report_manager,sale_net_report,model_sale_net_report,sales_team.group_sale_manager,1,1,1,1

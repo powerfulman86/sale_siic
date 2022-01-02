@@ -45,9 +45,9 @@ class SaleOrder(models.Model):
                                       digits=dp.get_precision('Account'), track_visibility='always')
     internal_reference = fields.Char(string="Order Number", required=True, states={'draft': [('readonly', False)]})
     order_type = fields.Selection(string="Type", selection=[('in', 'Local'), ('out', 'Foreign'), ], required=True,
-                                  tracking=1, default='in')
+                                  tracking=1, default='in', states={'draft': [('readonly', False)]})
     branch_id = fields.Many2one(comodel_name="res.branch", string="Branch", required=True,
-                                index=True, help='This is branch to set')
+                                index=True, help='This is branch to set', states={'draft': [('readonly', False)]})
 
     state = fields.Selection([
         ('draft', 'Draft'),
@@ -64,12 +64,18 @@ class SaleOrder(models.Model):
                                        domain="[('delivery_company','=',True)]",
                                        states={'draft': [('readonly', False)]})
 
-    receipt_date = fields.Datetime('Receipt Date', states={'draft': [('readonly', False)]},
-                                   copy=False, readonly=True, )
-    delivery_receipt_number = fields.Char(string="Receipt Number", states={'draft': [('readonly', False)]})
+    delivery_date = fields.Datetime('Delivery Date', states={'draft': [('readonly', False)]},
+                                    copy=False, readonly=True, )
+    delivery_receipt_number = fields.Char(string="Delivery Number", states={'draft': [('readonly', False)]})
     delivery_vehicle = fields.Many2one(comodel_name="sale.delivery.vehicle", string="Delivery Vehicle", required=False,
-                                       domain="[('partner_id','=','delivery_company')]",
+                                       domain="[('partner_id','=',delivery_company)]",
                                        states={'draft': [('readonly', False)]})
+    sale_contract = fields.Many2one(comodel_name="sale.contract", string="Sale Contract", required=False,
+                                    domain="[('state','=','progress')]", states={'draft': [('readonly', False)]})
+    partner_shipping_id = fields.Many2one(
+        'res.partner', string='Delivery Address', readonly=True, required=True,
+        states={'draft': [('readonly', False)]},
+        domain="[('parent_id', '=', partner_id),('type','=','delivery')]", )
 
     @api.onchange('discount_type', 'discount_rate', 'order_line')
     def supply_rate(self):
@@ -87,6 +93,10 @@ class SaleOrder(models.Model):
                     discount = order.discount_rate
                 for line in order.order_line:
                     line.discount = discount
+
+    # @api.constraints('delivery_vehicle')
+    # def check_vehicle_status(self):
+    #     return
 
     def _prepare_invoice(self, ):
         invoice_vals = super(SaleOrder, self)._prepare_invoice()

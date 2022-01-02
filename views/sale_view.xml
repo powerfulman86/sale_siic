@@ -27,8 +27,12 @@
                     <field name="branch_id" options="{'no_create': True}"/>
                 </xpath>
 
+                <xpath expr="//field[@name='date_order']" position="after">
+                    <field name="sale_contract" options="{'no_create': True}"/>
+                </xpath>
+
                 <xpath expr="//field[@name='commitment_date']/.." position="after">
-                    <field name="receipt_date" widget="date"/>
+                    <field name="delivery_date" widget="date"/>
                     <field name="delivery_company" options="{'no_create': True}"/>
                     <field name="delivery_vehicle" options="{'no_create': True}"/>
                     <field name="delivery_receipt_number"/>
@@ -67,6 +71,105 @@
                 </xpath>
             </field>
         </record>
+
+        <record id="view_sales_order_delivery_filter" model="ir.ui.view">
+            <field name="name">sale.order.list.delivery.select</field>
+            <field name="model">sale.order</field>
+            <field name="priority" eval="15"/>
+            <field name="arch" type="xml">
+                <search string="Search Sales Order">
+                    <field name="name" string="Order"
+                           filter_domain="['|', '|','|', ('name', 'ilike', self), ('client_order_ref', 'ilike', self), ('partner_id', 'child_of', self), ('internal_reference', 'ilike', self)]"/>
+                    <field name="partner_id" operator="child_of"/>
+                    <field name="user_id"/>
+                    <field name="order_type"/>
+                    <field name="branch_id"/>
+                    <field name="delivery_date"/>
+                    <field name="delivery_company"/>
+                    <field name="delivery_vehicle"/>
+                    <field name="delivery_receipt_number"/>
+                    <field name="order_line" string="Product"
+                           filter_domain="[('order_line.product_id', 'ilike', self)]"/>
+
+                    <filter string="My Orders" domain="[('user_id', '=', uid)]" name="my_sale_orders_filter"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Salesperson" name="salesperson" domain="[]" context="{'group_by': 'user_id'}"/>
+                        <filter name="customer" string="Customer" domain="[]" context="{'group_by': 'partner_id'}"/>
+                        <filter string="Order Date" name="order_month" domain="[]"
+                                context="{'group_by': 'date_order'}"/>
+                        <filter name="order_type" string="Type" domain="[]" context="{'group_by': 'order_type'}"/>
+                        <filter name="branch_id" string="Branch" domain="[]" context="{'group_by': 'branch_id'}"/>
+                        <filter name="delivery_date" string="Delivery Date" domain="[]"
+                                context="{'group_by': 'delivery_date'}"/>
+                        <filter name="delivery_company" string="Delivery Company" domain="[]"
+                                context="{'group_by': 'delivery_company'}"/>
+                        <filter name="delivery_vehicle" string="Delivery Vehicle" domain="[]"
+                                context="{'group_by': 'delivery_vehicle'}"/>
+                        <filter name="delivery_receipt_number" string="Delivery Receipt Number" domain="[]"
+                                context="{'group_by': 'delivery_receipt_number'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="orders_delivery_followup_tree" model="ir.ui.view">
+            <field name="name">sale.order.delivery.tree</field>
+            <field name="model">sale.order</field>
+            <field name="priority">4</field>
+            <field name="arch" type="xml">
+                <tree string="Orders" class="o_sale_order" decoration-bf="message_needaction==True"
+                      decoration-muted="state=='cancel'" multi_edit="1">
+                    <field name="message_needaction" invisible="1"/>
+                    <field name="name" readonly="1"/>
+                    <field name="internal_reference"/>
+                    <field name="date_order"/>
+                    <field name="order_type"/>
+                    <field name="branch_id"/>
+                    <field name="expected_date"/>
+                    <field name="delivery_date"/>
+                    <field name="delivery_company"/>
+                    <field name="delivery_vehicle"/>
+                    <field name="delivery_receipt_number"/>
+                    <field name="partner_id" readonly="1"/>
+                    <field name="user_id" optional="show"/>
+                    <field name="company_id" groups="base.group_multi_company" optional="show" readonly="1"/>
+                    <field name="amount_untaxed" sum="Total Tax Excluded" widget="monetary" optional="hide"/>
+                    <field name="amount_tax" sum="Tax Total" widget="monetary" optional="hide"/>
+                    <field name="amount_total" sum="Total Tax Included" widget="monetary" optional="show"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="state" optional="show"/>
+                    <field name="invoice_status" optional="hide"/>
+                    <field name="activity_exception_decoration" widget="activity_exception"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_orders_delivery_followup" model="ir.actions.act_window">
+            <field name="name">Orders Followup</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_mode">tree,form,calendar,graph,pivot,kanban,activity</field>
+            <field name="context">{'create': False,'delete': False}</field>
+            <field name="search_view_id" ref="view_sales_order_delivery_filter"/>
+            <field name="view_ids"
+                   eval="[(5, 0, 0),(0, 0, {'view_mode': 'tree', 'view_id': ref('orders_delivery_followup_tree')})]"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No orders to Follow up
+                </p>
+                <p>
+                    You can select all orders and invoice them in batch,
+                    <br/>
+                    or check every order and invoice them one by one.
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="menu_sale_delivery_followup"
+                  name="Orders Delivers"
+                  parent="sale.sale_order_menu"
+                  action="action_orders_delivery_followup"
+                  sequence="6"/>
 
     </data>
 </odoo>

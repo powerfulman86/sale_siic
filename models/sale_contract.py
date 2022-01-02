@@ -19,15 +19,14 @@ class SaleContract(models.Model):
     name = fields.Char(string='Contact Reference', required=True, copy=False, readonly=True,
                        states={'draft': [('readonly', False)]}, index=True, default=lambda self: _('New'))
     state = fields.Selection([
-        ('draft', 'Quotation'),
+        ('draft', 'Draft'),
         ('progress', 'In Progress'),
         ('done', 'Locked'),
         ('cancel', 'Cancelled'),
     ], string='Status', readonly=True, copy=False, index=True, tracking=3, default='draft')
     date_contract = fields.Datetime(string='Contract Date', required=True, readonly=True, index=True,
-                                    states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, copy=False,
-                                    default=fields.Datetime.now,
-                                    help="Creation date of draft/sent Contracts.")
+                                    states={'draft': [('readonly', False)]}, copy=False,
+                                    default=fields.Datetime.now,)
     create_date = fields.Datetime(string='Creation Date', readonly=True, index=True,
                                   help="Date on which sales order is created.")
     user_id = fields.Many2one(
@@ -35,12 +34,12 @@ class SaleContract(models.Model):
         domain=lambda self: [('groups_id', 'in', self.env.ref('sales_team.group_sale_salesman').id)])
     partner_id = fields.Many2one(
         'res.partner', string='Customer', readonly=True,
-        states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
+        states={'draft': [('readonly', False)]},
         required=True, change_default=True, index=True, tracking=1,
         domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]", )
     pricelist_id = fields.Many2one(
         'product.pricelist', string='Pricelist', check_company=True,  # Unrequired company
-        required=True, readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
+        required=True, readonly=True, states={'draft': [('readonly', False)]},
         domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",
         help="If you change the pricelist, only newly added lines will be affected.")
     currency_id = fields.Many2one("res.currency", related='pricelist_id.currency_id', string="Currency", readonly=True,

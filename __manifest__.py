@@ -5,7 +5,7 @@
     'description': """ Sales SIIC Customization  """,
     'author': "SIIC",
     'category': 'Sales',
-    'depends': ['base', 'portal', 'sale','account', 'multi_branch'],
+    'depends': ['base', 'portal', 'sale', 'account', 'multi_branch'],
     'data': [
         # 'security/security.xml',
         'security/ir.model.access.csv',
@@ -17,6 +17,9 @@
         'views/product_category.xml',
         'views/delivery_vehicle.xml',
         'views/sale_contract.xml',
+        'views/sale_return.xml',
+        'reports/sale_net_report.xml',
+        'reports/sale_return_report.xml',
     ],
     'images': ['static/description/icon.png'],
     'license': 'AGPL-3',
