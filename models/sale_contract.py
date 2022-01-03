@@ -3,6 +3,7 @@
 from odoo import api, fields, models, _
 import odoo.addons.decimal_precision as dp
 from odoo.exceptions import ValidationError
+from odoo.tools.misc import formatLang, get_lang
 from odoo.osv import expression
 
 
@@ -27,7 +28,7 @@ class SaleContract(models.Model):
     ], string='Status', readonly=True, copy=False, index=True, tracking=3, default='draft')
     date_contract = fields.Datetime(string='Contract Date', required=True, readonly=True, index=True,
                                     states={'draft': [('readonly', False)]}, copy=False,
-                                    default=fields.Datetime.now,)
+                                    default=fields.Datetime.now, )
     create_date = fields.Datetime(string='Creation Date', readonly=True, index=True,
                                   help="Date on which sales order is created.")
     user_id = fields.Many2one(
@@ -102,6 +103,19 @@ class SaleContract(models.Model):
             else:
                 order.currency_rate = 1.0
 
+    @api.onchange('partner_id')
+    def onchange_partner_id(self):
+        partner_user = self.partner_id.user_id or self.partner_id.commercial_partner_id.user_id
+        values = {
+            'pricelist_id': self.partner_id.property_product_pricelist and self.partner_id.property_product_pricelist.id or False,
+            'payment_term_id': self.partner_id.property_payment_term_id and self.partner_id.property_payment_term_id.id or False,
+        }
+        user_id = partner_user.id
+        if not self.env.context.get('not_self_saleperson'):
+            user_id = user_id or self.env.uid
+        if user_id and self.user_id.id != user_id:
+            values['user_id'] = user_id
+
     def action_progress(self):
         return self.write({'state': 'progress'})
 
@@ -130,12 +144,15 @@ class SaleContractLine(models.Model):
     product_template_id = fields.Many2one(
         'product.template', string='Product Template',
         related="product_id.product_tmpl_id", domain=[('sale_ok', '=', True)])
-    product_updatable = fields.Boolean(compute='_compute_product_updatable', string='Can Edit Product', readonly=True,
-                                       default=True)
+    product_updatable = fields.Boolean(string='Can Edit Product', readonly=True, default=True)
     product_uom_qty = fields.Float(string='Quantity', digits='Product Unit of Measure', required=True, default=1.0)
     product_uom = fields.Many2one('uom.uom', string='Unit of Measure',
                                   domain="[('category_id', '=', product_uom_category_id)]")
     product_uom_category_id = fields.Many2one(related='product_id.uom_id.category_id', readonly=True)
+    product_custom_attribute_value_ids = fields.One2many('product.attribute.custom.value', 'sale_order_line_id',
+                                                         string="Custom Values", copy=True)
+    product_no_variant_attribute_value_ids = fields.Many2many('product.template.attribute.value', string="Extra Values",
+                                                              ondelete='restrict')
     currency_id = fields.Many2one(related='contract_id.currency_id', depends=['contract_id.currency_id'], store=True,
                                   string='Currency', readonly=True)
     company_id = fields.Many2one(related='contract_id.company_id', string='Company', store=True, readonly=True,
@@ -192,8 +209,8 @@ class SaleContractLine(models.Model):
         """
         for line in self:
             price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
-            taxes = line.tax_id.compute_all(price, line.order_id.currency_id, line.product_uom_qty,
-                                            product=line.product_id, partner=line.order_id.partner_shipping_id)
+            taxes = line.tax_id.compute_all(price, line.contract_id.currency_id, line.product_uom_qty,
+                                            product=line.product_id, partner=line.contract_id.partner_id)
             line.update({
                 'price_tax': sum(t.get('amount', 0.0) for t in taxes.get('taxes', [])),
                 'price_total': taxes['total_included'],
@@ -202,3 +219,36 @@ class SaleContractLine(models.Model):
             if self.env.context.get('import_file', False) and not self.env.user.user_has_groups(
                     'account.group_account_manager'):
                 line.tax_id.invalidate_cache(['invoice_repartition_line_ids'], [line.tax_id.id])
+
+    def get_sale_order_line_multiline_description_sale(self, product):
+        """ Compute a default multiline description for this sales order line.
+
+        In most cases the product description is enough but sometimes we need to append information that only
+        exists on the sale order line itself.
+        e.g:
+        - custom attributes and attributes that don't create variants, both introduced by the "product configurator"
+        - in event_sale we need to know specifically the sales order line as well as the product to generate the name:
+          the product is not sufficient because we also need to know the event_id and the event_ticket_id (both which belong to the sale order line).
+        """
+        return product.get_product_multiline_description_sale()
+
+    @api.onchange('product_id')
+    def product_id_change(self):
+        if not self.product_id:
+            return
+        vals = {}
+        if not self.product_uom or (self.product_id.uom_id.id != self.product_uom.id):
+            vals['product_uom'] = self.product_id.uom_id
+            vals['product_uom_qty'] = self.product_uom_qty or 1.0
+
+        product = self.product_id.with_context(
+            lang=get_lang(self.env, self.contract_id.partner_id.lang).code,
+            partner=self.contract_id.partner_id,
+            quantity=vals.get('product_uom_qty') or self.product_uom_qty,
+            date=self.contract_id.date_contract,
+            pricelist=self.contract_id.pricelist_id.id,
+            uom=self.product_uom.id
+        )
+        vals.update(name=self.get_sale_order_line_multiline_description_sale(product))
+
+        self.update(vals)
