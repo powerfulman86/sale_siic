@@ -23,6 +23,7 @@
                         </div>
                         <group>
                             <group>
+                                <field name="internal_reference"/>
                                 <field name="partner_id" widget="res_partner_many2one"
                                        context="{'res_partner_search_mode': 'customer', 'show_address': 1, 'show_vat': True}"
                                        options='{"always_reload": True}'/>
@@ -248,6 +249,7 @@
                 <tree string="Contracts" class="o_sale_order" decoration-muted="state=='cancel'" multi_edit="1">
                     <field name="name" string="Contract Number" readonly="1"/>
                     <field name="create_date" string="Create Date"/>
+                    <field name="internal_reference"/>
                     <field name="partner_id" readonly="1"/>
                     <field name="user_id" optional="show"/>
                     <field name="team_id" optional="hide"/>

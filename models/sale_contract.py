@@ -16,6 +16,7 @@ class SaleContract(models.Model):
     def _get_default_team(self):
         return self.env['crm.team']._get_default_team_id()
 
+    internal_reference = fields.Char(string="Contract Number", required=True, states={'draft': [('readonly', False)]})
     name = fields.Char(string='Contact Reference', required=True, copy=False, readonly=True,
                        states={'draft': [('readonly', False)]}, index=True, default=lambda self: _('New'))
     state = fields.Selection([
