@@ -165,7 +165,7 @@ class SaleContractLine(models.Model):
     contract_id = fields.Many2one('sale.contract', string='Order Reference', required=True, ondelete='cascade',
                                   index=True,
                                   copy=False)
-    name = fields.Text(string='Description', required=True)
+    name = fields.Text(string='Description', )
     sequence = fields.Integer(string='Sequence', default=10)
     product_id = fields.Many2one(
         'product.product', string='Product',
