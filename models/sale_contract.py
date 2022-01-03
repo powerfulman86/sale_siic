@@ -90,6 +90,22 @@ class SaleContract(models.Model):
             contract_ids = self._search(domain, limit=limit, access_rights_uid=name_get_uid)
             return models.lazy_name_get(self.browse(contract_ids).with_user(name_get_uid))
 
+    @api.depends('contract_line.price_total')
+    def _amount_all(self):
+        """
+        Compute the total amounts of the SO.
+        """
+        for order in self:
+            amount_untaxed = amount_tax = 0.0
+            for line in order.contract_line:
+                amount_untaxed += line.price_subtotal
+                amount_tax += line.price_tax
+            order.update({
+                'amount_untaxed': amount_untaxed,
+                'amount_tax': amount_tax,
+                'amount_total': amount_untaxed + amount_tax,
+            })
+
     @api.depends('pricelist_id', 'date_contract', 'company_id')
     def _compute_currency_rate(self):
         for order in self:
