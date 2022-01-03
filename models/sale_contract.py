@@ -69,6 +69,14 @@ class SaleContract(models.Model):
         change_default=True, default=_get_default_team, check_company=True,  # Unrequired company
         domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
 
+    orders_ids = fields.One2many('sale.order', 'sale_contract', string='Orders')
+    orders_count = fields.Integer(string='Orders Count', compute='_compute_order_ids')
+
+    @api.depends('orders_ids')
+    def _compute_order_ids(self):
+        for contract in self:
+            contract.orders_count = len(contract.orders_ids)
+
     def name_get(self):
         res = []
         for order in self:
@@ -145,6 +153,16 @@ class SaleContract(models.Model):
                 raise UserError(
                     _('You can not delete a sent quotation or a confirmed sales order. You must first cancel it.'))
         return super(SaleContract, self).unlink()
+
+    def action_view_sale_orders(self):
+        self.ensure_one()
+        return {
+            'name': _('Contract Sales Orders'),
+            'res_model': 'sale.order',
+            'type': 'ir.actions.act_window',
+            'view_mode': 'tree,form,pivot',
+            'context': {"default_sale_contract": self.id, },
+        }
 
     def action_progress(self):
         return self.write({'state': 'progress'})

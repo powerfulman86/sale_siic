@@ -14,7 +14,12 @@
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
-
+                            <button type="object"
+                                    name="action_view_sale_orders"
+                                    class="oe_stat_button"
+                                    icon="fa-ticket ">
+                                <field name="orders_count" widget="statinfo" string="Sales Orders"/>
+                            </button>
                         </div>
                         <div class="oe_title">
                             <h1>
@@ -248,7 +253,7 @@
             <field name="arch" type="xml">
                 <tree string="Contracts" class="o_sale_order" decoration-muted="state=='cancel'" multi_edit="1">
                     <field name="name" string="Contract Number" readonly="1"/>
-                    <field name="create_date" string="Create Date"/>
+                    <field name="date_contract"/>
                     <field name="internal_reference"/>
                     <field name="partner_id" readonly="1"/>
                     <field name="user_id" optional="show"/>
