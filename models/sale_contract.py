@@ -2,7 +2,7 @@
 
 from odoo import api, fields, models, _
 import odoo.addons.decimal_precision as dp
-from odoo.exceptions import ValidationError
+from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tools.misc import formatLang, get_lang
 from odoo.osv import expression
 
@@ -131,6 +131,20 @@ class SaleContract(models.Model):
             user_id = user_id or self.env.uid
         if user_id and self.user_id.id != user_id:
             values['user_id'] = user_id
+
+    @api.model
+    def create(self, vals):
+        if vals.get('name', _('New')) == _('New'):
+            vals['name'] = self.env['ir.sequence'].next_by_code('sale.contract') or _('New')
+        result = super(SaleContract, self).create(vals)
+        return result
+
+    def unlink(self):
+        for order in self:
+            if order.state not in ('draft', 'cancel'):
+                raise UserError(
+                    _('You can not delete a sent quotation or a confirmed sales order. You must first cancel it.'))
+        return super(SaleContract, self).unlink()
 
     def action_progress(self):
         return self.write({'state': 'progress'})
