@@ -69,12 +69,12 @@ class SaleOrder(models.Model):
     delivery_vehicle = fields.Many2one(comodel_name="sale.delivery.vehicle", string="Delivery Vehicle", required=False,
                                        domain="[('partner_id','=',delivery_company)]",
                                        states={'ondelivery': [('readonly', False)]})
-    sale_contract = fields.Many2one(comodel_name="sale.contract", string="Sale Contract", required=False,
-                                    domain="[('state','=','progress')]", states={'draft': [('readonly', False)]})
     partner_shipping_id = fields.Many2one(
         'res.partner', string='Delivery Address', readonly=True, required=True,
         states={'draft': [('readonly', False)]},
         domain="[('parent_id', '=', partner_id),('type','=','delivery')]", )
+
+    sale_contract = fields.Many2one('sale.contract', "Sale Contract", required=False, )
 
     def action_ondelivery(self):
         self.state = 'ondelivery'
