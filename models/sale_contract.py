@@ -98,93 +98,83 @@ class SaleContract(models.Model):
         contract_ids = self._search(domain, limit=limit, access_rights_uid=name_get_uid)
         return models.lazy_name_get(self.browse(contract_ids).with_user(name_get_uid))
 
+    @api.depends('contract_line.price_total')
+    def _amount_all(self):
+        """
+        Compute the total amounts of the SO.
+        """
+        for order in self:
+            amount_untaxed = amount_tax = 0.0
+            for line in order.contract_line:
+                amount_untaxed += line.price_subtotal
+                amount_tax += line.price_tax
+            order.update({
+                'amount_untaxed': amount_untaxed,
+                'amount_tax': amount_tax,
+                'amount_total': amount_untaxed + amount_tax,
+            })
 
-@api.depends('contract_line.price_total')
-def _amount_all(self):
-    """
-    Compute the total amounts of the SO.
-    """
-    for order in self:
-        amount_untaxed = amount_tax = 0.0
-        for line in order.contract_line:
-            amount_untaxed += line.price_subtotal
-            amount_tax += line.price_tax
-        order.update({
-            'amount_untaxed': amount_untaxed,
-            'amount_tax': amount_tax,
-            'amount_total': amount_untaxed + amount_tax,
-        })
+    @api.depends('pricelist_id', 'date_contract', 'company_id')
+    def _compute_currency_rate(self):
+        for order in self:
+            if not order.company_id:
+                order.currency_rate = order.currency_id.with_context(date=order.date_contract).rate or 1.0
+                continue
+            elif order.company_id.currency_id and order.currency_id:  # the following crashes if any one is undefined
+                order.currency_rate = self.env['res.currency']._get_conversion_rate(order.company_id.currency_id,
+                                                                                    order.currency_id, order.company_id,
+                                                                                    order.date_contract)
+            else:
+                order.currency_rate = 1.0
 
+    @api.onchange('partner_id')
+    def onchange_partner_id(self):
+        partner_user = self.partner_id.user_id or self.partner_id.commercial_partner_id.user_id
+        values = {
+            'pricelist_id': self.partner_id.property_product_pricelist and self.partner_id.property_product_pricelist.id or False,
+            'payment_term_id': self.partner_id.property_payment_term_id and self.partner_id.property_payment_term_id.id or False,
+        }
+        user_id = partner_user.id
+        if not self.env.context.get('not_self_saleperson'):
+            user_id = user_id or self.env.uid
+        if user_id and self.user_id.id != user_id:
+            values['user_id'] = user_id
 
-@api.depends('pricelist_id', 'date_contract', 'company_id')
-def _compute_currency_rate(self):
-    for order in self:
-        if not order.company_id:
-            order.currency_rate = order.currency_id.with_context(date=order.date_contract).rate or 1.0
-            continue
-        elif order.company_id.currency_id and order.currency_id:  # the following crashes if any one is undefined
-            order.currency_rate = self.env['res.currency']._get_conversion_rate(order.company_id.currency_id,
-                                                                                order.currency_id, order.company_id,
-                                                                                order.date_contract)
-        else:
-            order.currency_rate = 1.0
+    @api.model
+    def create(self, vals):
+        if vals.get('name', _('New')) == _('New'):
+            vals['name'] = self.env['ir.sequence'].next_by_code('sale.contract') or _('New')
+        result = super(SaleContract, self).create(vals)
+        return result
 
+    def unlink(self):
+        for order in self:
+            if order.state not in ('draft', 'cancel'):
+                raise UserError(
+                    _('You can not delete a sent quotation or a confirmed sales order. You must first cancel it.'))
+        return super(SaleContract, self).unlink()
 
-@api.onchange('partner_id')
-def onchange_partner_id(self):
-    partner_user = self.partner_id.user_id or self.partner_id.commercial_partner_id.user_id
-    values = {
-        'pricelist_id': self.partner_id.property_product_pricelist and self.partner_id.property_product_pricelist.id or False,
-        'payment_term_id': self.partner_id.property_payment_term_id and self.partner_id.property_payment_term_id.id or False,
-    }
-    user_id = partner_user.id
-    if not self.env.context.get('not_self_saleperson'):
-        user_id = user_id or self.env.uid
-    if user_id and self.user_id.id != user_id:
-        values['user_id'] = user_id
+    def action_view_sale_orders(self):
+        self.ensure_one()
+        return {
+            'name': _('Contract Sales Orders'),
+            'res_model': 'sale.order',
+            'type': 'ir.actions.act_window',
+            'view_mode': 'tree,form,pivot',
+            'context': {"default_sale_contract": self.id, },
+        }
 
+    def action_approve(self):
+        return self.write({'state': 'approved'})
 
-@api.model
-def create(self, vals):
-    if vals.get('name', _('New')) == _('New'):
-        vals['name'] = self.env['ir.sequence'].next_by_code('sale.contract') or _('New')
-    result = super(SaleContract, self).create(vals)
-    return result
+    def action_progress(self):
+        return self.write({'state': 'progress'})
 
+    def action_done(self):
+        return self.write({'state': 'done'})
 
-def unlink(self):
-    for order in self:
-        if order.state not in ('draft', 'cancel'):
-            raise UserError(
-                _('You can not delete a sent quotation or a confirmed sales order. You must first cancel it.'))
-    return super(SaleContract, self).unlink()
-
-
-def action_view_sale_orders(self):
-    self.ensure_one()
-    return {
-        'name': _('Contract Sales Orders'),
-        'res_model': 'sale.order',
-        'type': 'ir.actions.act_window',
-        'view_mode': 'tree,form,pivot',
-        'context': {"default_sale_contract": self.id, },
-    }
-
-
-def action_approve(self):
-    return self.write({'state': 'approved'})
-
-
-def action_progress(self):
-    return self.write({'state': 'progress'})
-
-
-def action_done(self):
-    return self.write({'state': 'done'})
-
-
-def action_cancel(self):
-    return self.write({'state': 'cancel'})
+    def action_cancel(self):
+        return self.write({'state': 'cancel'})
 
 
 class SaleContractLine(models.Model):
