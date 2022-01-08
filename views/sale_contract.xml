@@ -7,10 +7,11 @@
             <field name="arch" type="xml">
                 <form string="Sales Contract" class="o_sale_order">
                     <header>
-                        <button name="action_progress" string="In Progress" type="object" states="draft"/>
+                        <button name="action_approve" string="Approve" type="object" states="draft"/>
+                        <button name="action_progress" string="In Progress" type="object" states="approved"/>
                         <button name="action_done" states="progress" type="object" string="Done"/>
                         <button name="action_cancel" states="draft,progress" type="object" string="Cancel"/>
-                        <field name="state" widget="statusbar" statusbar_visible="draft,progress,done,cancel"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,approved,progress,done,cancel"/>
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
@@ -256,7 +257,7 @@
         </record>
 
         <record id="ir_actions_server_contract_progress" model="ir.actions.server">
-            <field name="name">Approve</field>
+            <field name="name">In Progress</field>
             <field name="model_id" ref="model_sale_contract"/>
             <field name="binding_model_id" ref="model_sale_contract"/>
             <field name="binding_view_types">list</field>
