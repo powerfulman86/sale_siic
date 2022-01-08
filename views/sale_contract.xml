@@ -246,6 +246,24 @@
             </field>
         </record>
 
+        <record id="ir_actions_server_contract_approve" model="ir.actions.server">
+            <field name="name">Approve</field>
+            <field name="model_id" ref="model_sale_contract"/>
+            <field name="binding_model_id" ref="model_sale_contract"/>
+            <field name="binding_view_types">list</field>
+            <field name="state">code</field>
+            <field name="code">action = records.action_approve()</field>
+        </record>
+
+        <record id="ir_actions_server_contract_progress" model="ir.actions.server">
+            <field name="name">Approve</field>
+            <field name="model_id" ref="model_sale_contract"/>
+            <field name="binding_model_id" ref="model_sale_contract"/>
+            <field name="binding_view_types">list</field>
+            <field name="state">code</field>
+            <field name="code">action = records.action_progress()</field>
+        </record>
+
         <record id="view_contract_tree" model="ir.ui.view">
             <field name="name">sale.contract.tree</field>
             <field name="model">sale.contract</field>
@@ -274,14 +292,14 @@
             <field name="priority" eval="15"/>
             <field name="arch" type="xml">
                 <search string="Search Sales Contract">
-                    <field name="name" string="Order"
-                           filter_domain="['|', '|', ('name', 'ilike', self), ('partner_id', 'child_of', self)]"/>
+                    <field name="name" string="Contract"
+                           filter_domain="['|', '|', ('name', 'ilike', self), ('internal_reference', 'ilike', self)]"/>
                     <field name="partner_id" operator="child_of"/>
                     <field name="user_id"/>
                     <field name="team_id" string="Sales Team"/>
                     <field name="contract_line" string="Product"
                            filter_domain="[('contract_line.product_id', 'ilike', self)]"/>
-                    <filter string="My Orders" domain="[('user_id', '=', uid)]" name="my_sale_orders_filter"/>
+                    <filter string="My Contracts" domain="[('user_id', '=', uid)]" name="my_sale_contracts_filter"/>
                     <group expand="0" string="Group By">
                         <filter string="Salesperson" name="salesperson" domain="[]" context="{'group_by': 'user_id'}"/>
                         <filter name="customer" string="Customer" domain="[]" context="{'group_by': 'partner_id'}"/>

@@ -22,6 +22,7 @@ class SaleContract(models.Model):
                        states={'draft': [('readonly', False)]}, index=True, default=lambda self: _('New'))
     state = fields.Selection([
         ('draft', 'Draft'),
+        ('approved', 'Approved'),
         ('progress', 'In Progress'),
         ('done', 'Locked'),
         ('cancel', 'Cancelled'),
@@ -163,6 +164,9 @@ class SaleContract(models.Model):
             'view_mode': 'tree,form,pivot',
             'context': {"default_sale_contract": self.id, },
         }
+
+    def action_approve(self):
+        return self.write({'state': 'approved'})
 
     def action_progress(self):
         return self.write({'state': 'progress'})
