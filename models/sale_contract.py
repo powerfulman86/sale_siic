@@ -51,9 +51,8 @@ class SaleContract(models.Model):
     payment_term_id = fields.Many2one(
         'account.payment.term', string='Payment Terms', check_company=True,  # Unrequired company
         domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]", )
-    contract_line = fields.One2many('sale.contract.line', 'contract_id', string='Contract Lines',
-                                    states={'cancel': [('readonly', True)], 'done': [('readonly', True)]}, copy=True,
-                                    auto_join=True)
+    contract_line = fields.One2many('sale.contract.line', 'contract_id', string='Contract Lines', readonly=True,
+                                    states={'draft': [('readonly', False)]}, copy=True, auto_join=True)
     note = fields.Text('Terms and conditions', )
     amount_untaxed = fields.Monetary(string='Untaxed Amount', store=True, readonly=True, compute='_amount_all',
                                      tracking=5)
@@ -74,6 +73,10 @@ class SaleContract(models.Model):
     orders_ids = fields.One2many('sale.order', 'sale_contract', string='Orders')
     orders_count = fields.Integer(string='Orders Count', compute='_compute_order_ids')
 
+    _sql_constraints = [
+        ("contract_reference_uniq", "unique (internal_reference)", "Contract Number already exists !"),
+    ]
+
     @api.depends('orders_ids')
     def _compute_order_ids(self):
         for contract in self:
@@ -81,22 +84,23 @@ class SaleContract(models.Model):
 
     def name_get(self):
         res = []
-        for order in self:
-            name = order.name
-            if order.partner_id.name:
-                name = '[%s]-[%s] %s' % (order.name, order.internal_reference, order.partner_id.name)
-            res.append((order.id, name))
+        for contract in self:
+            name = contract.name
+            if contract.partner_id.name:
+                name = '[%s]-[%s] %s' % (contract.name, contract.internal_reference, contract.partner_id.name)
+            res.append((contract.id, name))
         return res
 
     @api.model
     def _name_search(self, name, args=None, operator='ilike', limit=100, name_get_uid=None):
         domain = expression.AND([
             args or [],
-            ['|', '|', ('name', operator, name), ('internal_reference', operator, name),
+            ['|', '|', ('name', operator, name),
+             ('internal_reference', operator, name),
              ('partner_id.name', operator, name)]
         ])
-        contract_ids = self._search(domain, limit=limit, access_rights_uid=name_get_uid)
-        return models.lazy_name_get(self.browse(contract_ids).with_user(name_get_uid))
+        order_ids = self._search(domain, limit=limit, access_rights_uid=name_get_uid)
+        return models.lazy_name_get(self.browse(order_ids).with_user(name_get_uid))
 
     @api.depends('contract_line.price_total')
     def _amount_all(self):
@@ -165,16 +169,36 @@ class SaleContract(models.Model):
         }
 
     def action_approve(self):
-        return self.write({'state': 'approved'})
+        for rec in self:
+            if rec.state == 'draft':
+                self.write({'state': 'approved'})
 
     def action_progress(self):
-        return self.write({'state': 'progress'})
+        for rec in self:
+            if rec.state == 'approved':
+                self.write({'state': 'progress'})
 
     def action_done(self):
-        return self.write({'state': 'done'})
+        for rec in self:
+            if rec.state == 'progress':
+                self.write({'state': 'done'})
 
     def action_cancel(self):
-        return self.write({'state': 'cancel'})
+        self.write({'state': 'cancel'})
+
+    def _cron_update_contract_status(self):
+        # 1st update related contract line
+        sales_check = self.env['sale.order.line'].search(
+            [('sale_contract', '!=', False),
+             ('contract_line_id', '=', False)])
+        if sales_check.ids != 0:
+            for line in sales_check:
+                sale_contract_line = self.env['sale.contract.line'].search(
+                    [('contract_id', '=', line.sale_contract.id),
+                     ('product_id', '=', line.product_id.id),
+                     ])
+                if sale_contract_line.ids != 0:
+                    line.contract_line_id = sale_contract_line
 
 
 class SaleContractLine(models.Model):
@@ -208,13 +232,13 @@ class SaleContractLine(models.Model):
                                   string='Currency', readonly=True)
     company_id = fields.Many2one(related='contract_id.company_id', string='Company', store=True, readonly=True,
                                  index=True)
-    order_partner_id = fields.Many2one(related='contract_id.partner_id', store=True, string='Customer', readonly=False)
+    partner_id = fields.Many2one(related='contract_id.partner_id', store=True, string='Customer', readonly=False)
     state = fields.Selection([
         ('draft', 'Quotation'),
         ('progress', 'In Progress'),
         ('done', 'Locked'),
         ('cancel', 'Cancelled'),
-    ], related='contract_id.state', string='Order Status', readonly=True, copy=False, store=True, default='draft')
+    ], related='contract_id.state', string='Contract Status', readonly=True, copy=False, store=True, default='draft')
 
     price_unit = fields.Float('Unit Price', required=True, digits='Product Price', default=0.0)
 
@@ -232,14 +256,27 @@ class SaleContractLine(models.Model):
                                            readonly=True, store=True)
 
     discount = fields.Float(string='Discount (%)', digits='Discount', default=0.0)
+    issue_lines = fields.One2many('sale.order.line', 'contract_line_id', string='Issue Lines', copy=False)
+    qty_issued = fields.Float('Issued Quantity', copy=False, compute='_compute_qty_issued',
+                              compute_sudo=True, store=True, digits='Product Unit of Measure', default=0.0)
+
+    @api.depends('issue_lines.state', 'issue_lines.product_uom_qty')
+    def _compute_qty_issued(self):
+        for line in self:
+            qty = 0.0
+            for inv_line in line.issue_lines:
+                if inv_line.state not in ['cancel']:
+                    qty += inv_line.product_uom._compute_quantity(inv_line.product_uom_qty, line.product_uom)
+
+            line.qty_issued = qty
 
     def name_get(self):
         result = []
         for so_line in self.sudo():
             name = '%s - %s' % (
                 so_line.contract_id.name, so_line.name and so_line.name.split('\n')[0] or so_line.product_id.name)
-            if so_line.order_partner_id.ref:
-                name = '%s (%s)' % (name, so_line.order_partner_id.ref)
+            if so_line.partner_id.ref:
+                name = '%s (%s)' % (name, so_line.partner_id.ref)
             result.append((so_line.id, name))
         return result
 

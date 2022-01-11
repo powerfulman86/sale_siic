@@ -10,6 +10,7 @@
         # 'security/security.xml',
         'security/ir.model.access.csv',
         'data/sequence.xml',
+        'data/cron.xml',
         'views/sale_view.xml',
         'views/account_invoice_view.xml',
         'views/invoice_report.xml',

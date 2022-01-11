@@ -74,7 +74,8 @@ class SaleOrder(models.Model):
         states={'draft': [('readonly', False)]},
         domain="[('parent_id', '=', partner_id),('type','=','delivery')]", )
 
-    sale_contract = fields.Many2one('sale.contract', "Sale Contract", required=False, )
+    sale_contract = fields.Many2one('sale.contract', "Sale Contract", required=False,
+                                    domain="[('state', '=', 'progress')]", )
 
     def action_ondelivery(self):
         self.state = 'ondelivery'
@@ -126,3 +127,27 @@ class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
 
     discount = fields.Float(string='Discount (%)', digits=dp.get_precision('Account'), default=0.0)
+    sale_contract = fields.Many2one(related='order_id.sale_contract', store=True, string='Sale Contract',
+                                    readonly=False)
+    contract_line_id = fields.Many2one('sale.contract.line', 'Contract details Lines', ondelete='set null', index=True,
+                                       copy=False)
+
+    def _copy_data_extend_business_fields(self, values):
+        # OVERRIDE to copy the 'contract_line_id' field as well.
+        super(SaleOrderLine, self)._copy_data_extend_business_fields(values)
+        values['contract_line_id'] = self.contract_line_id.id
+
+    @api.depends('product_id', 'sale_contract')
+    def _get_sale_contract_line(self):
+        self.ensure_one()
+
+        contract_line = self.env['sale.contract.line'].search(
+            [('contract_id.id', '=', self.sale_contract.id),
+             ('product_id.id', '=', self.product_id.id)])
+
+        if len(contract_line.ids) != 0:
+            self.contract_line_id.id = contract_line.id
+
+        # super(SaleOrderLine, self).onchange_product_id()
+        # template = self.sale_order_template_id.with_context(lang=self.partner_id.lang)
+        # self.note = template.note or self.note

@@ -439,7 +439,6 @@ class SaleReturn(models.Model):
 
     def action_view_credit_note(self):
         view_id = self.env.ref('account.view_move_form').id
-        # print(">>>>>>>>>>>>>> ", self.invoice_ids.id)
         return {
             'name': _('View Credit Note'),
             'type': 'ir.actions.act_window',
