@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+        <!--approve action-->
+        <record id="ir_actions_server_sale_order_approve" model="ir.actions.server">
+            <field name="name">Confirm</field>
+            <field name="model_id" ref="model_sale_order"/>
+            <field name="binding_model_id" ref="model_sale_order"/>
+            <field name="binding_view_types">list</field>
+            <field name="state">code</field>
+            <field name="code">action = records.action_confirm()</field>
+        </record>
 
+        <!--Discount Views-->
         <record id="discount_sale_view_form" model="ir.ui.view">
             <field name="name">discount.sale.order.form</field>
             <field name="model">sale.order</field>
