@@ -43,45 +43,47 @@ class SaleOrder(models.Model):
                                    track_visibility='always')
     amount_discount = fields.Monetary(string='Discount', store=True, readonly=True, compute='_amount_all',
                                       digits=dp.get_precision('Account'), track_visibility='always')
-    internal_reference = fields.Char(string="Order Number", required=True, states={'draft': [('readonly', False)]})
+    internal_reference = fields.Char(string="Order Number", required=True, readonly=True,
+                                     states={'draft': [('readonly', False)]})
     order_type = fields.Selection(string="Type", selection=[('in', 'Local'), ('out', 'Foreign'), ], required=True,
-                                  tracking=1, default='in', states={'draft': [('readonly', False)]})
-    branch_id = fields.Many2one(comodel_name="res.branch", string="Branch", required=True,
+                                  readonly=True, tracking=1, default='in', states={'draft': [('readonly', False)]})
+    branch_id = fields.Many2one(comodel_name="res.branch", string="Branch", required=True, readonly=True,
                                 index=True, help='This is branch to set', states={'draft': [('readonly', False)]})
 
     state = fields.Selection([
         ('draft', 'Draft'),
         ('sale', 'Sale'),
         ('sent', 'Quotation Sent'),
-        ('ondelivery', 'On Delivery'),
-        ('delivered', 'Delivered'),
         ('done', 'Done'),
+        ('ondelivery', 'On Delivery'),
+        ('close', 'Closed'),
         ('cancel', 'Cancelled'),
     ], string='Status', readonly=True, copy=False, index=True, tracking=3, default='draft')
 
     delivery_company = fields.Many2one(comodel_name="res.partner", string="Delivery Company", required=False,
-                                       domain="[('delivery_company','=',True)]",
+                                       domain="[('delivery_company','=',True)]", readonly=True,
                                        states={'ondelivery': [('readonly', False)]})
 
     delivery_date = fields.Datetime('Delivery Date', states={'ondelivery': [('readonly', False)]},
                                     copy=False, readonly=True, )
-    delivery_receipt_number = fields.Char(string="Delivery Number", states={'ondelivery': [('readonly', False)]})
+    delivery_receipt_number = fields.Char(string="Delivery Number", readonly=True,
+                                          states={'ondelivery': [('readonly', False)]})
     delivery_vehicle = fields.Many2one(comodel_name="sale.delivery.vehicle", string="Delivery Vehicle", required=False,
-                                       domain="[('partner_id','=',delivery_company)]",
+                                       domain="[('partner_id','=',delivery_company)]", readonly=True,
                                        states={'ondelivery': [('readonly', False)]})
     partner_shipping_id = fields.Many2one(
         'res.partner', string='Delivery Address', readonly=True, required=True,
         states={'draft': [('readonly', False)]},
         domain="[('parent_id', '=', partner_id),('type','=','delivery')]", )
 
-    sale_contract = fields.Many2one('sale.contract', "Sale Contract", required=False,
-                                    domain="[('state', '=', 'progress')]", )
+    sale_contract = fields.Many2one('sale.contract', "Sale Contract", required=False, readonly=True,
+                                    domain="[('state', '=', 'progress')]", states={'draft': [('readonly', False)]})
 
     def action_ondelivery(self):
         self.state = 'ondelivery'
 
-    def action_delivered(self):
-        self.state = 'delivered'
+    def action_close(self):
+        self.state = 'close'
 
     @api.onchange('discount_type', 'discount_rate', 'order_line')
     def supply_rate(self):
