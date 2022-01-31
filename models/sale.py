@@ -69,6 +69,7 @@ class SaleOrder(models.Model):
     delivery_receipt_number = fields.Char(string="Delivery Number", readonly=True,
                                           states={'draft': [('readonly', False)]})
     delivery_vehicle = fields.Char(string="Delivery Vehicle", required=False, states={'draft': [('readonly', False)]})
+    delivery_truck = fields.Char(string="Delivery Truck", required=False, states={'draft': [('readonly', False)]})
     partner_shipping_id = fields.Many2one(
         'res.partner', string='Delivery Address', readonly=True, required=True,
         states={'draft': [('readonly', False)]},

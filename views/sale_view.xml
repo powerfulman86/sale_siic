@@ -62,9 +62,10 @@
                 <xpath expr="//group[@name='sale_shipping']" position="after">
                     <group string="Delivery Follow-up">
                         <field name="delivery_date" widget="date"/>
-                        <field name="delivery_company" options="{'no_create': True}"/>
-                        <field name="delivery_vehicle" options="{'no_create': True}"/>
                         <field name="delivery_receipt_number"/>
+                        <field name="delivery_company" options="{'no_create': True}"/>
+                        <field name="delivery_vehicle"/>
+                        <field name="delivery_truck"/>
                     </group>
                 </xpath>
 
