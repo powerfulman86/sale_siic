@@ -67,10 +67,8 @@ class SaleOrder(models.Model):
     delivery_date = fields.Datetime('Delivery Date', states={'ondelivery': [('readonly', False)]},
                                     copy=False, readonly=True, )
     delivery_receipt_number = fields.Char(string="Delivery Number", readonly=True,
-                                          states={'ondelivery': [('readonly', False)]})
-    delivery_vehicle = fields.Many2one(comodel_name="sale.delivery.vehicle", string="Delivery Vehicle", required=False,
-                                       domain="[('partner_id','=',delivery_company)]", readonly=True,
-                                       states={'ondelivery': [('readonly', False)]})
+                                          states={'draft': [('readonly', False)]})
+    delivery_vehicle = fields.Char(string="Delivery Vehicle", required=False, states={'draft': [('readonly', False)]})
     partner_shipping_id = fields.Many2one(
         'res.partner', string='Delivery Address', readonly=True, required=True,
         states={'draft': [('readonly', False)]},
@@ -81,7 +79,7 @@ class SaleOrder(models.Model):
 
     warehouse_id = fields.Many2one(
         'stock.warehouse', string='Warehouse',
-        required=True, readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},)
+        required=True, readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, )
 
     def action_ondelivery(self):
         self.state = 'ondelivery'
