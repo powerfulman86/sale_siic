@@ -79,6 +79,10 @@ class SaleOrder(models.Model):
     sale_contract = fields.Many2one('sale.contract', "Sale Contract", required=False, readonly=True,
                                     domain="[('state', '=', 'progress')]", states={'draft': [('readonly', False)]})
 
+    warehouse_id = fields.Many2one(
+        'stock.warehouse', string='Warehouse',
+        required=True, readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},)
+
     def action_ondelivery(self):
         self.state = 'ondelivery'
 
