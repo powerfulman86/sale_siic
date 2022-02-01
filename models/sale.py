@@ -69,7 +69,7 @@ class SaleOrder(models.Model):
     delivery_receipt_number = fields.Char(string="Delivery Number", readonly=True,
                                           states={'draft': [('readonly', False)]})
     delivery_voucher = fields.Char(string="Delivery Voucher", readonly=True,
-                                          states={'ondelivery': [('readonly', False)]})
+                                   states={'ondelivery': [('readonly', False)]})
     delivery_vehicle = fields.Char(string="Delivery Vehicle", readonly=True, required=False,
                                    states={'draft': [('readonly', False)]})
     delivery_truck = fields.Char(string="Delivery Truck", readonly=True, required=False,
@@ -130,6 +130,15 @@ class SaleOrder(models.Model):
         for rec in self:
             if not rec.internal_reference.isdigit():
                 raise ValidationError(_("Order Number Must Be In Digits"))
+
+    def action_confirm(self):
+        date = self.date_order
+        if len(self.order_line.ids) == 0:
+            raise ValidationError(_('You Must Add Products Data.'))
+
+        res = super(SaleOrder, self).action_confirm()
+        self.date_order = date
+        return res
 
 
 class SaleOrderLine(models.Model):

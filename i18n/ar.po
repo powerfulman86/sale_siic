@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-31 09:04+0000\n"
-"PO-Revision-Date: 2022-01-31 09:04+0000\n"
+"POT-Creation-Date: 2022-02-01 09:25+0000\n"
+"PO-Revision-Date: 2022-02-01 09:25+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -18,7 +18,7 @@ msgstr ""
 #. module: sale_siic
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return_report__nbr
 msgid "# of Lines"
-msgstr ""
+msgstr "عدد السطور"
 
 #. module: sale_siic
 #: model_terms:ir.ui.view,arch_db:sale_siic.discount_sale_view_form
@@ -86,7 +86,7 @@ msgstr "مبلغ"
 #: model:ir.model.fields,field_description:sale_siic.field_sale_net_report__analytic_account_id
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return__analytic_account_id
 msgid "Analytic Account"
-msgstr ""
+msgstr "حساب تحليلي"
 
 #. module: sale_siic
 #: model:ir.actions.server,name:sale_siic.ir_actions_server_contract_approve
@@ -105,7 +105,7 @@ msgstr "تم الاعتماد"
 #: model:ir.model.fields,field_description:sale_siic.field_sale_delivery_vehicle__message_attachment_count
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return__message_attachment_count
 msgid "Attachment Count"
-msgstr ""
+msgstr "عدد المرفقات"
 
 #. module: sale_siic
 #: model:ir.model.fields,field_description:sale_siic.field_sale_order__branch_id
@@ -440,18 +440,28 @@ msgstr "متابعة التسليم"
 #. module: sale_siic
 #: model:ir.model.fields,field_description:sale_siic.field_sale_order__delivery_receipt_number
 msgid "Delivery Number"
-msgstr "اخطار التسليم"
+msgstr "اخطار الشحن"
 
 #. module: sale_siic
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_sales_order_delivery_filter
 msgid "Delivery Receipt Number"
-msgstr "اخطار التسليم"
+msgstr "اخطار الشحن"
+
+#. module: sale_siic
+#: model:ir.model.fields,field_description:sale_siic.field_sale_order__delivery_truck
+msgid "Delivery Truck"
+msgstr "رقم المقطورة"
 
 #. module: sale_siic
 #: model:ir.model.fields,field_description:sale_siic.field_sale_order__delivery_vehicle
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_sales_order_delivery_filter
 msgid "Delivery Vehicle"
 msgstr "سيارة الشحن"
+
+#. module: sale_siic
+#: model:ir.model.fields,field_description:sale_siic.field_sale_order__delivery_voucher
+msgid "Delivery Voucher"
+msgstr "رقم القسيمة"
 
 #. module: sale_siic
 #: model:ir.model.fields,field_description:sale_siic.field_sale_contract_line__name
