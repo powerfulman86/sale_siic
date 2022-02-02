@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-
         <record id="view_partner_vehicle" model="ir.ui.view">
             <field name="name">res.partner.vehicle</field>
             <field name="model">res.partner</field>
@@ -25,6 +24,5 @@
                 </page>
             </field>
         </record>
-
     </data>
 </odoo>

@@ -17,7 +17,7 @@
         'views/sale_order_report.xml',
         'views/res_config_view.xml',
         'views/product_category.xml',
-        'views/delivery_vehicle.xml',
+        # 'views/delivery_vehicle.xml',
         'views/sale_contract.xml',
         'views/sale_return.xml',
         'reports/sale_net_report.xml',
