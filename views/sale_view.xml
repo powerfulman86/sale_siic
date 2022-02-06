@@ -143,7 +143,7 @@
                            filter_domain="[('order_line.product_id', 'ilike', self)]"/>
 
                     <filter string="On Delivery" domain="[('state', '=', 'ondelivery')]" name="sale_orders_on_delivery"/>
-                    <filter string="Closed" domain="[('state', '=', close)]" name="sale_orders_Closed"/>
+                    <filter string="Closed" domain="[('state', '=', 'close')]" name="sale_orders_Closed"/>
                     <group expand="0" string="Group By">
                         <filter string="Salesperson" name="salesperson" domain="[]" context="{'group_by': 'user_id'}"/>
                         <filter name="customer" string="Customer" domain="[]" context="{'group_by': 'partner_id'}"/>
