@@ -138,13 +138,15 @@ class SaleOrder(models.Model):
     def action_confirm(self):
         if not self.user_has_groups('sales_team.group_sale_manager'):
             return
-        date = self.date_order
-        if len(self.order_line.ids) == 0:
-            raise ValidationError(_('You Must Add Products Data.'))
 
-        res = super(SaleOrder, self).action_confirm()
-        self.date_order = date
-        return res
+        for rec in self:
+            date = rec.date_order
+            if len(rec.order_line.ids) == 0:
+                raise ValidationError(_('You Must Add Products Data.'))
+
+            res = super(SaleOrder, rec).action_confirm()
+            rec.date_order = date
+            return res
 
 
 class SaleOrderLine(models.Model):
