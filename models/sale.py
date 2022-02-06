@@ -32,8 +32,10 @@ class SaleOrder(models.Model):
                                      default='percent')
     discount_rate = fields.Float('Discount Rate', digits=dp.get_precision('Account'),
                                  readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]})
-    discount_extra_value = fields.Integer(string="Discount Extra", digits=dp.get_precision('Account'), )
-    discount_commercial_value = fields.Integer(string="Discount Commercial", digits=dp.get_precision('Account'))
+    discount_extra_value = fields.Integer(string="Discount Extra", digits=dp.get_precision('Account'), readonly=True,
+                                          states={'draft': [('readonly', False)]})
+    discount_commercial_value = fields.Integer(string="Discount Commercial", digits=dp.get_precision('Account'),
+                                               readonly=True, states={'draft': [('readonly', False)]})
 
     amount_untaxed = fields.Monetary(string='Untaxed Amount', store=True, readonly=True, compute='_amount_all',
                                      track_visibility='always')
@@ -64,7 +66,7 @@ class SaleOrder(models.Model):
                                        domain="[('delivery_company','=',True)]", readonly=True,
                                        states={'ondelivery': [('readonly', False)]})
 
-    delivery_date = fields.Datetime('Delivery Date', states={'ondelivery': [('readonly', False)]},
+    delivery_date = fields.Datetime('Delivered Date', states={'ondelivery': [('readonly', False)]},
                                     copy=False, readonly=True, )
     delivery_receipt_number = fields.Char(string="Delivery Number", readonly=True,
                                           states={'draft': [('readonly', False)]})
@@ -86,6 +88,9 @@ class SaleOrder(models.Model):
         'stock.warehouse', string='Warehouse',
         required=True, readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, )
 
+    order_source = fields.Selection(string="Order Source", selection=[('default', 'Default'), ('sugar', 'Sugar'), ],
+                                    required=False, default='default')
+
     def action_ondelivery(self):
         if not self.user_has_groups('sales_team.group_sale_manager'):
             return
@@ -94,6 +99,10 @@ class SaleOrder(models.Model):
         self.state = 'ondelivery'
 
     def action_close(self):
+        if self.order_source == 'sugar':
+            if not (self.delivery_date or self.delivery_voucher or self.delivery_company):
+                raise ValidationError(_("Delivery Data Must Be Completed Before Close !"))
+            return
         self.state = 'close'
 
     @api.onchange('discount_type', 'discount_rate', 'order_line')
