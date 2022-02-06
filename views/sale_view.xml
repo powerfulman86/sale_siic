@@ -11,6 +11,16 @@
             <field name="code">action = records.action_confirm()</field>
         </record>
 
+        <!--approve ondelivery-->
+        <record id="ir_actions_server_sale_order_ondelivery" model="ir.actions.server">
+            <field name="name">On Delivery</field>
+            <field name="model_id" ref="model_sale_order"/>
+            <field name="binding_model_id" ref="model_sale_order"/>
+            <field name="binding_view_types">list</field>
+            <field name="state">code</field>
+            <field name="code">action = records.action_ondelivery()</field>
+        </record>
+
         <!--Discount Views-->
         <record id="discount_sale_view_form" model="ir.ui.view">
             <field name="name">discount.sale.order.form</field>
@@ -132,7 +142,8 @@
                     <field name="order_line" string="Product"
                            filter_domain="[('order_line.product_id', 'ilike', self)]"/>
 
-                    <filter string="My Orders" domain="[('user_id', '=', uid)]" name="my_sale_orders_filter"/>
+                    <filter string="On Delivery" domain="[('state', '=', 'ondelivery')]" name="sale_orders_on_delivery"/>
+                    <filter string="Closed" domain="[('state', '=', close)]" name="sale_orders_Closed"/>
                     <group expand="0" string="Group By">
                         <filter string="Salesperson" name="salesperson" domain="[]" context="{'group_by': 'user_id'}"/>
                         <filter name="customer" string="Customer" domain="[]" context="{'group_by': 'partner_id'}"/>
@@ -190,7 +201,8 @@
             <field name="res_model">sale.order</field>
             <field name="view_mode">tree,form,calendar,graph,pivot,kanban,activity</field>
             <field name="context">{'create': False,'delete': False}</field>
-            <field name="domain">[('state', '=', 'ondelivery')]</field>
+<!--            <field name="domain">[('state', '=', 'ondelivery')]</field>-->
+            <field name="context">{'search_default_sale_orders_on_delivery': 1}</field>
             <field name="search_view_id" ref="view_sales_order_delivery_filter"/>
             <field name="view_ids"
                    eval="[(5, 0, 0),(0, 0, {'view_mode': 'tree', 'view_id': ref('orders_delivery_followup_tree')})]"/>

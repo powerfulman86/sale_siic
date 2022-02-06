@@ -87,6 +87,10 @@ class SaleOrder(models.Model):
         required=True, readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, )
 
     def action_ondelivery(self):
+        if not self.user_has_groups('sales_team.group_sale_manager'):
+            return
+        if self.state != 'done':
+            return
         self.state = 'ondelivery'
 
     def action_close(self):
@@ -132,6 +136,8 @@ class SaleOrder(models.Model):
                 raise ValidationError(_("Order Number Must Be In Digits"))
 
     def action_confirm(self):
+        if not self.user_has_groups('sales_team.group_sale_manager'):
+            return
         date = self.date_order
         if len(self.order_line.ids) == 0:
             raise ValidationError(_('You Must Add Products Data.'))
