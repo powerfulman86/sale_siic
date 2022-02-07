@@ -79,6 +79,8 @@
 
                 <xpath expr="//group[@name='sale_shipping']" position="after">
                     <group string="Delivery Follow-up">
+                        <field name="shipping_date" widget="date"/>
+                        <field name="actual_shipping_id"/>
                         <field name="delivery_date" widget="date"/>
                         <field name="delivery_receipt_number"/>
                         <field name="delivery_voucher"/>
@@ -131,8 +133,8 @@
                     <field name="name" string="Order"
                            filter_domain="['|', '|','|', ('name', 'ilike', self), ('client_order_ref', 'ilike', self), ('partner_id', 'child_of', self), ('internal_reference', 'ilike', self)]"/>
                     <field name="partner_id" operator="child_of"/>
-                    <field name="user_id"/>
-                    <field name="order_type"/>
+<!--                    <field name="user_id"/>-->
+<!--                    <field name="order_type"/>-->
                     <field name="branch_id"/>
                     <field name="warehouse_id"/>
                     <field name="delivery_date"/>
@@ -146,11 +148,11 @@
                             name="sale_orders_on_delivery"/>
                     <filter string="Closed" domain="[('state', '=', 'close')]" name="sale_orders_Closed"/>
                     <group expand="0" string="Group By">
-                        <filter string="Salesperson" name="salesperson" domain="[]" context="{'group_by': 'user_id'}"/>
+<!--                        <filter string="Salesperson" name="salesperson" domain="[]" context="{'group_by': 'user_id'}"/>-->
                         <filter name="customer" string="Customer" domain="[]" context="{'group_by': 'partner_id'}"/>
                         <filter string="Order Date" name="order_month" domain="[]"
                                 context="{'group_by': 'date_order'}"/>
-                        <filter name="order_type" string="Type" domain="[]" context="{'group_by': 'order_type'}"/>
+<!--                        <filter name="order_type" string="Type" domain="[]" context="{'group_by': 'order_type'}"/>-->
                         <filter name="branch_id" string="Branch" domain="[]" context="{'group_by': 'branch_id'}"/>
                         <filter name="group_by_warehouse" string="Warehouse" domain="[]"
                                 context="{'group_by': 'warehouse_id'}"/>
