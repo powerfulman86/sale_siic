@@ -86,7 +86,7 @@
                                 <field name="delivery_vehicle"/>
                                 <field name="delivery_truck"/>
                             </group>
-                            <group string="Delivery Company">
+                            <group string="Shipping Company">
                                 <field name="delivery_date" widget="date"/>
                                 <field name="actual_shipping_id"/>
                                 <field name="delivery_voucher"/>
