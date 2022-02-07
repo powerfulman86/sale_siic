@@ -76,22 +76,17 @@ class SaleOrder(models.Model):
                                    states={'draft': [('readonly', False)]})
     delivery_truck = fields.Char(string="Delivery Truck", readonly=True, required=False,
                                  states={'draft': [('readonly', False)]})
-    partner_shipping_id = fields.Many2one(
-        'res.partner', string='Delivery Address', readonly=True, required=True,
-        states={'draft': [('readonly', False)]},
-        domain="[('parent_id', '=', partner_id),('type','=','delivery')]", )
+    partner_shipping_id = fields.Many2one('res.partner', string='Delivery Address', readonly=True, required=True,
+                                          states={'draft': [('readonly', False)]},
+                                          domain="[('parent_id', '=', partner_id),('type','=','delivery')]", )
     shipping_date = fields.Datetime('Shipping Date', states={'ondelivery': [('readonly', False)]},
                                     copy=False, readonly=True, )
-    actual_shipping_id = fields.Many2one(
-        'res.partner', string='Actual Shipping Address', readonly=True,
-        states={'draft': [('readonly', False)]}, domain="[('type','=','delivery')]", )
-
+    actual_shipping_id = fields.Char(string="Actual Shipping", readonly=True, required=False,
+                                     states={'ondelivery': [('readonly', False)]})
     sale_contract = fields.Many2one('sale.contract', "Sale Contract", required=False, readonly=True,
                                     domain="[('state', '=', 'progress')]", states={'draft': [('readonly', False)]})
-
     warehouse_id = fields.Many2one('stock.warehouse', string='Warehouse', required=True, readonly=True,
                                    states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, )
-
     order_source = fields.Selection(string="Order Source", selection=[('default', 'Default'), ('sugar', 'Sugar'), ],
                                     required=False, default='default')
 
@@ -107,9 +102,9 @@ class SaleOrder(models.Model):
             if not (self.delivery_date or self.delivery_voucher or self.delivery_company or self.actual_shipping_id):
                 raise ValidationError(_("Delivery Data Must Be Completed Before Close !"))
 
-        if self.partner_shipping_id.parent_id != self.actual_shipping_id.parent_id:
-            # check if address changed
-            raise ValidationError(_("Delivery Address Is Differ From Original Address !"))
+        # if self.partner_shipping_id.parent_id != self.actual_shipping_id.parent_id:
+        #     # check if address changed
+        #     raise ValidationError(_("Delivery Address Is Differ From Original Address !"))
 
         self.state = 'close'
 
