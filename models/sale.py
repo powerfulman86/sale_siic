@@ -165,6 +165,12 @@ class SaleOrder(models.Model):
             rec.date_order = date
             return res
 
+    def _cron_update_sale_status(self):
+        orders = self.search[('order_source', '=', 'sugar'), ('state', '=', 'draft')]
+        for rec in orders:
+            rec.action_confirm()
+            rec.action_ondelivery()
+
 
 class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
