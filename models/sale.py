@@ -166,7 +166,7 @@ class SaleOrder(models.Model):
             return res
 
     def _cron_update_sale_status(self):
-        orders = self.search[('order_source', '=', 'sugar'), ('state', '=', 'draft')]
+        orders = self.env['sale.order'].search[('order_source', '=', 'sugar'), ('state', '=', 'draft')]
         for rec in orders:
             rec.action_confirm()
             rec.action_ondelivery()
