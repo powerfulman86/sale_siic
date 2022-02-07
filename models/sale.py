@@ -79,7 +79,7 @@ class SaleOrder(models.Model):
     partner_shipping_id = fields.Many2one('res.partner', string='Delivery Address', readonly=True, required=True,
                                           states={'draft': [('readonly', False)]},
                                           domain="[('parent_id', '=', partner_id),('type','=','delivery')]", )
-    shipping_date = fields.Datetime('Shipping Date', states={'ondelivery': [('readonly', False)]},
+    shipping_date = fields.Datetime('Shipping Date', states={'draft': [('readonly', False)]},
                                     copy=False, readonly=True, )
     actual_shipping_id = fields.Char(string="Actual Shipping", readonly=True, required=False,
                                      states={'ondelivery': [('readonly', False)]})

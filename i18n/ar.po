@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-01 09:25+0000\n"
-"PO-Revision-Date: 2022-02-01 09:25+0000\n"
+"POT-Creation-Date: 2022-02-07 11:29+0000\n"
+"PO-Revision-Date: 2022-02-07 11:29+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -70,6 +70,11 @@ msgstr ""
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return__activity_state
 msgid "Activity State"
 msgstr ""
+
+#. module: sale_siic
+#: model:ir.model.fields,field_description:sale_siic.field_sale_order__actual_shipping_id
+msgid "Actual Shipping"
+msgstr "فرع التسليم"
 
 #. module: sale_siic
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_contract_form
@@ -160,6 +165,7 @@ msgstr "اغلاق"
 
 #. module: sale_siic
 #: model:ir.model.fields.selection,name:sale_siic.selection__sale_order__state__close
+#: model_terms:ir.ui.view,arch_db:sale_siic.view_sales_order_delivery_filter
 msgid "Closed"
 msgstr "مغلق"
 
@@ -409,9 +415,19 @@ msgid "Date on which sales order is created."
 msgstr "تاريخ الانشاء"
 
 #. module: sale_siic
+#: model:ir.model.fields.selection,name:sale_siic.selection__sale_order__order_source__default
+msgid "Default"
+msgstr ""
+
+#. module: sale_siic
 #: model:ir.model.fields,help:sale_siic.field_product_category__taxes_id
 msgid "Default taxes used when selling the Category product."
 msgstr "الضرائب الافتراضيه في حالة التعامل مع فئة المنتجات"
+
+#. module: sale_siic
+#: model:ir.model.fields,field_description:sale_siic.field_sale_order__delivery_date
+msgid "Delivered Date"
+msgstr "تاريخ التسليم"
 
 #. module: sale_siic
 #: model:ir.model.fields,field_description:sale_siic.field_sale_order__partner_shipping_id
@@ -425,7 +441,12 @@ msgid "Delivery Company"
 msgstr "شركة الشحن"
 
 #. module: sale_siic
-#: model:ir.model.fields,field_description:sale_siic.field_sale_order__delivery_date
+#: code:addons/sale_siic/models/sale.py:0
+#, python-format
+msgid "Delivery Data Must Be Completed Before Close !"
+msgstr "يجب تسجيل تاريخ التسليم قبل اغلاق الامر"
+
+#. module: sale_siic
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return__commitment_date
 #: model_terms:ir.ui.view,arch_db:sale_siic.sale_return_view_form
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_sales_order_delivery_filter
@@ -858,11 +879,6 @@ msgid "My Contracts"
 msgstr "اوامر الشحن الخاصه بي"
 
 #. module: sale_siic
-#: model_terms:ir.ui.view,arch_db:sale_siic.view_sales_order_delivery_filter
-msgid "My Orders"
-msgstr "اوامر البيع الخاصه بي"
-
-#. module: sale_siic
 #: code:addons/sale_siic/models/sale_contract.py:0
 #: code:addons/sale_siic/models/sale_contract.py:0
 #: code:addons/sale_siic/models/sale_contract.py:0
@@ -947,7 +963,9 @@ msgid "Number of unread messages"
 msgstr ""
 
 #. module: sale_siic
+#: model:ir.actions.server,name:sale_siic.ir_actions_server_sale_order_ondelivery
 #: model:ir.model.fields.selection,name:sale_siic.selection__sale_order__state__ondelivery
+#: model_terms:ir.ui.view,arch_db:sale_siic.view_sales_order_delivery_filter
 msgid "On Delivery"
 msgstr "جاري التسليم"
 
@@ -1019,6 +1037,11 @@ msgstr "رقم الامر يجب ان يكون مكون من ارقام"
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return_report__name
 msgid "Order Reference"
 msgstr "الرقم المرجعي للامر"
+
+#. module: sale_siic
+#: model:ir.model.fields,field_description:sale_siic.field_sale_order__order_source
+msgid "Order Source"
+msgstr "مصدر الامر"
 
 #. module: sale_siic
 #: model:ir.model.fields,field_description:sale_siic.field_sale_contract__orders_ids
@@ -1227,24 +1250,24 @@ msgstr "الموظف السئول"
 #: model:ir.ui.menu,name:sale_siic.sales_return_root
 #: model_terms:ir.ui.view,arch_db:sale_siic.sale_return_view_form
 msgid "Return"
-msgstr ""
+msgstr "مرتجع"
 
 #. module: sale_siic
 #: model:ir.model.fields.selection,name:sale_siic.selection__sale_return_report__state__done
 msgid "Return Done"
-msgstr ""
+msgstr "المرتجع تم"
 
 #. module: sale_siic
 #: model_terms:ir.ui.view,arch_db:sale_siic.sale_return_view_tree
 msgid "Return Number"
-msgstr ""
+msgstr "رقم المرتجع"
 
 #. module: sale_siic
 #: model:ir.model.fields.selection,name:sale_siic.selection__sale_net_report__trans_type__return_order
 #: model:ir.model.fields.selection,name:sale_siic.selection__sale_return__state__return
 #: model:ir.model.fields.selection,name:sale_siic.selection__sale_return_report__state__sale
 msgid "Return Order"
-msgstr ""
+msgstr "امر الارتجاع"
 
 #. module: sale_siic
 #: model:ir.ui.menu,name:sale_siic.return_quotation_menu
@@ -1292,7 +1315,7 @@ msgstr "اعتماد خصم المبيعات"
 #. module: sale_siic
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return__sale_id
 msgid "Sale Order"
-msgstr ""
+msgstr "امر بيع"
 
 #. module: sale_siic
 #: model:ir.model.fields,field_description:sale_siic.field_account_move__sale_return_id
@@ -1310,6 +1333,13 @@ msgstr "المبيعات"
 #: model:ir.cron,cron_name:sale_siic.sale_contract_change_state
 #: model:ir.cron,name:sale_siic.sale_contract_change_state
 msgid "Sales : Sale Contract Update Status"
+msgstr ""
+
+#. module: sale_siic
+#: model:ir.actions.server,name:sale_siic.sugar_sale_change_state_ir_actions_server
+#: model:ir.cron,cron_name:sale_siic.sugar_sale_change_state
+#: model:ir.cron,name:sale_siic.sugar_sale_change_state
+msgid "Sales : Sugar Sale Update Status"
 msgstr ""
 
 #. module: sale_siic
@@ -1428,7 +1458,6 @@ msgstr "فريق المبيعات"
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return_report__user_id
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_return_product_search
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_sales_contract_filter
-#: model_terms:ir.ui.view,arch_db:sale_siic.view_sales_order_delivery_filter
 msgid "Salesperson"
 msgstr "مسئول المبيعات"
 
@@ -1459,6 +1488,11 @@ msgstr "الترتيب"
 #: model_terms:ir.ui.view,arch_db:sale_siic.sale_return_view_form
 msgid "Set to Request"
 msgstr ""
+
+#. module: sale_siic
+#: model:ir.model.fields,field_description:sale_siic.field_sale_order__shipping_date
+msgid "Shipping Date"
+msgstr "تاريخ الشحن"
 
 #. module: sale_siic
 #: model:ir.model.fields,field_description:sale_siic.field_sale_contract__source_id
@@ -1499,6 +1533,11 @@ msgstr ""
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return_line__price_subtotal
 msgid "Subtotal"
 msgstr "اجمالي فرعي"
+
+#. module: sale_siic
+#: model:ir.model.fields.selection,name:sale_siic.selection__sale_order__order_source__sugar
+msgid "Sugar"
+msgstr "سكر"
 
 #. module: sale_siic
 #: model_terms:ir.ui.view,arch_db:sale_siic.orders_delivery_followup_tree
@@ -1645,7 +1684,6 @@ msgstr ""
 
 #. module: sale_siic
 #: model:ir.model.fields,field_description:sale_siic.field_sale_order__order_type
-#: model_terms:ir.ui.view,arch_db:sale_siic.view_sales_order_delivery_filter
 msgid "Type"
 msgstr "نوع الامر"
 
@@ -1736,7 +1774,6 @@ msgstr "رقم السياره يجب ان يكون موحد على مستوى ا
 #. module: sale_siic
 #: model:ir.model.fields,field_description:sale_siic.field_res_partner__vehicle_ids
 #: model:ir.model.fields,field_description:sale_siic.field_res_users__vehicle_ids
-#: model_terms:ir.ui.view,arch_db:sale_siic.view_partner_vehicle
 msgid "Vehicles"
 msgstr "السيارات"
 
@@ -1772,6 +1809,12 @@ msgstr ""
 #: model:ir.model.fields,help:sale_siic.field_sale_return__website_message_ids
 msgid "Website communication history"
 msgstr ""
+
+#. module: sale_siic
+#: code:addons/sale_siic/models/sale.py:0
+#, python-format
+msgid "You Must Add Products Data."
+msgstr "يجب اضافة بيانات الامر"
 
 #. module: sale_siic
 #: code:addons/sale_siic/models/sale_return.py:0
