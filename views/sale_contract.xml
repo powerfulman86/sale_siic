@@ -7,6 +7,9 @@
             <field name="arch" type="xml">
                 <form string="Sales Contract" class="o_sale_order">
                     <header>
+                        <button name="create_order" states="progress" type="object" string="Create Order"
+                                class="btn-primary"/>
+                        <button name="action_draft" string="Set Draft" type="object" class="btn-primary"/>
                         <button name="action_approve" string="Approve" type="object" states="draft"/>
                         <button name="action_progress" string="In Progress" type="object" states="approved"/>
                         <button name="action_done" states="progress" type="object" string="Done"/>
@@ -33,6 +36,7 @@
                                 <field name="partner_id" widget="res_partner_many2one"
                                        context="{'res_partner_search_mode': 'customer', 'show_address': 1, 'show_vat': True}"
                                        options='{"always_reload": True}'/>
+                                <field name="warehouse_id" options="{'no_create': True}"/>
                             </group>
                             <group>
                                 <field name="date_contract"/>
@@ -205,6 +209,7 @@
                 <kanban class="o_kanban_mobile">
                     <field name="name"/>
                     <field name="partner_id"/>
+                    <field name="warehouse_id"/>
                     <field name="amount_total"/>
                     <field name="date_contract"/>
                     <field name="state"/>
@@ -224,6 +229,16 @@
                                         <field name="amount_total" widget="monetary"/>
                                     </strong>
                                 </div>
+
+                                <div class="row text-muted">
+                                    <div class="col-8">
+                                        <span>
+                                            <t t-esc="record.warehouse_id.value"/>
+                                        </span>
+                                    </div>
+                                </div>
+
+
                                 <div class="o_kanban_record_bottom">
                                     <div class="oe_kanban_bottom_left text-muted">
                                         <span>
@@ -270,7 +285,8 @@
                     <field name="name" string="Contract Number" readonly="1"/>
                     <field name="date_contract"/>
                     <field name="internal_reference"/>
-                    <field name="partner_id" readonly="1"/>
+                    <field name="partner_id"/>
+                    <field name="warehouse_id"/>
                     <field name="user_id" optional="show"/>
                     <field name="team_id" optional="hide"/>
                     <field name="orders_count" optional="show"/>

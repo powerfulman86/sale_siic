@@ -5,7 +5,7 @@
     'description': """ Sales SIIC Customization  """,
     'author': "SIIC",
     'category': 'Sales',
-    'depends': ['base', 'portal', 'sale', 'account', 'multi_branch'],
+    'depends': ['base', 'portal', 'sale', 'account', 'multi_branch', 'delivery'],
     'data': [
         # 'security/security.xml',
         'security/ir.model.access.csv',

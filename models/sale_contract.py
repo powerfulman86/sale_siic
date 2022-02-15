@@ -5,6 +5,7 @@ import odoo.addons.decimal_precision as dp
 from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tools.misc import formatLang, get_lang
 from odoo.osv import expression
+from datetime import date, datetime, timedelta
 
 
 class SaleContract(models.Model):
@@ -65,6 +66,8 @@ class SaleContract(models.Model):
                                  help='The rate of the currency to the currency of rate 1 applicable at the date of the order')
     company_id = fields.Many2one('res.company', 'Company', required=True, index=True,
                                  default=lambda self: self.env.company)
+    warehouse_id = fields.Many2one('stock.warehouse', string='Warehouse', required=True,
+                                   states={'draft': [('readonly', False)]})
     team_id = fields.Many2one(
         'crm.team', 'Sales Team',
         change_default=True, default=_get_default_team, check_company=True,  # Unrequired company
@@ -165,7 +168,8 @@ class SaleContract(models.Model):
             'res_model': 'sale.order',
             'type': 'ir.actions.act_window',
             'view_mode': 'tree,form,pivot',
-            'context': {"default_sale_contract": self.id, },
+            'domain': [('sale_contract', '=', self.id)],
+            # 'context': {"default_sale_contract": self.id, },
         }
 
     def action_approve(self):
@@ -185,6 +189,32 @@ class SaleContract(models.Model):
 
     def action_cancel(self):
         self.write({'state': 'cancel'})
+
+    def action_draft(self):
+        self.write({'state': 'draft'})
+
+    def create_order(self):
+        sale_id = self.env['sale.order'].create({
+            'partner_id': self.partner_id.id,
+            'internal_reference': 1234,
+            'branch_id': 21,
+            'date_order': date.today(),
+            'origin': self.name,
+            'sale_contract': self.id,
+            'warehouse_id': self.warehouse_id.id,
+            'order_type': 'in',
+            'pricelist_id': self.pricelist_id.id,
+        })
+
+        for line in self.contract_line:
+            self.env['sale.order.line'].create({
+                'order_id': sale_id.id,
+                'product_id': line.product_id.id,
+                'name': line.product_id.name,
+                'product_uom': line.product_uom.id,
+                'price_unit': line.price_unit,
+                'product_uom_qty': line.product_uom_qty,
+            })
 
     def _cron_update_contract_status(self):
         # 1st update related contract line

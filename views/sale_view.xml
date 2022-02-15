@@ -192,7 +192,9 @@
                     <field name="delivery_date"/>
                     <field name="delivery_company"/>
                     <field name="delivery_vehicle"/>
+                    <field name="delivery_truck"/>
                     <field name="delivery_receipt_number"/>
+                    <field name="delivery_voucher"/>
                     <field name="user_id" optional="hide"/>
                     <field name="company_id" groups="base.group_multi_company" optional="show" readonly="1"/>
                     <field name="amount_untaxed" sum="Total Tax Excluded" widget="monetary" optional="hide"/>

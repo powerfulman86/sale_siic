@@ -8,5 +8,5 @@ from . import delivery_vehicle
 from . import sale_contract
 from . import sale_return
 from . import stock
-
+from . import delivery_grid
 
