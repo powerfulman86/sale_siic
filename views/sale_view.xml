@@ -96,6 +96,14 @@
                     </page>
                 </xpath>
 
+                <xpath expr="//page/field[@name='order_line']/form/group/group/field[@name='price_unit']" position="before">
+                    <field name="weight_shipping" attrs="{'invisible': [('product_id', '=', False)]}"/>
+                </xpath>
+
+                <xpath expr="//page/field[@name='order_line']/tree/field[@name='price_unit']" position="before">
+                    <field name="weight_shipping" attrs="{'invisible': [('product_id', '=', False)]}" optional="show"/>
+                </xpath>
+
                 <xpath expr="//group[@name='note_group']" position="replace">
                     <group name="note_group" col="6">
                         <group name="discount" colspan="2">

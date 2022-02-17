@@ -176,6 +176,13 @@ class SaleOrderLine(models.Model):
     contract_line_id = fields.Many2one('sale.contract.line', 'Contract details Lines', ondelete='set null', index=True,
                                        copy=False)
 
+    weight_shipping = fields.Float('Ship Weight', digits='Stock Weight', )
+
+    @api.onchange('product_id', 'product_uom_qty')
+    def _calculate_ship_weight(self):
+        qty = self.product_uom._compute_quantity(self.product_uom_qty, self.product_id.uom_id)
+        self.weight_shipping = (self.product_id.weight or 0.0) * qty
+
     def _copy_data_extend_business_fields(self, values):
         # OVERRIDE to copy the 'contract_line_id' field as well.
         super(SaleOrderLine, self)._copy_data_extend_business_fields(values)
