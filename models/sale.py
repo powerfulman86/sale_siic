@@ -87,7 +87,8 @@ class SaleOrder(models.Model):
                                     domain="[('state', '=', 'progress')]", states={'draft': [('readonly', False)]})
     warehouse_id = fields.Many2one('stock.warehouse', string='Warehouse', required=True, readonly=True,
                                    states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, )
-    order_source = fields.Selection(string="Order Source", selection=[('default', 'Default'), ('sugar', 'Sugar'), ],
+    order_source = fields.Selection(string="Order Source",
+                                    selection=[('default', 'Default'), ('sugar', 'Sugar'), ('wood', 'Wood'), ],
                                     required=False, default='default')
 
     def action_ondelivery(self):

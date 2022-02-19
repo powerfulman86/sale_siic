@@ -75,6 +75,9 @@ class SaleContract(models.Model):
 
     orders_ids = fields.One2many('sale.order', 'sale_contract', string='Orders')
     orders_count = fields.Integer(string='Orders Count', compute='_compute_order_ids')
+    contract_source = fields.Selection(string="Contract Source",
+                                       selection=[('default', 'Default'), ('sugar', 'Sugar'), ('wood', 'Wood'), ],
+                                       required=False, default='default')
 
     _sql_constraints = [
         ("contract_reference_uniq", "unique (internal_reference)", "Contract Number already exists !"),

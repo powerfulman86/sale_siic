@@ -38,16 +38,11 @@ class ProviderGrid(models.Model):
                 total_delivery += line.price_total
             if not line.product_id or line.is_delivery:
                 continue
-            if line.weight_shipping:
-                qty = line.product_uom._compute_quantity(line.product_uom_qty, line.product_id.uom_id)
-                weight += (line.weight_shipping or 0.0)
-                volume += (line.product_id.volume or 0.0) * qty
-                quantity += qty
-            else:
-                qty = line.product_uom._compute_quantity(line.product_uom_qty, line.product_id.uom_id)
-                weight += (line.product_id.weight or 0.0) * qty
-                volume += (line.product_id.volume or 0.0) * qty
-                quantity += qty
+
+            qty = line.product_uom._compute_quantity(line.product_uom_qty, line.product_id.uom_id)
+            volume += (line.product_id.volume or 0.0) * qty
+            quantity += qty
+            weight += (line.weight_shipping or 0.0)
         total = (order.amount_total or 0.0) - total_delivery
 
         total = order.currency_id._convert(

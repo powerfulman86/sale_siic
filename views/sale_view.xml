@@ -62,6 +62,7 @@
                 </xpath>
 
                 <xpath expr="//field[@name='date_order']" position="after">
+                    <field name="order_source"/>
                     <field name="sale_contract" options="{'no_create': True}"/>
                 </xpath>
 
