@@ -90,6 +90,9 @@ class SaleOrder(models.Model):
     order_source = fields.Selection(string="Order Source",
                                     selection=[('default', 'Default'), ('sugar', 'Sugar'), ('wood', 'Wood'), ],
                                     required=False, default='default')
+    shipping_type = fields.Selection(string="Shipping Type", readonly=True, states={'draft': [('readonly', False)]},
+                                     selection=[('bycompany', 'By Company'), ('byclient', 'By Client'), ],
+                                     required=False, default='bycompany')
 
     def action_ondelivery(self):
         if not self.user_has_groups('sales_team.group_sale_manager'):
@@ -99,7 +102,7 @@ class SaleOrder(models.Model):
         self.state = 'ondelivery'
 
     def action_close(self):
-        if self.order_source == 'sugar':
+        if self.shipping_type == 'bycompany':
             if not (self.delivery_date or self.delivery_voucher or self.delivery_company or self.actual_shipping_id):
                 raise ValidationError(_("Delivery Data Must Be Completed Before Close !"))
 

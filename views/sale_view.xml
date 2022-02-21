@@ -21,6 +21,66 @@
             <field name="code">action = records.action_ondelivery()</field>
         </record>
 
+        <!--custom sales tree views-->
+        <record id="siic_sale_view_tree" model="ir.ui.view">
+            <field name="name">siic.sale.order.tree</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_quotation_tree_with_onboarding"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='create_date']" position="attributes">
+                    <attribute name="optional">hide</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='expected_date']" position="attributes">
+                    <attribute name="optional">hide</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='name']" position="attributes">
+                    <attribute name="optional">hide</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='commitment_date']" position="attributes">
+                    <attribute name="optional">hide</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='partner_id']" position="before">
+                    <field name="internal_reference"/>
+                    <field name="date_order"/>
+                    <field name="order_type"/>
+                    <field name="branch_id"/>
+                    <field name="warehouse_id"/>
+                </xpath>
+
+            </field>
+        </record>
+
+        <record id="siic_sale_view_tree_customer" model="ir.ui.view">
+            <field name="name">siic.sale.order.tree.customer</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_tree"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='expected_date']" position="attributes">
+                    <attribute name="optional">hide</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='name']" position="attributes">
+                    <attribute name="optional">hide</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='commitment_date']" position="attributes">
+                    <attribute name="optional">hide</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='partner_id']" position="before">
+                    <field name="internal_reference"/>
+                    <field name="order_type"/>
+                    <field name="branch_id"/>
+                    <field name="warehouse_id"/>
+                </xpath>
+            </field>
+        </record>
+
         <!--Discount Views-->
         <record id="discount_sale_view_form" model="ir.ui.view">
             <field name="name">discount.sale.order.form</field>
@@ -81,6 +141,11 @@
                 <xpath expr="//notebook[last()]" position="inside">
                     <page string="Delivery Follow-up">
                         <group>
+                            <group>
+                                <field name="shipping_type"/>
+                            </group>
+                        </group>
+                        <group>
                             <group string="Branch Shipping">
                                 <field name="shipping_date" widget="date"/>
                                 <field name="delivery_receipt_number"/>
@@ -97,7 +162,8 @@
                     </page>
                 </xpath>
 
-                <xpath expr="//page/field[@name='order_line']/form/group/group/field[@name='price_unit']" position="before">
+                <xpath expr="//page/field[@name='order_line']/form/group/group/field[@name='price_unit']"
+                       position="before">
                     <field name="weight_shipping" attrs="{'invisible': [('product_id', '=', False)]}"/>
                 </xpath>
 
