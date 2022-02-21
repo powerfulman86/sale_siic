@@ -91,7 +91,8 @@ class SaleOrder(models.Model):
                                     selection=[('default', 'Default'), ('sugar', 'Sugar'), ('wood', 'Wood'), ],
                                     required=False, default='default')
     shipping_type = fields.Selection(string="Shipping Type", readonly=True, states={'draft': [('readonly', False)]},
-                                     selection=[('bycompany', 'By Company'), ('byclient', 'By Client'), ],
+                                     selection=[('bycompany', 'By Company'), ('byclient', 'By Client'),
+                                                ('noshipping', 'No Shipping'), ],
                                      required=False, default='bycompany')
 
     def action_ondelivery(self):
