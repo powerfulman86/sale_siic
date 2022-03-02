@@ -21,6 +21,7 @@
         'views/sale_contract.xml',
         'views/sale_return.xml',
         'reports/sale_net_report.xml',
+        'reports/sale_report.xml',
         'reports/sale_return_report.xml',
     ],
     'images': ['static/description/icon.png'],

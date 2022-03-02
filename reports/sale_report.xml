@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_sale_report_siic_search" model="ir.ui.view">
+            <field name="name">report.sale.order.siic.search</field>
+            <field name="inherit_id" ref="sale.view_order_product_search"/>
+            <field name="model">sale.report</field>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='user_id']" position="before">
+                    <separator/>
+                    <filter name="Sugar" string="Sugar Orders" domain="[('order_source','=','sugar')]"/>
+                    <filter name="wood" string="Wood Orders" domain="[('order_source','=','wood')]"/>
+                    <separator/>
+                </xpath>
+
+                <xpath expr="//field[@name='user_id']" position="after">
+                    <field name="order_type"/>
+                    <field name="branch_id"/>
+                    <field name="delivery_company"/>
+                    <field name="sale_contract"/>
+                    <field name="order_source"/>
+                    <field name="shipping_type"/>
+                </xpath>
+
+                <xpath expr="//filter[@name='status']" position="before">
+                    <filter string="Branch" name="branch" context="{'group_by': 'branch_id'}"/>
+                    <filter string="Order Type" name="order_type" context="{'group_by': 'order_type'}"/>
+                    <filter string="Delivery Company" name="delivery_company"
+                            context="{'group_by': 'delivery_company'}"/>
+                    <filter string="Sale Contract" name="sale_contract" context="{'group_by': 'sale_contract'}"/>
+                    <filter string="Order Source" name="order_source" context="{'group_by': 'order_source'}"/>
+                    <filter string="Ship Type" name="shipping_type" context="{'group_by': 'shipping_type'}"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

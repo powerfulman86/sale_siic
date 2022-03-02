@@ -16,6 +16,12 @@ class SaleContract(models.Model):
     _order = 'date_contract desc, id desc'
 
     @api.model
+    def _default_warehouse_id(self):
+        company = self.env.company.id
+        warehouse_ids = self.env['stock.warehouse'].search([('company_id', '=', company)], limit=1)
+        return warehouse_ids
+
+    @api.model
     def _get_default_team(self):
         return self.env['crm.team']._get_default_team_id()
 
@@ -67,7 +73,7 @@ class SaleContract(models.Model):
     company_id = fields.Many2one('res.company', 'Company', required=True, index=True,
                                  default=lambda self: self.env.company)
     warehouse_id = fields.Many2one('stock.warehouse', string='Warehouse', required=True,
-                                   states={'draft': [('readonly', False)]})
+                                   states={'draft': [('readonly', False)]}, default=_default_warehouse_id, )
     team_id = fields.Many2one(
         'crm.team', 'Sales Team',
         change_default=True, default=_get_default_team, check_company=True,  # Unrequired company
@@ -75,7 +81,7 @@ class SaleContract(models.Model):
 
     orders_ids = fields.One2many('sale.order', 'sale_contract', string='Orders')
     orders_count = fields.Integer(string='Orders Count', compute='_compute_order_ids')
-    contract_source = fields.Selection(string="Contract Source",
+    contract_source = fields.Selection(string="Contract Source", readonly=True, states={'draft': [('readonly', False)]},
                                        selection=[('default', 'Default'), ('sugar', 'Sugar'), ('wood', 'Wood'), ],
                                        required=False, default='default')
 
@@ -150,12 +156,24 @@ class SaleContract(models.Model):
         if user_id and self.user_id.id != user_id:
             values['user_id'] = user_id
 
+        self.update(values)
+
     @api.model
     def create(self, vals):
         if vals.get('name', _('New')) == _('New'):
             vals['name'] = self.env['ir.sequence'].next_by_code('sale.contract') or _('New')
-        result = super(SaleContract, self).create(vals)
-        return result
+
+            # Makes sure 'pricelist_id' are defined
+            if any(f not in vals for f in ['pricelist_id']):
+                partner = self.env['res.partner'].browse(vals.get('partner_id'))
+                vals['pricelist_id'] = vals.setdefault('pricelist_id',
+                                                       partner.property_product_pricelist and partner.property_product_pricelist.id)
+
+        if 'warehouse_id' not in vals and 'company_id' in vals and vals.get('company_id') != self.env.company.id:
+            vals['warehouse_id'] = self.env['stock.warehouse'].search([('company_id', '=', vals.get('company_id'))],
+                                                                      limit=1).id
+
+        return super(SaleContract, self).create(vals)
 
     def unlink(self):
         for order in self:
@@ -205,6 +223,7 @@ class SaleContract(models.Model):
             'origin': self.name,
             'sale_contract': self.id,
             'warehouse_id': self.warehouse_id.id,
+            'order_source': self.contract_source,
             'order_type': 'in',
             'pricelist_id': self.pricelist_id.id,
         })
@@ -353,6 +372,13 @@ class SaleContractLine(models.Model):
         """
         return product.get_product_multiline_description_sale()
 
+    def _compute_tax_id(self):
+        for line in self:
+            fpos = line.contract_id.partner_id.property_account_position_id
+            # If company_id is set in the order, always filter taxes by the company
+            taxes = line.product_id.taxes_id.filtered(lambda r: r.company_id == line.contract_id.company_id)
+            line.tax_id = fpos.map_tax(taxes, line.product_id, line.contract_id.partner_shipping_id) if fpos else taxes
+
     @api.onchange('product_id')
     def product_id_change(self):
         if not self.product_id:
@@ -371,5 +397,7 @@ class SaleContractLine(models.Model):
             uom=self.product_uom.id
         )
         vals.update(name=self.get_sale_order_line_multiline_description_sale(product))
+
+        self._compute_tax_id()
 
         self.update(vals)
