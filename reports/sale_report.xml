@@ -11,6 +11,10 @@
                     <filter name="Sugar" string="Sugar Orders" domain="[('order_source','=','sugar')]"/>
                     <filter name="wood" string="Wood Orders" domain="[('order_source','=','wood')]"/>
                     <separator/>
+                    <filter name="No Shipping" string="No Shipping" domain="[('shipping_type','=','noshipping')]"/>
+                    <filter name="Company Shipping" string="Company Shipping" domain="[('shipping_type','=','bycompany')]"/>
+                    <filter name="Client Shipping" string="Client Shipping" domain="[('shipping_type','=','byclient')]"/>
+                    <separator/>
                 </xpath>
 
                 <xpath expr="//field[@name='user_id']" position="after">
