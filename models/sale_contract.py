@@ -238,6 +238,15 @@ class SaleContract(models.Model):
                 'product_uom_qty': line.product_uom_qty,
             })
 
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Orders'),
+            'res_model': 'sale.order',
+            'view_mode': 'tree,form',
+            'domain': [('id', '=', sale_id.id)],
+            'context': {'create': False},
+        }
+
     def _cron_update_contract_status(self):
         # 1st update related contract line
         sales_check = self.env['sale.order.line'].search(
