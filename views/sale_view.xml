@@ -142,15 +142,18 @@
                     <page string="Delivery Follow-up">
                         <group>
                             <group>
-                                <field name="shipping_type"/>
+                                <field name="shipping_type"
+                                       attrs="{'readonly': [('is_authority_modify', '=', False)]}"/>
                             </group>
                         </group>
                         <group>
                             <group string="Branch Shipping">
                                 <field name="shipping_date" widget="date"/>
-                                <field name="delivery_receipt_number"/>
+                                <field name="delivery_receipt_number"
+                                       attrs="{'readonly': [('is_authority_modify', '=', False)]}"/>
                                 <field name="delivery_vehicle"/>
                                 <field name="delivery_truck"/>
+                                <field name="is_authority_modify" invisible="1"/>
                             </group>
                             <group string="Shipping Company">
                                 <field name="delivery_date" widget="date"/>

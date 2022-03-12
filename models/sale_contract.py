@@ -84,6 +84,10 @@ class SaleContract(models.Model):
     contract_source = fields.Selection(string="Contract Source", readonly=True, states={'draft': [('readonly', False)]},
                                        selection=[('default', 'Default'), ('sugar', 'Sugar'), ('wood', 'Wood'), ],
                                        required=False, default='default')
+    shipping_type = fields.Selection(string="Shipping Type",readonly=True, states={'draft': [('readonly', False)]},
+                                     selection=[('bycompany', 'By Company'), ('byclient', 'By Client'),
+                                                ('noshipping', 'No Shipping'), ],
+                                     required=False, default='bycompany')
 
     _sql_constraints = [
         ("contract_reference_uniq", "unique (internal_reference)", "Contract Number already exists !"),
@@ -146,6 +150,7 @@ class SaleContract(models.Model):
     @api.onchange('partner_id')
     def onchange_partner_id(self):
         partner_user = self.partner_id.user_id or self.partner_id.commercial_partner_id.user_id
+        partner_shipping = self.partner_id.shipping_type
         values = {
             'pricelist_id': self.partner_id.property_product_pricelist and self.partner_id.property_product_pricelist.id or False,
             'payment_term_id': self.partner_id.property_payment_term_id and self.partner_id.property_payment_term_id.id or False,
@@ -155,7 +160,8 @@ class SaleContract(models.Model):
             user_id = user_id or self.env.uid
         if user_id and self.user_id.id != user_id:
             values['user_id'] = user_id
-
+        if partner_shipping:
+            values['shipping_type'] = partner_shipping
         self.update(values)
 
     @api.model
@@ -222,6 +228,7 @@ class SaleContract(models.Model):
             'date_order': date.today(),
             'origin': self.name,
             'sale_contract': self.id,
+            'shipping_type': self.shipping_type,
             'warehouse_id': self.warehouse_id.id,
             'order_source': self.contract_source,
             'order_type': 'in',

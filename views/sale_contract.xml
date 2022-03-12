@@ -37,6 +37,7 @@
                                        context="{'res_partner_search_mode': 'customer', 'show_address': 1, 'show_vat': True}"
                                        options='{"always_reload": True}'/>
                                 <field name="warehouse_id" options="{'no_create': True}"/>
+                                <field name="shipping_type"/>
                             </group>
                             <group>
                                 <field name="date_contract"/>
@@ -211,6 +212,7 @@
                     <field name="name"/>
                     <field name="partner_id"/>
                     <field name="warehouse_id"/>
+                    <field name="shipping_type"/>
                     <field name="amount_total"/>
                     <field name="date_contract"/>
                     <field name="state"/>
@@ -289,6 +291,7 @@
                     <field name="internal_reference"/>
                     <field name="partner_id"/>
                     <field name="warehouse_id"/>
+                    <field name="shipping_type"/>
                     <field name="user_id" optional="show"/>
                     <field name="team_id" optional="hide"/>
                     <field name="orders_count" optional="show"/>

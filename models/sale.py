@@ -49,7 +49,7 @@ class SaleOrder(models.Model):
                                      states={'draft': [('readonly', False)]})
     order_type = fields.Selection(string="Type", selection=[('in', 'Local'), ('out', 'Foreign'), ], required=True,
                                   readonly=True, tracking=1, default='in', states={'draft': [('readonly', False)]})
-    branch_id = fields.Many2one(comodel_name="res.branch", string="Branch", required=True, readonly=True,
+    branch_id = fields.Many2one(comodel_name="res.branch", string="Branch", required=True, readonly=True, tracking=1,
                                 index=True, help='This is branch to set', states={'draft': [('readonly', False)]})
 
     state = fields.Selection([
@@ -64,12 +64,11 @@ class SaleOrder(models.Model):
 
     delivery_company = fields.Many2one(comodel_name="res.partner", string="Delivery Company", required=False,
                                        domain="[('delivery_company','=',True)]", readonly=True,
-                                       states={'ondelivery': [('readonly', False)]})
+                                       states={'ondelivery': [('readonly', False)]}, tracking=1, )
 
     delivery_date = fields.Datetime('Delivered Date', states={'ondelivery': [('readonly', False)]},
                                     copy=False, readonly=True, )
-    delivery_receipt_number = fields.Char(string="Delivery Number", readonly=True,
-                                          states={'draft': [('readonly', False)]})
+    delivery_receipt_number = fields.Char(string="Delivery Number", tracking=3, )
     delivery_voucher = fields.Char(string="Delivery Voucher", readonly=True,
                                    states={'ondelivery': [('readonly', False)]})
     delivery_vehicle = fields.Char(string="Delivery Vehicle", readonly=True, required=False,
@@ -83,17 +82,26 @@ class SaleOrder(models.Model):
                                     copy=False, readonly=True, )
     actual_shipping_id = fields.Char(string="Actual Shipping", readonly=True, required=False,
                                      states={'ondelivery': [('readonly', False)]})
-    sale_contract = fields.Many2one('sale.contract', "Sale Contract", required=False, readonly=True,
+    sale_contract = fields.Many2one('sale.contract', "Sale Contract", required=False, readonly=True, tracking=3,
                                     domain="[('state', '=', 'progress')]", states={'draft': [('readonly', False)]})
     warehouse_id = fields.Many2one('stock.warehouse', string='Warehouse', required=True, readonly=True,
                                    states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, )
     order_source = fields.Selection(string="Order Source",
                                     selection=[('default', 'Default'), ('sugar', 'Sugar'), ('wood', 'Wood'), ],
-                                    required=False, default='default')
-    shipping_type = fields.Selection(string="Shipping Type", readonly=True, states={'draft': [('readonly', False)]},
+                                    required=False, default='default', readonly=True,
+                                    states={'draft': [('readonly', False)]})
+    shipping_type = fields.Selection(string="Shipping Type",
                                      selection=[('bycompany', 'By Company'), ('byclient', 'By Client'),
                                                 ('noshipping', 'No Shipping'), ],
                                      required=False, default='bycompany')
+    is_authority_modify = fields.Boolean(string="able to modify", default=False, compute='_check_modify_able', )
+
+    def _check_modify_able(self):
+        if self.state == 'draft' or (
+                self.env.user.has_group('sales_team.group_sale_manager') and self.state != 'close'):
+            self.is_authority_modify = True
+        else:
+            self.is_authority_modify = False
 
     def action_ondelivery(self):
         if not self.user_has_groups('sales_team.group_sale_manager'):
