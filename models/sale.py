@@ -81,7 +81,7 @@ class SaleOrder(models.Model):
     shipping_date = fields.Datetime('Shipping Date', states={'draft': [('readonly', False)]},
                                     copy=False, readonly=True, )
     actual_shipping_id = fields.Many2one('res.partner', string="Actual Shipping", readonly=True,
-                                         states={'draft': [('readonly', False)]},
+                                         states={'ondelivery': [('readonly', False)]},
                                          domain="[('parent_id', '=', partner_id),('type','=','delivery')]", )
     sale_contract = fields.Many2one('sale.contract', "Sale Contract", required=False, readonly=True, tracking=3,
                                     domain="[('state', '=', 'progress')]", states={'draft': [('readonly', False)]})
