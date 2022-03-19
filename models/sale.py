@@ -97,6 +97,8 @@ class SaleOrder(models.Model):
                                      required=False, default='bycompany')
     is_authority_modify = fields.Boolean(string="able to modify", default=False, compute='_check_modify_able', )
 
+    delivery_user_id = fields.Many2one('res.users', 'Delivery User', readonly=True, )
+
     def _check_modify_able(self):
         if self.state == 'draft' or (
                 self.env.user.has_group('sales_team.group_sale_manager') and self.state != 'close'):
@@ -119,7 +121,7 @@ class SaleOrder(models.Model):
         # if self.partner_shipping_id.parent_id != self.actual_shipping_id.parent_id:
         #     # check if address changed
         #     raise ValidationError(_("Delivery Address Is Differ From Original Address !"))
-
+        self.delivery_user_id = self.env.user
         self.state = 'close'
 
     @api.onchange('discount_type', 'discount_rate', 'order_line')

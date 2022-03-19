@@ -160,6 +160,7 @@
                                 <field name="actual_shipping_id"/>
                                 <field name="delivery_voucher"/>
                                 <field name="delivery_company" options="{'no_create': True}"/>
+                                <field name="delivery_user_id"/>
                             </group>
                         </group>
                     </page>
