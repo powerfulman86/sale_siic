@@ -206,6 +206,26 @@
                         <div class="oe_clear"/>
                     </group>
                 </xpath>
+
+                <xpath expr="//field[@name='note']" position="before">
+                    <field name="tax_line_ids" force_save="1" nolabel="1">
+                        <tree editable="bottom" string="Taxes">
+                            <field name="name" />
+                            <field name="account_id" />
+                            <field name="account_analytic_id" domain="[('company_id', '=', parent.company_id)]"
+                                groups="analytic.group_analytic_accounting" />
+                            <field name="tax_id" invisible="1" />
+                            <field name="sequence" invisible="1" />
+                            <field name="manual" invisible="1" />
+                            <field name="amount" />
+                            <field name="amount_rounding" invisible="1" />
+                            <field name="amount_total" invisible="1" />
+                            <field name="currency_id" invisible="1" force_save="1" />
+                        </tree>
+                    </field>
+                    <newline />
+                </xpath>
+
             </field>
         </record>
 

@@ -182,6 +182,56 @@ class SaleOrder(models.Model):
             rec.action_confirm()
             rec.action_ondelivery()
 
+    tax_line_ids = fields.One2many('sale.order.tax', 'sale_id', string='Tax Lines', readonly=True, copy=True)
+
+    @api.onchange('order_line')
+    def _onchange_so_order_line(self):
+        taxes_grouped = self.get_taxes_values()
+        tax_lines = self.tax_line_ids.filtered('manual')
+        for tax in taxes_grouped.values():
+            tax_lines += tax_lines.new(tax)
+        self.tax_line_ids = tax_lines
+        return
+
+    def _prepare_tax_line_vals(self, line, tax):
+        vals = {
+            'sale_id': self.id,
+            'name': tax['name'],
+            'tax_id': tax['id'],
+            'amount': tax['amount'],
+            'manual': False,
+            'sequence': tax['sequence'],
+            'account_analytic_id': tax['analytic'] and line.account_analytic_id.id or False,
+            'account_id': tax['account_id'] or tax.get('refund_account_id'),
+        }
+        return vals
+
+    def tax_get_grouping_key(self, invoice_tax_val):
+        """ Returns a string that will be used to group account.invoice.tax sharing the same properties"""
+        self.ensure_one()
+        return str(invoice_tax_val['tax_id']) + '-' + \
+               str(invoice_tax_val['account_id']) + '-' + \
+               str(invoice_tax_val['account_analytic_id']) + '-' + \
+               str(invoice_tax_val.get('analytic_tag_ids', []))
+
+    def get_taxes_values(self):
+        tax_grouped = {}
+        round_curr = self.currency_id.round
+        for line in self.order_line:
+            price_reduce = line.price_unit * (1.0 - line.discount / 100.0)
+            taxes = line.tax_id.compute_all(price_reduce, quantity=line.product_uom_qty, product=line.product_id,
+                                            partner=self.partner_shipping_id)['taxes']
+
+            for tax in taxes:
+                val = self._prepare_tax_line_vals(line, tax)
+                key = self.tax_get_grouping_key(val)
+
+                if key not in tax_grouped:
+                    tax_grouped[key] = val
+                else:
+                    tax_grouped[key]['amount'] += val['amount']
+        return tax_grouped
+
 
 class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
@@ -218,3 +268,27 @@ class SaleOrderLine(models.Model):
         # super(SaleOrderLine, self).onchange_product_id()
         # template = self.sale_order_template_id.with_context(lang=self.partner_id.lang)
         # self.note = template.note or self.note
+
+
+class SaleOrderTax(models.Model):
+    _name = "sale.order.tax"
+    _description = "Sale Order Tax"
+
+    sale_id = fields.Many2one('sale.order', string='Sale Order')
+    name = fields.Char(string='Tax Description', required=True)
+    tax_id = fields.Many2one('account.tax', string='Tax', ondelete='restrict')
+    amount = fields.Monetary()
+    amount_rounding = fields.Monetary()
+    amount_total = fields.Monetary(string="Amount", compute='_compute_amount_total')
+    manual = fields.Boolean(default=True)
+    sequence = fields.Integer(help="Gives the sequence order when displaying a list of invoice tax.")
+    company_id = fields.Many2one('res.company', string='Company', related='sale_id.company_id', store=True,
+                                 readonly=True)
+    currency_id = fields.Many2one('res.currency', related='sale_id.currency_id', store=True, readonly=True)
+    account_id = fields.Many2one('account.account', string='Tax Account', domain=[('deprecated', '=', False)])
+    account_analytic_id = fields.Many2one('account.analytic.account', string='Analytic account')
+
+    @api.depends('amount', 'amount_rounding')
+    def _compute_amount_total(self):
+        for tax_line in self:
+            tax_line.amount_total = tax_line.amount + tax_line.amount_rounding

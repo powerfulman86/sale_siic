@@ -23,6 +23,7 @@
         'reports/sale_net_report.xml',
         'reports/sale_report.xml',
         'reports/sale_return_report.xml',
+        'reports/report_saleorder.xml',
     ],
     'images': ['static/description/icon.png'],
     'license': 'AGPL-3',
