@@ -99,7 +99,10 @@
 
                 <xpath expr="//button[@name='action_confirm']" position="after">
                     <button name="action_ondelivery" string="On-Delivery" type="object" states="done"/>
+                    <button name="action_reset_ondelivery" string="Return On-Delivery" type="object"
+                            groups="sales_team.group_sale_manager" states="close"/>
                     <button name="action_close" string="Close" type="object" states="ondelivery"/>
+
                 </xpath>
 
                 <!--                <xpath expr="//button[@name='action_done']" position="replace">-->
@@ -153,7 +156,7 @@
                                        attrs="{'readonly': [('is_authority_modify', '=', False)]}"/>
                                 <field name="delivery_vehicle"/>
                                 <field name="delivery_truck"/>
-                                <field name="is_authority_modify" invisible="1"/>
+                                <field name="is_authority_modify" invisible="0"/>
                             </group>
                             <group string="Shipping Company">
                                 <field name="delivery_date" widget="date"/>
@@ -210,20 +213,20 @@
                 <xpath expr="//field[@name='note']" position="before">
                     <field name="tax_line_ids" force_save="1" nolabel="1">
                         <tree editable="bottom" string="Taxes">
-                            <field name="name" />
-                            <field name="account_id" />
+                            <field name="name"/>
+                            <field name="account_id"/>
                             <field name="account_analytic_id" domain="[('company_id', '=', parent.company_id)]"
-                                groups="analytic.group_analytic_accounting" />
-                            <field name="tax_id" invisible="1" />
-                            <field name="sequence" invisible="1" />
-                            <field name="manual" invisible="1" />
-                            <field name="amount" />
-                            <field name="amount_rounding" invisible="1" />
-                            <field name="amount_total" invisible="1" />
-                            <field name="currency_id" invisible="1" force_save="1" />
+                                   groups="analytic.group_analytic_accounting"/>
+                            <field name="tax_id" invisible="1"/>
+                            <field name="sequence" invisible="1"/>
+                            <field name="manual" invisible="1"/>
+                            <field name="amount"/>
+                            <field name="amount_rounding" invisible="1"/>
+                            <field name="amount_total" invisible="1"/>
+                            <field name="currency_id" invisible="1" force_save="1"/>
                         </tree>
                     </field>
-                    <newline />
+                    <newline/>
                 </xpath>
 
             </field>

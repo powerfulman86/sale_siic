@@ -113,6 +113,9 @@ class SaleOrder(models.Model):
             return
         self.state = 'ondelivery'
 
+    def action_reset_ondelivery(self):
+        self.state = 'ondelivery'
+
     def action_close(self):
         if self.shipping_type == 'bycompany':
             if not (self.delivery_date or self.delivery_voucher or self.delivery_company or self.actual_shipping_id):
