@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!---->
+    <record id="view_sale_total_report_pivot" model="ir.ui.view">
+        <field name="name">sale.total.report.pivot</field>
+        <field name="model">sale.total.report</field>
+        <field name="arch" type="xml">
+            <pivot string="Sales Total Analysis" disable_linking="True">
+                <field name="date" interval="month" type="col"/>
+                <field name="partner_id" type="row"/>
+                <field name="tax_value" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_sale_total_report_graph" model="ir.ui.view">
+        <field name="name">sale.total.report.graph</field>
+        <field name="model">sale.total.report</field>
+        <field name="arch" type="xml">
+            <graph string="Sales Total Analysis" type="line">
+                <field name="date" type="row" interval="day"/>
+                <field name="price_total" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_sale_total_report_search" model="ir.ui.view">
+        <field name="name">sale.total.report.search</field>
+        <field name="model">sale.total.report</field>
+        <field name="arch" type="xml">
+            <search string="Sales Total Analysis">
+                <filter name="Sugar" string="Sugar Orders" domain="[('order_source','=','sugar')]"/>
+                <filter name="wood" string="Wood Orders" domain="[('order_source','=','wood')]"/>
+                <separator/>
+                <field name="user_id"/>
+                <field name="partner_id"/>
+                <field name="order_id"/>
+                <field name="tax_id"/>
+                <group expand="1" string="Group By">
+                    <filter string="Customer" name="Customer" context="{'group_by':'partner_id'}"/>
+                    <filter string="Order" name="Order" context="{'group_by':'order_id'}"/>
+                    <filter string="Order Date" name="date" context="{'group_by':'date'}"/>
+                    <filter string="Tax" name="date" context="{'group_by':'tax_id'}"/>
+                    <filter name="status" string="Status" context="{'group_by':'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_sale_total_report" model="ir.actions.act_window">
+        <field name="name">Sales Total Analysis</field>
+        <field name="res_model">sale.total.report</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="help">This report performs analysis on your Sales Total Transaction.</field>
+    </record>
+
+    <menuitem id="sale_total_report"
+              name="Sales Total"
+              action="action_sale_total_report"
+              parent="sale.menu_sale_report"
+              sequence="1"/>
+</odoo>

@@ -12,8 +12,7 @@ class DiscountSaleReport(models.Model):
     delivery_company = fields.Many2one(comodel_name="res.partner", string="Delivery Company", )
     sale_contract = fields.Many2one('sale.contract', "Sale Contract", )
     order_source = fields.Selection(string="Order Source",
-                                    selection=[('default', 'Default'), ('sugar', 'Sugar'), ('wood', 'Wood'), ],
-                                    )
+                                    selection=[('default', 'Default'), ('sugar', 'Sugar'), ('wood', 'Wood'), ], )
     shipping_type = fields.Selection(string="Shipping Type",
                                      selection=[('bycompany', 'By Company'), ('byclient', 'By Client'),
                                                 ('noshipping', 'No Shipping'), ], )
@@ -33,4 +32,3 @@ class DiscountSaleReport(models.Model):
         """
 
         return super(DiscountSaleReport, self)._query(with_clause, fields, groupby, from_clause)
-

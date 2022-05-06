@@ -156,7 +156,7 @@
                                        attrs="{'readonly': [('is_authority_modify', '=', False)]}"/>
                                 <field name="delivery_vehicle"/>
                                 <field name="delivery_truck"/>
-                                <field name="is_authority_modify" invisible="0"/>
+                                <field name="is_authority_modify" invisible="1"/>
                             </group>
                             <group string="Shipping Company">
                                 <field name="delivery_date" widget="date"/>
