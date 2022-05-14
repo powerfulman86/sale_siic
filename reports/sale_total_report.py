@@ -25,9 +25,9 @@ class SaleTotalReport(models.Model):
     sale_contract = fields.Many2one('sale.contract', "Sale Contract", )
     order_source = fields.Selection(string="Order Source",
                                     selection=[('default', 'Default'), ('sugar', 'Sugar'), ('wood', 'Wood'), ], )
-    price_total = fields.Float('Total', readonly=True)
-    price_subtotal = fields.Float('Untaxed Total', readonly=True)
-    tax_amount = fields.Float('Tax Amount', readonly=True)
+    # price_total = fields.Float('Total', readonly=True)
+    # price_subtotal = fields.Float('Untaxed Total', readonly=True)
+    # tax_amount = fields.Float('Tax Amount', readonly=True)
     state = fields.Selection([
         ('draft', 'Draft Quotation'),
         ('sent', 'Quotation Sent'),

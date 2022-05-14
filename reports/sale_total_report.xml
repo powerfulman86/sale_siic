@@ -19,7 +19,7 @@
         <field name="arch" type="xml">
             <graph string="Sales Total Analysis" type="line">
                 <field name="date" type="row" interval="day"/>
-                <field name="price_total" type="measure"/>
+                <field name="tax_value" type="measure"/>
             </graph>
         </field>
     </record>
