@@ -36,8 +36,12 @@
                                 <field name="partner_id" widget="res_partner_many2one"
                                        context="{'res_partner_search_mode': 'customer', 'show_address': 1, 'show_vat': True}"
                                        options='{"always_reload": True}'/>
-                                <field name="warehouse_id" options="{'no_create': True}"/>
+                                <field name="partner_shipping_id" groups="sale.group_delivery_invoice_address"
+                                       context="{'default_type':'delivery'}"
+                                       options="{&quot;always_reload&quot;: True}"/>
                                 <field name="shipping_type"/>
+                                <field name="branch_id" options="{'no_create': True}"/>
+                                <field name="warehouse_id" options="{'no_create': True}"/>
                             </group>
                             <group>
                                 <field name="date_contract"/>
@@ -211,6 +215,7 @@
                 <kanban class="o_kanban_mobile">
                     <field name="name"/>
                     <field name="partner_id"/>
+                    <field name="branch_id"/>
                     <field name="warehouse_id"/>
                     <field name="shipping_type"/>
                     <field name="amount_total"/>
@@ -261,35 +266,38 @@
             </field>
         </record>
 
-        <record id="ir_actions_server_contract_approve" model="ir.actions.server">
-            <field name="name">Approve</field>
-            <field name="model_id" ref="model_sale_contract"/>
-            <field name="binding_model_id" ref="model_sale_contract"/>
-            <field name="binding_view_types">list</field>
-            <field name="state">code</field>
-            <field name="code">action = records.action_approve()</field>
-        </record>
+        <!--        <record id="ir_actions_server_contract_approve" model="ir.actions.server">-->
+        <!--            <field name="name">Approve</field>-->
+        <!--            <field name="model_id" ref="model_sale_contract"/>-->
+        <!--            <field name="binding_model_id" ref="model_sale_contract"/>-->
+        <!--            <field name="binding_view_types">list</field>-->
+        <!--            <field name="state">code</field>-->
+        <!--            <field name="code">action = records.action_approve()</field>-->
+        <!--        </record>-->
 
-        <record id="ir_actions_server_contract_progress" model="ir.actions.server">
-            <field name="name">In Progress</field>
-            <field name="model_id" ref="model_sale_contract"/>
-            <field name="binding_model_id" ref="model_sale_contract"/>
-            <field name="binding_view_types">list</field>
-            <field name="state">code</field>
-            <field name="code">action = records.action_progress()</field>
-        </record>
+        <!--        <record id="ir_actions_server_contract_progress" model="ir.actions.server">-->
+        <!--            <field name="name">In Progress</field>-->
+        <!--            <field name="model_id" ref="model_sale_contract"/>-->
+        <!--            <field name="binding_model_id" ref="model_sale_contract"/>-->
+        <!--            <field name="binding_view_types">list</field>-->
+        <!--            <field name="state">code</field>-->
+        <!--            <field name="code">action = records.action_progress()</field>-->
+        <!--        </record>-->
 
         <record id="view_contract_tree" model="ir.ui.view">
             <field name="name">sale.contract.tree</field>
             <field name="model">sale.contract</field>
             <field name="priority">4</field>
             <field name="arch" type="xml">
-                <tree string="Contracts" class="o_sale_order" decoration-muted="state=='cancel'" multi_edit="1">
+                <tree string="Contracts" class="o_sale_order" decoration-warning="state=='cancel'"
+                      decoration-primary="state=='progress'" decoration-info="state=='draft'"
+                      decoration-success="state=='done'" multi_edit="1">
                     <field name="name" string="Contract Number" readonly="1"/>
                     <field name="contract_source"/>
                     <field name="date_contract"/>
                     <field name="internal_reference"/>
                     <field name="partner_id"/>
+                    <field name="branch_id"/>
                     <field name="warehouse_id"/>
                     <field name="shipping_type"/>
                     <field name="user_id" optional="show"/>
@@ -318,9 +326,12 @@
                     <field name="user_id"/>
                     <field name="state" invisible="1"/>
                     <field name="team_id" string="Sales Team"/>
+                    <field name="branch_id" string="Branch"/>
                     <field name="contract_line" string="Product"
                            filter_domain="[('contract_line.product_id', 'ilike', self)]"/>
-                    <filter string="My Contracts" domain="[('user_id', '=', uid)]" name="my_sale_contracts_filter"/>
+                    <filter string="My In-Progress Contracts"
+                            domain="['|',('user_id', '=', uid),('state', '=', 'progress')]"
+                            name="my_sale_contracts_filter"/>
                     <separator/>
                     <filter string="New" domain="[('state', '=', 'draft')]" name="sale_contracts_new"/>
                     <filter string="Approved" domain="[('state', '=', 'approved')]" name="sale_contracts_approved"/>
@@ -329,7 +340,13 @@
                     <group expand="0" string="Group By">
                         <filter string="Salesperson" name="salesperson" domain="[]" context="{'group_by': 'user_id'}"/>
                         <filter name="customer" string="Customer" domain="[]" context="{'group_by': 'partner_id'}"/>
-                        <filter name="contract_source" string="Source" domain="[]" context="{'group_by': 'contract_source'}"/>
+                        <filter name="contract_source" string="Source" domain="[]"
+                                context="{'group_by': 'contract_source'}"/>
+                        <filter name="branch_id" string="Branch" domain="[]" context="{'group_by': 'branch_id'}"/>
+                        <filter name="warehouse_id" string="Warehouse" domain="[]"
+                                context="{'group_by': 'warehouse_id'}"/>
+                        <filter name="contract_source" string="Source" domain="[]"
+                                context="{'group_by': 'contract_source'}"/>
                         <filter string="Contract Date" name="contract_month" domain="[]"
                                 context="{'group_by': 'date_contract'}"/>
                         <filter name="state" string="Status" domain="[]" context="{'group_by': 'state'}"/>
