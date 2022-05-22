@@ -236,20 +236,38 @@ class SaleContract(models.Model):
         self.write({'state': 'draft'})
 
     def create_order(self):
-        sale_id = self.env['sale.order'].create({
-            'partner_id': self.partner_id.id,
-            'partner_shipping_id': self.partner_shipping_id.id,
-            'internal_reference': 1234,
-            'branch_id': self.branch_id.id,
-            'date_order': date.today(),
-            'origin': self.name,
-            'sale_contract': self.id,
-            'shipping_type': self.shipping_type,
-            'warehouse_id': self.warehouse_id.id,
-            'order_source': self.contract_source,
-            'order_type': 'in',
-            'pricelist_id': self.pricelist_id.id,
-        })
+
+        if self.partner_shipping_id.id:
+            sale_id = self.env['sale.order'].create({
+                'partner_id': self.partner_id.id,
+                'partner_shipping_id': ship_id,
+                'internal_reference': 1234,
+                'branch_id': self.branch_id.id,
+                'date_order': date.today(),
+                'origin': self.name,
+                'sale_contract': self.id,
+                'shipping_type': self.shipping_type,
+                'warehouse_id': self.warehouse_id.id,
+                'order_source': self.contract_source,
+                'order_type': 'in',
+                'pricelist_id': self.pricelist_id.id,
+            })
+        else :
+            sale_id = self.env['sale.order'].create({
+                'partner_id': self.partner_id.id,
+                'internal_reference': 1234,
+                'branch_id': self.branch_id.id,
+                'date_order': date.today(),
+                'origin': self.name,
+                'sale_contract': self.id,
+                'shipping_type': self.shipping_type,
+                'warehouse_id': self.warehouse_id.id,
+                'order_source': self.contract_source,
+                'order_type': 'in',
+                'pricelist_id': self.pricelist_id.id,
+            })
+
+
 
         for line in self.contract_line:
             self.env['sale.order.line'].create({
