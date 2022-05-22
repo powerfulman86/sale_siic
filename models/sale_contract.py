@@ -26,13 +26,14 @@ class SaleContract(models.Model):
         if self.env.user.branch_id:
             return self.env.user.branch_id.id
         else:
-            return ''
+            return self.env['res.branch'].search([], limit=1, order='id').id
 
     @api.model
     def _get_default_team(self):
         return self.env['crm.team']._get_default_team_id()
 
-    internal_reference = fields.Char(string="Contract Number", required=True, states={'draft': [('readonly', False)]})
+    internal_reference = fields.Char(string="Contract Number", required=True, readonly=True,
+                                     states={'draft': [('readonly', False)]})
     name = fields.Char(string='Contact Reference', copy=False, readonly=True,
                        states={'draft': [('readonly', False)]}, index=True, default=lambda self: _('New'))
     state = fields.Selection([
@@ -49,7 +50,8 @@ class SaleContract(models.Model):
                                   help="Date on which sales order is created.")
     user_id = fields.Many2one(
         'res.users', string='Salesperson', index=True, tracking=2, default=lambda self: self.env.user,
-        domain=lambda self: [('groups_id', 'in', self.env.ref('sales_team.group_sale_salesman').id)])
+        domain=lambda self: [('groups_id', 'in', self.env.ref('sales_team.group_sale_salesman').id)], readonly=True,
+        states={'draft': [('readonly', False)]})
     partner_id = fields.Many2one(
         'res.partner', string='Customer', readonly=True,
         states={'draft': [('readonly', False)]},
@@ -82,11 +84,11 @@ class SaleContract(models.Model):
     branch_id = fields.Many2one(comodel_name="res.branch", string="Branch", required=True, readonly=True, tracking=1,
                                 index=True, help='This is branch to set', states={'draft': [('readonly', False)]},
                                 default=_get_branch)
-    warehouse_id = fields.Many2one('stock.warehouse', string='Warehouse', required=True,
+    warehouse_id = fields.Many2one('stock.warehouse', string='Warehouse', required=True, readonly=True,
                                    domain="['|',('branch_id', '=', branch_id),('branch_id','=',False)]",
                                    states={'draft': [('readonly', False)]}, )
     team_id = fields.Many2one(
-        'crm.team', 'Sales Team',
+        'crm.team', 'Sales Team', readonly=True, states={'draft': [('readonly', False)]},
         change_default=True, default=_get_default_team, check_company=True,  # Unrequired company
         domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
 
@@ -95,13 +97,12 @@ class SaleContract(models.Model):
     contract_source = fields.Selection(string="Contract Source", readonly=True, states={'draft': [('readonly', False)]},
                                        selection=[('default', 'Default'), ('sugar', 'Sugar'), ('wood', 'Wood'), ],
                                        required=True, default='default')
-    partner_shipping_id = fields.Many2one('res.partner', string='Delivery Address', readonly=True, required=True,
+    partner_shipping_id = fields.Many2one('res.partner', string='Delivery Address', readonly=True,
                                           states={'draft': [('readonly', False)]},
                                           domain="[('parent_id', '=', partner_id),('type','=','delivery')]", )
     shipping_type = fields.Selection(string="Shipping Type", readonly=True, states={'draft': [('readonly', False)]},
                                      selection=[('bycompany', 'By Company'), ('byclient', 'By Client'),
-                                                ('noshipping', 'No Shipping'), ],
-                                     required=True, default='bycompany')
+                                                ('noshipping', 'No Shipping'), ], required=True, default='bycompany')
 
     _sql_constraints = [
         ("contract_reference_uniq", "unique (internal_reference)", "Contract Number already exists !"),

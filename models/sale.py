@@ -8,6 +8,13 @@ from odoo.exceptions import ValidationError
 class SaleOrder(models.Model):
     _inherit = "sale.order"
 
+    @api.model
+    def _get_branch(self):
+        if self.env.user.branch_id:
+            return self.env.user.branch_id.id
+        else:
+            return self.env['res.branch'].search([], limit=1, order='id').id
+
     @api.depends('order_line.price_total')
     def _amount_all(self):
         """
@@ -50,7 +57,8 @@ class SaleOrder(models.Model):
     order_type = fields.Selection(string="Type", selection=[('in', 'Local'), ('out', 'Foreign'), ], required=True,
                                   readonly=True, tracking=1, default='in', states={'draft': [('readonly', False)]})
     branch_id = fields.Many2one(comodel_name="res.branch", string="Branch", required=True, readonly=True, tracking=1,
-                                index=True, help='This is branch to set', states={'draft': [('readonly', False)]})
+                                index=True, help='This is branch to set', states={'draft': [('readonly', False)]},
+                                default=_get_branch)
 
     state = fields.Selection([
         ('draft', 'Draft'),
@@ -86,7 +94,8 @@ class SaleOrder(models.Model):
     sale_contract = fields.Many2one('sale.contract', "Sale Contract", required=False, readonly=True, tracking=3,
                                     domain="[('state', '=', 'progress')]", states={'draft': [('readonly', False)]})
     warehouse_id = fields.Many2one('stock.warehouse', string='Warehouse', required=True, readonly=True,
-                                   states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, )
+                                   states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
+                                   domain="['|',('branch_id', '=', branch_id),('branch_id','=',False)]",)
     order_source = fields.Selection(string="Order Source",
                                     selection=[('default', 'Default'), ('sugar', 'Sugar'), ('wood', 'Wood'), ],
                                     required=False, default='default', readonly=True,
@@ -95,12 +104,12 @@ class SaleOrder(models.Model):
                                      selection=[('bycompany', 'By Company'), ('byclient', 'By Client'),
                                                 ('noshipping', 'No Shipping'), ],
                                      required=False, default='bycompany')
-    is_authority_modify = fields.Boolean(string="able to modify", default=False, compute='_check_modify_able', )
+    is_authority_modify = fields.Boolean(string="able to modify", default=True, compute='_check_modify_able', )
 
     delivery_user_id = fields.Many2one('res.users', 'Delivery User', readonly=True, )
 
     def _check_modify_able(self):
-        if self.state == 'draft' or (
+        if self.state in ('draft', '') or (
                 self.env.user.has_group('sales_team.group_sale_manager') and self.state != 'close'):
             self.is_authority_modify = True
         else:
@@ -172,6 +181,11 @@ class SaleOrder(models.Model):
 
         for rec in self:
             date = rec.date_order
+            # check required data in case of shipping by company
+            if self.shipping_type == 'bycompany':
+                if not (self.shipping_date or self.delivery_receipt_number):
+                    raise ValidationError(_("Delivery Data Must Be Completed Before Close !"))
+
             if len(rec.order_line.ids) == 0:
                 raise ValidationError(_('You Must Add Products Data.'))
 

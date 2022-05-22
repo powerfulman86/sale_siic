@@ -7,8 +7,8 @@
     'category': 'Sales',
     'depends': ['base', 'portal', 'sale', 'account', 'multi_branch', 'delivery', 'account_tax_python'],
     'data': [
-        'security/branch_rule.xml',
         'security/ir.model.access.csv',
+        'security/ir_rule.xml',
         'data/sequence.xml',
         'data/cron.xml',
         'views/sale_view.xml',

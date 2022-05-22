@@ -9,7 +9,7 @@
                     <header>
                         <button name="create_order" states="progress" type="object" string="Create Order"
                                 class="btn-primary"/>
-                        <button name="action_draft" string="Set Draft" type="object" class="btn-primary"/>
+                        <!--<button name="action_draft" string="Set Draft" type="object" class="btn-primary"/>-->
                         <button name="action_approve" string="Approve" type="object" states="draft"/>
                         <button name="action_progress" string="In Progress" type="object" states="approved"/>
                         <button name="action_done" states="progress" type="object" string="Done"/>
@@ -36,10 +36,11 @@
                                 <field name="partner_id" widget="res_partner_many2one"
                                        context="{'res_partner_search_mode': 'customer', 'show_address': 1, 'show_vat': True}"
                                        options='{"always_reload": True}'/>
-                                <field name="partner_shipping_id" groups="sale.group_delivery_invoice_address"
-                                       context="{'default_type':'delivery'}"
-                                       options="{&quot;always_reload&quot;: True}"/>
                                 <field name="shipping_type"/>
+                                <field name="partner_shipping_id"
+                                       context="{'default_type':'delivery'}"
+                                       options="{&quot;always_reload&quot;: True}"
+                                       attrs="{'required': [('shipping_type', '=', 'bycompany')]}"/>
                                 <field name="branch_id" options="{'no_create': True}"/>
                                 <field name="warehouse_id" options="{'no_create': True}"/>
                             </group>
