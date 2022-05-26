@@ -81,7 +81,7 @@
             </field>
         </record>
 
-        <!--Discount Views-->
+        <!--Order Views-->
         <record id="discount_sale_view_form" model="ir.ui.view">
             <field name="name">discount.sale.order.form</field>
             <field name="model">sale.order</field>
@@ -142,7 +142,7 @@
                 </xpath>
 
                 <xpath expr="//notebook[last()]" position="inside">
-                    <page string="Delivery Follow-up">
+                    <page string="Delivery Follow-up" name="delivery_followup">
                         <group>
                             <group>
                                 <field name="shipping_type"
@@ -229,6 +229,17 @@
                     <newline/>
                 </xpath>
 
+            </field>
+        </record>
+
+        <record id="optional_product_sale_view_form" model="ir.ui.view">
+            <field name="name">sale order option product form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale_management.sale_order_form_quote"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='optional_products']" position="attributes">
+                    <attribute name="invisible">0</attribute>
+                </xpath>
             </field>
         </record>
 

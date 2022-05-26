@@ -176,15 +176,15 @@ class SaleOrder(models.Model):
                 raise ValidationError(_("Order Number Must Be In Digits"))
 
     def action_confirm(self):
-        if not self.user_has_groups('sales_team.group_sale_manager'):
-            return
+        # if not self.user_has_groups('sales_team.group_sale_manager'):
+        #     return
 
         for rec in self:
             date = rec.date_order
             # check required data in case of shipping by company
             if self.shipping_type == 'bycompany':
                 if not (self.shipping_date or self.delivery_receipt_number):
-                    raise ValidationError(_("Delivery Data Must Be Completed Before Close !"))
+                    raise ValidationError(_("Delivery Data Must Be Completed Before Approve !"))
 
             if len(rec.order_line.ids) == 0:
                 raise ValidationError(_('You Must Add Products Data.'))

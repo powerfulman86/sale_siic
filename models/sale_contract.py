@@ -205,6 +205,7 @@ class SaleContract(models.Model):
 
     def action_view_sale_orders(self):
         self.ensure_one()
+        # action = self.env.ref('sale.view_order_tree').read()[0]
         return {
             'name': _('Contract Sales Orders'),
             'res_model': 'sale.order',
@@ -236,7 +237,7 @@ class SaleContract(models.Model):
         self.write({'state': 'draft'})
 
     def create_order(self):
-
+        ship_id = self.partner_shipping_id.id
         if self.partner_shipping_id.id:
             sale_id = self.env['sale.order'].create({
                 'partner_id': self.partner_id.id,
@@ -252,7 +253,7 @@ class SaleContract(models.Model):
                 'order_type': 'in',
                 'pricelist_id': self.pricelist_id.id,
             })
-        else :
+        else:
             sale_id = self.env['sale.order'].create({
                 'partner_id': self.partner_id.id,
                 'internal_reference': 1234,
@@ -266,8 +267,6 @@ class SaleContract(models.Model):
                 'order_type': 'in',
                 'pricelist_id': self.pricelist_id.id,
             })
-
-
 
         for line in self.contract_line:
             self.env['sale.order.line'].create({
