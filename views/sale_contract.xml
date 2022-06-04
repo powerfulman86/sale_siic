@@ -371,9 +371,9 @@
 
         <menuitem id="menu_sale_contract"
                   name="Contracts"
-                  parent="sale.sale_order_menu"
+                  parent="sale.sale_menu_root"
                   action="action_sales_contracts"
-                  sequence="6"/>
+                  sequence="3"/>
 
     </data>
 </odoo>

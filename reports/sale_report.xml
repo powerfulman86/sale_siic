@@ -10,6 +10,7 @@
                     <separator/>
                     <filter name="Sugar" string="Sugar Orders" domain="[('order_source','=','sugar')]"/>
                     <filter name="wood" string="Wood Orders" domain="[('order_source','=','wood')]"/>
+                    <filter name="moulas" string="Moulas Orders" domain="[('order_source','=','moulas')]"/>
                     <separator/>
                     <filter name="No Shipping" string="No Shipping" domain="[('shipping_type','=','noshipping')]"/>
                     <filter name="Company Shipping" string="Company Shipping" domain="[('shipping_type','=','bycompany')]"/>

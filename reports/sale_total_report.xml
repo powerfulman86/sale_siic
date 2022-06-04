@@ -31,6 +31,7 @@
             <search string="Sales Total Analysis">
                 <filter name="Sugar" string="Sugar Orders" domain="[('order_source','=','sugar')]"/>
                 <filter name="wood" string="Wood Orders" domain="[('order_source','=','wood')]"/>
+                <filter name="moulas" string="Moulas Orders" domain="[('order_source','=','moulas')]"/>
                 <separator/>
                 <field name="user_id"/>
                 <field name="partner_id"/>

@@ -1,0 +1,13 @@
+<odoo>
+    <menuitem id="menu_sale_analytic_report"
+            name="Analytic Report"
+            parent="sale.sale_menu_root"
+            sequence="41"
+            groups="sales_team.group_sale_manager"/>
+
+    <menuitem id="sale_advanced_report"
+              parent="menu_sale_analytic_report"
+              name="Sale Product"
+              action="sale_report_advance"
+              sequence="2"/>
+</odoo>

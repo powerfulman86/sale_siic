@@ -2,7 +2,7 @@
 <odoo>
     <data>
         <!--branch contracts-->
-        <record id="sale_contract_branch_user_rule" model="ir.rule">
+        <record id="sale_order_personal_rule" model="ir.rule">
             <field name="name">user Branch sale contracts</field>
             <field name="model_id" ref="model_sale_contract"/>
             <field name="domain_force">
@@ -18,22 +18,18 @@
             <field name="groups" eval="[(4, ref('sales_team.group_sale_salesman_all_leads'))]"/>
         </record>
 
-        <record id="sale_order_personal_branch_rule" model="ir.rule">
-            <field name="name">Personal Branch Orders</field>
+        <!--sale order branch-->
+        <record id="sale.sale_order_personal_rule" model="ir.rule" forcecreate="True">
+            <field name="name">Personal Orders</field>
             <field name="model_id" ref="model_sale_order"/>
-            <field name="domain_force">[('branch_id','=',user.branch_id.id)]</field>
+            <field name="domain_force">
+                [('branch_id','=',user.branch_id.id),'|',('user_id','=',user.id),('user_id','=',False)]
+            </field>
             <field name="groups" eval="[(4, ref('sales_team.group_sale_salesman'))]"/>
         </record>
 
-        <record id="sale_order_report_personal_branch_rule" model="ir.rule">
-            <field name="name">Personal Orders Branch Analysis</field>
-            <field name="model_id" ref="model_sale_report"/>
-            <field name="domain_force">[('branch_id','=',user.branch_id.id)]</field>
-            <field name="groups" eval="[(4, ref('sales_team.group_sale_salesman'))]"/>
-        </record>
-
-        <record id="sale_order_user_branch_rule_all" model="ir.rule">
-            <field name="name">All Branch Orders</field>
+        <record id="sale.sale_order_see_all" model="ir.rule" forcecreate="True">
+            <field name="name">All Orders</field>
             <field name="model_id" ref="model_sale_order"/>
             <field name="domain_force">[('branch_id','=',user.branch_id.id)]</field>
             <field name="groups" eval="[(4, ref('sales_team.group_sale_salesman_all_leads'))]"/>

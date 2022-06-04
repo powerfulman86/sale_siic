@@ -33,10 +33,17 @@ class SaleOrder(models.Model):
                 'amount_total': amount_untaxed + amount_tax,
             })
 
+    @api.model
+    def _default_warehouse_id(self):
+        company = self.env.company.id
+        self.warehouse_id = ""
+        warehouse_ids = self.env['stock.warehouse'].search([('company_id', '=', company),
+                                                            ('branch_id', '=', self.env.user.branch_id.id)], limit=1)
+        return warehouse_ids
+
     discount_type = fields.Selection([('percent', 'Percentage'), ('amount', 'Amount')], string='Discount type',
-                                     readonly=True,
-                                     states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
-                                     default='percent')
+                                     readonly=True, default='percent',
+                                     states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, )
     discount_rate = fields.Float('Discount Rate', digits=dp.get_precision('Account'),
                                  readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]})
     discount_extra_value = fields.Integer(string="Discount Extra", digits=dp.get_precision('Account'), readonly=True,
@@ -95,9 +102,11 @@ class SaleOrder(models.Model):
                                     domain="[('state', '=', 'progress')]", states={'draft': [('readonly', False)]})
     warehouse_id = fields.Many2one('stock.warehouse', string='Warehouse', required=True, readonly=True,
                                    states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
-                                   domain="['|',('branch_id', '=', branch_id),('branch_id','=',False)]",)
+                                   domain="['|',('branch_id', '=', branch_id),('branch_id','=',False)]",
+                                   default=_default_warehouse_id, )
     order_source = fields.Selection(string="Order Source",
-                                    selection=[('default', 'Default'), ('sugar', 'Sugar'), ('wood', 'Wood'), ],
+                                    selection=[('default', 'Default'), ('sugar', 'Sugar'), ('wood', 'Wood'),
+                                               ('moulas', 'Moulas'), ],
                                     required=False, default='default', readonly=True,
                                     states={'draft': [('readonly', False)]})
     shipping_type = fields.Selection(string="Shipping Type",
@@ -108,6 +117,13 @@ class SaleOrder(models.Model):
 
     delivery_user_id = fields.Many2one('res.users', 'Delivery User', readonly=True, )
 
+    tax_line_ids = fields.One2many('sale.order.tax', 'sale_id', string='Tax Lines', readonly=True, copy=True)
+
+    @api.onchange('branch_id')
+    def onchange_branch_id(self):
+        new_warehouse = self.env['stock.warehouse'].search([('branch_id', '=', self.branch_id.id)], limit=1)
+        self.warehouse_id = new_warehouse
+
     def _check_modify_able(self):
         if self.state in ('draft', '') or (
                 self.env.user.has_group('sales_team.group_sale_manager') and self.state != 'close'):
@@ -116,8 +132,15 @@ class SaleOrder(models.Model):
             self.is_authority_modify = False
 
     def action_ondelivery(self):
-        if not self.user_has_groups('sales_team.group_sale_manager'):
+        if not self.user_has_groups('sales_team.group_sale_salesman_all_leads'):
             return
+
+        if self.shipping_type == 'bycompany':
+            if len(self.picking_ids) != 0:
+                for pick in self.picking_ids:
+                    if pick.state != 'done':
+                        raise ValidationError(_("Order Pickings Must Be Closed Before On-Delivery"))
+
         if self.state != 'done':
             return
         self.state = 'ondelivery'
@@ -176,8 +199,8 @@ class SaleOrder(models.Model):
                 raise ValidationError(_("Order Number Must Be In Digits"))
 
     def action_confirm(self):
-        # if not self.user_has_groups('sales_team.group_sale_manager'):
-        #     return
+        if not self.user_has_groups('sales_team.group_sale_salesman_all_leads'):
+            return
 
         for rec in self:
             date = rec.date_order
@@ -198,8 +221,6 @@ class SaleOrder(models.Model):
         for rec in orders:
             rec.action_confirm()
             rec.action_ondelivery()
-
-    tax_line_ids = fields.One2many('sale.order.tax', 'sale_id', string='Tax Lines', readonly=True, copy=True)
 
     @api.onchange('order_line')
     def _onchange_so_order_line(self):
@@ -249,6 +270,15 @@ class SaleOrder(models.Model):
                     tax_grouped[key]['amount'] += val['amount']
         return tax_grouped
 
+    @api.model
+    def create(self, vals):
+        # res = super(SaleOrder, self).create(vals)
+        if vals['order_source'] == 'sugar':
+            branch = self.env['res.branch'].browse(vals['branch_id'])
+            vals['name'] = branch.sale_sequence_id.next_by_id()
+        res = super(SaleOrder, self).create(vals)
+        return res
+
 
 class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
@@ -258,7 +288,6 @@ class SaleOrderLine(models.Model):
                                     readonly=False)
     contract_line_id = fields.Many2one('sale.contract.line', 'Contract details Lines', ondelete='set null', index=True,
                                        copy=False)
-
     weight_shipping = fields.Float('Ship Weight', digits='Stock Weight', )
 
     @api.onchange('product_id', 'product_uom_qty')

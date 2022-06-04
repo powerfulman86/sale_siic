@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-02 11:22+0000\n"
-"PO-Revision-Date: 2022-03-02 11:22+0000\n"
+"POT-Creation-Date: 2022-06-04 06:37+0000\n"
+"PO-Revision-Date: 2022-06-04 06:37+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -19,6 +19,16 @@ msgstr ""
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return_report__nbr
 msgid "# of Lines"
 msgstr "عدد السطور"
+
+#. module: sale_siic
+#: model_terms:ir.ui.view,arch_db:sale_siic.report_saleorder_document
+msgid "&amp;nbsp;<span>on</span>&amp;nbsp;"
+msgstr ""
+
+#. module: sale_siic
+#: model:ir.actions.report,print_report_name:sale_siic.action_sale_daily_report
+msgid "'Sales Daily Report - %s' % (object.branch_id.name)"
+msgstr "تقرير المبيعات اليومي "
 
 #. module: sale_siic
 #: model_terms:ir.ui.view,arch_db:sale_siic.discount_sale_view_form
@@ -33,10 +43,65 @@ msgid ""
 msgstr ""
 
 #. module: sale_siic
+#: model_terms:ir.ui.view,arch_db:sale_siic.sale_report_view
+msgid "<span>Total Price:</span>"
+msgstr "<span>اجمالي السعر :</span>"
+
+#. module: sale_siic
+#: model_terms:ir.ui.view,arch_db:sale_siic.sale_daily_report_view
+msgid "<span>Total Quantity</span>"
+msgstr "<span>اجمالي الكمية</span>"
+
+#. module: sale_siic
+#: model_terms:ir.ui.view,arch_db:sale_siic.sale_report_view
+msgid "<span>Total cost</span>"
+msgstr "<span>اجمالي التكلفة</span>"
+
+#. module: sale_siic
+#: model_terms:ir.ui.view,arch_db:sale_siic.sale_daily_report_view
+msgid "<strong>Branch:</strong>"
+msgstr "<strong>المصنع</strong>"
+
+#. module: sale_siic
+#: model_terms:ir.ui.view,arch_db:sale_siic.sale_daily_report_view
+msgid "<strong>Source:</strong>"
+msgstr "<strong>مصدر الامر</strong>"
+
+#. module: sale_siic
+#: model_terms:ir.ui.view,arch_db:sale_siic.sale_daily_report_view
+msgid "<strong>Start Date:</strong>"
+msgstr "<strong>من تاريخ</strong>"
+
+#. module: sale_siic
+#: model_terms:ir.ui.view,arch_db:sale_siic.sale_daily_report_view
+msgid "<strong>Status:</strong>"
+msgstr "<strong>الحالة</strong>"
+
+#. module: sale_siic
+#: model_terms:ir.ui.view,arch_db:sale_siic.report_saleorder_document
+msgid "<strong>Subtotal</strong>"
+msgstr "<strong>اجمالي فرعي</strong>"
+
+#. module: sale_siic
+#: model_terms:ir.ui.view,arch_db:sale_siic.sale_daily_report_view
+msgid "<strong>To Date:</strong>"
+msgstr "<strong>الى تاريخ</strong>"
+
+#. module: sale_siic
+#: model_terms:ir.ui.view,arch_db:sale_siic.report_saleorder_document
+msgid "<strong>Total</strong>"
+msgstr "<strong>الاجمالي</strong>"
+
+#. module: sale_siic
+#: model:ir.model.fields.selection,name:sale_siic.selection__sale_daily_order__order_source__all
+msgid "ALL"
+msgstr "الكل"
+
+#. module: sale_siic
 #: model:ir.model.fields,field_description:sale_siic.field_sale_contract__access_warning
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return__access_warning
 msgid "Access warning"
-msgstr ""
+msgstr "تحذيرات الوصول"
 
 #. module: sale_siic
 #: model:ir.model.fields,field_description:sale_siic.field_sale_contract__message_needaction
@@ -82,10 +147,28 @@ msgid "Add a product"
 msgstr "اضافة منتج"
 
 #. module: sale_siic
+#: model_terms:ir.ui.view,arch_db:sale_siic.sale_daily_report_view
+msgid "Address"
+msgstr "العنوان"
+
+#. module: sale_siic
+#: model:ir.model.fields.selection,name:sale_siic.selection__sale_daily_order__status__all
+msgid "All"
+msgstr "الكل"
+
+#. module: sale_siic
+#: model:ir.model.fields,field_description:sale_siic.field_sale_order_tax__amount
+#: model:ir.model.fields,field_description:sale_siic.field_sale_order_tax__amount_total
 #: model:ir.model.fields.selection,name:sale_siic.selection__account_move__discount_type__amount
 #: model:ir.model.fields.selection,name:sale_siic.selection__sale_order__discount_type__amount
+#: model_terms:ir.ui.view,arch_db:sale_siic.report_saleorder_document
 msgid "Amount"
 msgstr "مبلغ"
+
+#. module: sale_siic
+#: model:ir.model.fields,field_description:sale_siic.field_sale_order_tax__amount_rounding
+msgid "Amount Rounding"
+msgstr "تقريب المبلغ"
 
 #. module: sale_siic
 #: model:ir.model.fields,field_description:sale_siic.field_sale_net_report__analytic_account_id
@@ -94,7 +177,16 @@ msgid "Analytic Account"
 msgstr "حساب تحليلي"
 
 #. module: sale_siic
-#: model:ir.actions.server,name:sale_siic.ir_actions_server_contract_approve
+#: model:ir.ui.menu,name:sale_siic.menu_sale_analytic_report
+msgid "Analytic Report"
+msgstr "تقرير تحليلي"
+
+#. module: sale_siic
+#: model:ir.model.fields,field_description:sale_siic.field_sale_order_tax__account_analytic_id
+msgid "Analytic account"
+msgstr "حساب تحليلي"
+
+#. module: sale_siic
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_contract_form
 msgid "Approve"
 msgstr "اعتماد"
@@ -113,9 +205,18 @@ msgid "Attachment Count"
 msgstr "عدد المرفقات"
 
 #. module: sale_siic
+#: model:ir.model.fields.selection,name:sale_siic.selection__sale_report_advance__type__both
+msgid "Both"
+msgstr "الكل"
+
+#. module: sale_siic
+#: model:ir.model.fields,field_description:sale_siic.field_sale_contract__branch_id
+#: model:ir.model.fields,field_description:sale_siic.field_sale_daily_order__branch_id
 #: model:ir.model.fields,field_description:sale_siic.field_sale_order__branch_id
 #: model:ir.model.fields,field_description:sale_siic.field_sale_report__branch_id
+#: model:ir.model.fields,field_description:sale_siic.field_sale_total_report__branch_id
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_sale_report_siic_search
+#: model_terms:ir.ui.view,arch_db:sale_siic.view_sales_contract_filter
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_sales_order_delivery_filter
 msgid "Branch"
 msgstr "المصنع"
@@ -126,12 +227,14 @@ msgid "Branch Shipping"
 msgstr "شحن المصنع"
 
 #. module: sale_siic
+#: model:ir.model.fields.selection,name:sale_siic.selection__sale_contract__shipping_type__byclient
 #: model:ir.model.fields.selection,name:sale_siic.selection__sale_order__shipping_type__byclient
 #: model:ir.model.fields.selection,name:sale_siic.selection__sale_report__shipping_type__byclient
 msgid "By Client"
 msgstr "بواسطة العميل"
 
 #. module: sale_siic
+#: model:ir.model.fields.selection,name:sale_siic.selection__sale_contract__shipping_type__bycompany
 #: model:ir.model.fields.selection,name:sale_siic.selection__sale_order__shipping_type__bycompany
 #: model:ir.model.fields.selection,name:sale_siic.selection__sale_report__shipping_type__bycompany
 msgid "By Company"
@@ -168,8 +271,14 @@ msgstr "الغاء"
 #: model:ir.model.fields.selection,name:sale_siic.selection__sale_order__state__cancel
 #: model:ir.model.fields.selection,name:sale_siic.selection__sale_return__state__cancel
 #: model:ir.model.fields.selection,name:sale_siic.selection__sale_return_report__state__cancel
+#: model:ir.model.fields.selection,name:sale_siic.selection__sale_total_report__state__cancel
 msgid "Cancelled"
 msgstr "ملغي"
+
+#. module: sale_siic
+#: model_terms:ir.ui.view,arch_db:sale_siic.sale_daily_report_view
+msgid "Car No"
+msgstr "رقم السيارة"
 
 #. module: sale_siic
 #: model:ir.model.fields,field_description:sale_siic.field_sale_contract_line__product_uom_category_id
@@ -188,6 +297,7 @@ msgid "Close"
 msgstr "اغلاق"
 
 #. module: sale_siic
+#: model:ir.model.fields.selection,name:sale_siic.selection__sale_daily_order__status__close
 #: model:ir.model.fields.selection,name:sale_siic.selection__sale_order__state__close
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_sales_order_delivery_filter
 msgid "Closed"
@@ -195,6 +305,8 @@ msgstr "مغلق"
 
 #. module: sale_siic
 #: model:ir.model,name:sale_siic.model_res_company
+#: model:ir.model.fields,field_description:sale_siic.field_sale_daily_order__company_ids
+#: model:ir.model.fields,field_description:sale_siic.field_sale_report_advance__company_ids
 msgid "Companies"
 msgstr "الشركات"
 
@@ -203,9 +315,11 @@ msgstr "الشركات"
 #: model:ir.model.fields,field_description:sale_siic.field_sale_contract_line__company_id
 #: model:ir.model.fields,field_description:sale_siic.field_sale_delivery_vehicle__partner_id
 #: model:ir.model.fields,field_description:sale_siic.field_sale_net_report__company_id
+#: model:ir.model.fields,field_description:sale_siic.field_sale_order_tax__company_id
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return__company_id
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return_line__company_id
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return_report__company_id
+#: model:ir.model.fields,field_description:sale_siic.field_sale_total_report__company_id
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_return_product_search
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_sale_net_search
 msgid "Company"
@@ -279,7 +393,7 @@ msgstr "اوامر البيع لامر الشحن"
 #. module: sale_siic
 #: model:ir.model.fields,field_description:sale_siic.field_sale_contract__contract_source
 msgid "Contract Source"
-msgstr ""
+msgstr "مصدر الامر"
 
 #. module: sale_siic
 #: model:ir.model.fields,field_description:sale_siic.field_sale_contract_line__state
@@ -304,6 +418,11 @@ msgid ""
 "Conversion between Units of Measure can only occur if they belong to the "
 "same category. The conversion will be made based on the ratios."
 msgstr ""
+
+#. module: sale_siic
+#: model_terms:ir.ui.view,arch_db:sale_siic.sale_report_view
+msgid "Cost"
+msgstr "التكلفة"
 
 #. module: sale_siic
 #: model_terms:ir.ui.view,arch_db:sale_siic.sale_return_view_form
@@ -333,7 +452,10 @@ msgstr "انشاء طلب مرتجع جديد"
 #. module: sale_siic
 #: model:ir.model.fields,field_description:sale_siic.field_sale_contract__create_uid
 #: model:ir.model.fields,field_description:sale_siic.field_sale_contract_line__create_uid
+#: model:ir.model.fields,field_description:sale_siic.field_sale_daily_order__create_uid
 #: model:ir.model.fields,field_description:sale_siic.field_sale_delivery_vehicle__create_uid
+#: model:ir.model.fields,field_description:sale_siic.field_sale_order_tax__create_uid
+#: model:ir.model.fields,field_description:sale_siic.field_sale_report_advance__create_uid
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return__create_uid
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return_line__create_uid
 msgid "Created by"
@@ -341,7 +463,10 @@ msgstr "انشئ بواسطة"
 
 #. module: sale_siic
 #: model:ir.model.fields,field_description:sale_siic.field_sale_contract_line__create_date
+#: model:ir.model.fields,field_description:sale_siic.field_sale_daily_order__create_date
 #: model:ir.model.fields,field_description:sale_siic.field_sale_delivery_vehicle__create_date
+#: model:ir.model.fields,field_description:sale_siic.field_sale_order_tax__create_date
+#: model:ir.model.fields,field_description:sale_siic.field_sale_report_advance__create_date
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return_line__create_date
 msgid "Created on"
 msgstr "انشئ في"
@@ -382,6 +507,7 @@ msgstr "اشعارات خصم"
 #. module: sale_siic
 #: model:ir.model.fields,field_description:sale_siic.field_sale_contract__currency_id
 #: model:ir.model.fields,field_description:sale_siic.field_sale_contract_line__currency_id
+#: model:ir.model.fields,field_description:sale_siic.field_sale_order_tax__currency_id
 msgid "Currency"
 msgstr "العمله"
 
@@ -402,8 +528,12 @@ msgstr ""
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return__partner_id
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return_line__order_partner_id
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return_report__partner_id
+#: model:ir.model.fields,field_description:sale_siic.field_sale_total_report__partner_id
+#: model_terms:ir.ui.view,arch_db:sale_siic.sale_daily_report_view
+#: model_terms:ir.ui.view,arch_db:sale_siic.sale_report_view
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_return_product_search
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_sale_net_search
+#: model_terms:ir.ui.view,arch_db:sale_siic.view_sale_total_report_search
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_sales_contract_filter
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_sales_order_delivery_filter
 msgid "Customer"
@@ -413,7 +543,7 @@ msgstr "العميل"
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return_report__country_id
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_return_product_search
 msgid "Customer Country"
-msgstr ""
+msgstr "بلد العميل"
 
 #. module: sale_siic
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return_report__commercial_partner_id
@@ -438,6 +568,20 @@ msgid "Customer Reference"
 msgstr "كود العميل"
 
 #. module: sale_siic
+#: model:ir.model.fields,field_description:sale_siic.field_sale_daily_order__customer_ids
+#: model:ir.model.fields,field_description:sale_siic.field_sale_report_advance__customer_ids
+#: model:ir.model.fields.selection,name:sale_siic.selection__sale_report_advance__type__customer
+msgid "Customers"
+msgstr "العملاء"
+
+#. module: sale_siic
+#: model:ir.ui.menu,name:sale_siic.menu_sale_daily_orders
+msgid "Daily Orders"
+msgstr "المبيعات اليوميه"
+
+#. module: sale_siic
+#: model_terms:ir.ui.view,arch_db:sale_siic.sale_daily_report_view
+#: model_terms:ir.ui.view,arch_db:sale_siic.sale_report_view
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_return_product_search
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_sale_net_search
 msgid "Date"
@@ -455,10 +599,12 @@ msgstr "تاريخ الانشاء"
 
 #. module: sale_siic
 #: model:ir.model.fields.selection,name:sale_siic.selection__sale_contract__contract_source__default
+#: model:ir.model.fields.selection,name:sale_siic.selection__sale_daily_order__order_source__default
 #: model:ir.model.fields.selection,name:sale_siic.selection__sale_order__order_source__default
 #: model:ir.model.fields.selection,name:sale_siic.selection__sale_report__order_source__default
+#: model:ir.model.fields.selection,name:sale_siic.selection__sale_total_report__order_source__default
 msgid "Default"
-msgstr ""
+msgstr "الافتراضي"
 
 #. module: sale_siic
 #: model:ir.model.fields,help:sale_siic.field_product_category__taxes_id
@@ -471,6 +617,7 @@ msgid "Delivered Date"
 msgstr "تاريخ التسليم"
 
 #. module: sale_siic
+#: model:ir.model.fields,field_description:sale_siic.field_sale_contract__partner_shipping_id
 #: model:ir.model.fields,field_description:sale_siic.field_sale_order__partner_shipping_id
 msgid "Delivery Address"
 msgstr "عنوان التسليم"
@@ -482,6 +629,12 @@ msgstr "عنوان التسليم"
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_sales_order_delivery_filter
 msgid "Delivery Company"
 msgstr "شركة الشحن"
+
+#. module: sale_siic
+#: code:addons/sale_siic/models/sale.py:0
+#, python-format
+msgid "Delivery Data Must Be Completed Before Approve !"
+msgstr "بيانات الشحن يجب ان يتم تسجيلها قبل الحفظ"
 
 #. module: sale_siic
 #: code:addons/sale_siic/models/sale.py:0
@@ -515,6 +668,11 @@ msgstr "اخطار الشحن"
 #: model:ir.model.fields,field_description:sale_siic.field_sale_order__delivery_truck
 msgid "Delivery Truck"
 msgstr "رقم المقطورة"
+
+#. module: sale_siic
+#: model:ir.model.fields,field_description:sale_siic.field_sale_order__delivery_user_id
+msgid "Delivery User"
+msgstr "المستخدم المسئول"
 
 #. module: sale_siic
 #: model:ir.model.fields,field_description:sale_siic.field_sale_order__delivery_vehicle
@@ -610,18 +768,24 @@ msgstr "نوع الخصم"
 
 #. module: sale_siic
 #: model:ir.model.fields,field_description:sale_siic.field_report_sale_return_report_saleproforma__display_name
+#: model:ir.model.fields,field_description:sale_siic.field_report_sale_total_report_saleproforma__display_name
 #: model:ir.model.fields,field_description:sale_siic.field_sale_contract__display_name
 #: model:ir.model.fields,field_description:sale_siic.field_sale_contract_line__display_name
+#: model:ir.model.fields,field_description:sale_siic.field_sale_daily_order__display_name
 #: model:ir.model.fields,field_description:sale_siic.field_sale_delivery_vehicle__display_name
 #: model:ir.model.fields,field_description:sale_siic.field_sale_net_report__display_name
 #: model:ir.model.fields,field_description:sale_siic.field_sale_net_report_saleproforma__display_name
+#: model:ir.model.fields,field_description:sale_siic.field_sale_order_tax__display_name
+#: model:ir.model.fields,field_description:sale_siic.field_sale_report_advance__display_name
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return__display_name
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return_line__display_name
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return_report__display_name
+#: model:ir.model.fields,field_description:sale_siic.field_sale_total_report__display_name
 msgid "Display Name"
 msgstr ""
 
 #. module: sale_siic
+#: model:ir.model.fields.selection,name:sale_siic.selection__sale_daily_order__status__done
 #: model:ir.model.fields.selection,name:sale_siic.selection__sale_net_report__state__done
 #: model:ir.model.fields.selection,name:sale_siic.selection__sale_order__state__done
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_contract_form
@@ -631,6 +795,7 @@ msgstr "تم"
 
 #. module: sale_siic
 #: model:ir.model.fields.selection,name:sale_siic.selection__sale_contract__state__draft
+#: model:ir.model.fields.selection,name:sale_siic.selection__sale_daily_order__status__draft
 #: model:ir.model.fields.selection,name:sale_siic.selection__sale_net_report__state__draft
 #: model:ir.model.fields.selection,name:sale_siic.selection__sale_order__state__draft
 msgid "Draft"
@@ -638,8 +803,15 @@ msgstr "مسوده"
 
 #. module: sale_siic
 #: model:ir.model.fields.selection,name:sale_siic.selection__sale_return_report__state__draft
+#: model:ir.model.fields.selection,name:sale_siic.selection__sale_total_report__state__draft
 msgid "Draft Quotation"
 msgstr "مسوده"
+
+#. module: sale_siic
+#: model:ir.model.fields,field_description:sale_siic.field_sale_daily_order__to_date
+#: model:ir.model.fields,field_description:sale_siic.field_sale_report_advance__to_date
+msgid "End Date"
+msgstr "الى تاريخ"
 
 #. module: sale_siic
 #: model:ir.model.fields,field_description:sale_siic.field_sale_delivery_vehicle__engine_number
@@ -695,6 +867,11 @@ msgid "Get 2 levels of approvals to confirm a sale order"
 msgstr "استخدام مستويين من الاعتماد لامر الصرف"
 
 #. module: sale_siic
+#: model:ir.model.fields,help:sale_siic.field_sale_order_tax__sequence
+msgid "Gives the sequence order when displaying a list of invoice tax."
+msgstr ""
+
+#. module: sale_siic
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return_report__weight
 msgid "Gross Weight"
 msgstr ""
@@ -702,6 +879,7 @@ msgstr ""
 #. module: sale_siic
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_return_product_search
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_sale_net_search
+#: model_terms:ir.ui.view,arch_db:sale_siic.view_sale_total_report_search
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_sales_contract_filter
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_sales_order_delivery_filter
 msgid "Group By"
@@ -709,14 +887,19 @@ msgstr "تجميع بواسطة"
 
 #. module: sale_siic
 #: model:ir.model.fields,field_description:sale_siic.field_report_sale_return_report_saleproforma__id
+#: model:ir.model.fields,field_description:sale_siic.field_report_sale_total_report_saleproforma__id
 #: model:ir.model.fields,field_description:sale_siic.field_sale_contract__id
 #: model:ir.model.fields,field_description:sale_siic.field_sale_contract_line__id
+#: model:ir.model.fields,field_description:sale_siic.field_sale_daily_order__id
 #: model:ir.model.fields,field_description:sale_siic.field_sale_delivery_vehicle__id
 #: model:ir.model.fields,field_description:sale_siic.field_sale_net_report__id
 #: model:ir.model.fields,field_description:sale_siic.field_sale_net_report_saleproforma__id
+#: model:ir.model.fields,field_description:sale_siic.field_sale_order_tax__id
+#: model:ir.model.fields,field_description:sale_siic.field_sale_report_advance__id
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return__id
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return_line__id
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return_report__id
+#: model:ir.model.fields,field_description:sale_siic.field_sale_total_report__id
 msgid "ID"
 msgstr "الكود"
 
@@ -761,7 +944,6 @@ msgid "If you change the pricelist, only newly added lines will be affected."
 msgstr "اذا قمت بتغيير قائمة الاسعار , الاصناف الجديدة فقط التي سيتغير سعرها"
 
 #. module: sale_siic
-#: model:ir.actions.server,name:sale_siic.ir_actions_server_contract_progress
 #: model:ir.model.fields.selection,name:sale_siic.selection__sale_contract__state__progress
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_contract_form
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_sales_contract_filter
@@ -828,21 +1010,29 @@ msgstr "عنصر اليومية"
 
 #. module: sale_siic
 #: model:ir.model.fields,field_description:sale_siic.field_report_sale_return_report_saleproforma____last_update
+#: model:ir.model.fields,field_description:sale_siic.field_report_sale_total_report_saleproforma____last_update
 #: model:ir.model.fields,field_description:sale_siic.field_sale_contract____last_update
 #: model:ir.model.fields,field_description:sale_siic.field_sale_contract_line____last_update
+#: model:ir.model.fields,field_description:sale_siic.field_sale_daily_order____last_update
 #: model:ir.model.fields,field_description:sale_siic.field_sale_delivery_vehicle____last_update
 #: model:ir.model.fields,field_description:sale_siic.field_sale_net_report____last_update
 #: model:ir.model.fields,field_description:sale_siic.field_sale_net_report_saleproforma____last_update
+#: model:ir.model.fields,field_description:sale_siic.field_sale_order_tax____last_update
+#: model:ir.model.fields,field_description:sale_siic.field_sale_report_advance____last_update
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return____last_update
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return_line____last_update
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return_report____last_update
+#: model:ir.model.fields,field_description:sale_siic.field_sale_total_report____last_update
 msgid "Last Modified on"
 msgstr ""
 
 #. module: sale_siic
 #: model:ir.model.fields,field_description:sale_siic.field_sale_contract__write_uid
 #: model:ir.model.fields,field_description:sale_siic.field_sale_contract_line__write_uid
+#: model:ir.model.fields,field_description:sale_siic.field_sale_daily_order__write_uid
 #: model:ir.model.fields,field_description:sale_siic.field_sale_delivery_vehicle__write_uid
+#: model:ir.model.fields,field_description:sale_siic.field_sale_order_tax__write_uid
+#: model:ir.model.fields,field_description:sale_siic.field_sale_report_advance__write_uid
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return__write_uid
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return_line__write_uid
 msgid "Last Updated by"
@@ -851,7 +1041,10 @@ msgstr ""
 #. module: sale_siic
 #: model:ir.model.fields,field_description:sale_siic.field_sale_contract__write_date
 #: model:ir.model.fields,field_description:sale_siic.field_sale_contract_line__write_date
+#: model:ir.model.fields,field_description:sale_siic.field_sale_daily_order__write_date
 #: model:ir.model.fields,field_description:sale_siic.field_sale_delivery_vehicle__write_date
+#: model:ir.model.fields,field_description:sale_siic.field_sale_order_tax__write_date
+#: model:ir.model.fields,field_description:sale_siic.field_sale_report_advance__write_date
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return__write_date
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return_line__write_date
 msgid "Last Updated on"
@@ -892,6 +1085,11 @@ msgid "Managers must approve discount"
 msgstr "المدير يجب ان يعتمد الخصم"
 
 #. module: sale_siic
+#: model:ir.model.fields,field_description:sale_siic.field_sale_order_tax__manual
+msgid "Manual"
+msgstr ""
+
+#. module: sale_siic
 #: model:ir.model.fields,field_description:sale_siic.field_sale_contract__medium_id
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return__medium_id
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return_report__medium_id
@@ -919,9 +1117,21 @@ msgid "Minimum discount percentage for which a double validation is required"
 msgstr "اقل نسبه للخصم لتمكين مستويين من الاعتماد"
 
 #. module: sale_siic
+#: model:ir.model.fields.selection,name:sale_siic.selection__sale_daily_order__order_source__moulas
+#: model:ir.model.fields.selection,name:sale_siic.selection__sale_order__order_source__moulas
+msgid "Moulas"
+msgstr "مولاس"
+
+#. module: sale_siic
+#: model_terms:ir.ui.view,arch_db:sale_siic.view_sale_report_siic_search
+#: model_terms:ir.ui.view,arch_db:sale_siic.view_sale_total_report_search
+msgid "Moulas Orders"
+msgstr "اوامر المولاس"
+
+#. module: sale_siic
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_sales_contract_filter
-msgid "My Contracts"
-msgstr "اوامر الشحن الخاصه بي"
+msgid "My In-Progress Contracts"
+msgstr "اوامر الشحن الجاريه"
 
 #. module: sale_siic
 #: code:addons/sale_siic/models/sale_contract.py:0
@@ -958,6 +1168,7 @@ msgid "Next Activity Type"
 msgstr ""
 
 #. module: sale_siic
+#: model:ir.model.fields.selection,name:sale_siic.selection__sale_contract__shipping_type__noshipping
 #: model:ir.model.fields.selection,name:sale_siic.selection__sale_order__shipping_type__noshipping
 #: model:ir.model.fields.selection,name:sale_siic.selection__sale_report__shipping_type__noshipping
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_sale_report_siic_search
@@ -1023,6 +1234,7 @@ msgstr ""
 
 #. module: sale_siic
 #: model:ir.actions.server,name:sale_siic.ir_actions_server_sale_order_ondelivery
+#: model:ir.model.fields.selection,name:sale_siic.selection__sale_daily_order__status__ondelivery
 #: model:ir.model.fields.selection,name:sale_siic.selection__sale_order__state__ondelivery
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_sales_order_delivery_filter
 msgid "On Delivery"
@@ -1050,12 +1262,16 @@ msgstr ""
 
 #. module: sale_siic
 #: model:ir.model.fields.selection,name:sale_siic.selection__sale_net_report__state__sale
+#: model_terms:ir.ui.view,arch_db:sale_siic.sale_daily_report_view
+#: model_terms:ir.ui.view,arch_db:sale_siic.sale_report_view
+#: model_terms:ir.ui.view,arch_db:sale_siic.view_sale_total_report_search
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_sales_order_delivery_filter
 msgid "Order"
 msgstr "رقم الامر"
 
 #. module: sale_siic
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return_report__order_id
+#: model:ir.model.fields,field_description:sale_siic.field_sale_total_report__order_id
 msgid "Order #"
 msgstr "رقم الامر"
 
@@ -1063,10 +1279,12 @@ msgstr "رقم الامر"
 #: model:ir.model.fields,field_description:sale_siic.field_sale_net_report__date
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return__date_order
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return_report__date
+#: model:ir.model.fields,field_description:sale_siic.field_sale_total_report__date
 #: model_terms:ir.ui.view,arch_db:sale_siic.sale_return_view_form
 #: model_terms:ir.ui.view,arch_db:sale_siic.sale_return_view_tree
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_return_product_search
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_sale_net_search
+#: model_terms:ir.ui.view,arch_db:sale_siic.view_sale_total_report_search
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_sales_order_delivery_filter
 msgid "Order Date"
 msgstr "تاريخ الامر"
@@ -1089,17 +1307,26 @@ msgid "Order Number Must Be In Digits"
 msgstr "رقم الامر يجب ان يكون مكون من ارقام"
 
 #. module: sale_siic
+#: code:addons/sale_siic/models/sale.py:0
+#, python-format
+msgid "Order Pickings Must Be Closed Before On-Delivery"
+msgstr "اوامر الصرف المخزنية يجب ان يتم اعتمادها قبل المتابعه"
+
+#. module: sale_siic
 #: model:ir.model.fields,field_description:sale_siic.field_sale_contract_line__contract_id
 #: model:ir.model.fields,field_description:sale_siic.field_sale_net_report__name
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return__name
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return_line__order_id
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return_report__name
+#: model:ir.model.fields,field_description:sale_siic.field_sale_total_report__name
 msgid "Order Reference"
 msgstr "الرقم المرجعي للامر"
 
 #. module: sale_siic
+#: model:ir.model.fields,field_description:sale_siic.field_sale_daily_order__order_source
 #: model:ir.model.fields,field_description:sale_siic.field_sale_order__order_source
 #: model:ir.model.fields,field_description:sale_siic.field_sale_report__order_source
+#: model:ir.model.fields,field_description:sale_siic.field_sale_total_report__order_source
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_sale_report_siic_search
 msgid "Order Source"
 msgstr "مصدر الامر"
@@ -1110,8 +1337,10 @@ msgid "Order Type"
 msgstr "نوع الامر"
 
 #. module: sale_siic
+#: code:addons/sale_siic/models/sale_contract.py:0
 #: model:ir.model.fields,field_description:sale_siic.field_sale_contract__orders_ids
 #: model_terms:ir.ui.view,arch_db:sale_siic.orders_delivery_followup_tree
+#, python-format
 msgid "Orders"
 msgstr "اوامر البيع"
 
@@ -1137,9 +1366,15 @@ msgid "Other Info"
 msgstr "بيانات اخرى"
 
 #. module: sale_siic
+#: model_terms:ir.ui.view,arch_db:sale_siic.report_view
+#: model_terms:ir.ui.view,arch_db:sale_siic.sale_daily_order_view
+msgid "PDF Report"
+msgstr "تقارير pdf"
+
+#. module: sale_siic
 #: model:ir.model.fields.selection,name:sale_siic.selection__sale_net_report__trans_type__pos
 msgid "POS"
-msgstr ""
+msgstr "نقاط بيع"
 
 #. module: sale_siic
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return__reference
@@ -1205,6 +1440,8 @@ msgstr "قائمة الاسعار"
 #: model:ir.model.fields,field_description:sale_siic.field_sale_net_report__product_tmpl_id
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return_line__product_id
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return_report__product_tmpl_id
+#: model_terms:ir.ui.view,arch_db:sale_siic.sale_daily_report_view
+#: model_terms:ir.ui.view,arch_db:sale_siic.sale_report_view
 #: model_terms:ir.ui.view,arch_db:sale_siic.sale_return_view_form
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_contract_form
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_return_product_search
@@ -1237,7 +1474,15 @@ msgid "Product Variant"
 msgstr ""
 
 #. module: sale_siic
+#: model:ir.model.fields,field_description:sale_siic.field_sale_daily_order__product_ids
+#: model:ir.model.fields,field_description:sale_siic.field_sale_report_advance__product_ids
+#: model:ir.model.fields.selection,name:sale_siic.selection__sale_report_advance__type__product
+msgid "Products"
+msgstr "المنتجات"
+
+#. module: sale_siic
 #: model:ir.model,name:sale_siic.model_report_sale_return_report_saleproforma
+#: model:ir.model,name:sale_siic.model_report_sale_total_report_saleproforma
 #: model:ir.model,name:sale_siic.model_sale_net_report_saleproforma
 msgid "Proforma Report"
 msgstr ""
@@ -1257,6 +1502,8 @@ msgstr "الكمية المصدرة"
 #. module: sale_siic
 #: model:ir.model.fields,field_description:sale_siic.field_sale_contract_line__product_uom_qty
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return_line__product_uom_qty
+#: model_terms:ir.ui.view,arch_db:sale_siic.sale_daily_report_view
+#: model_terms:ir.ui.view,arch_db:sale_siic.sale_report_view
 msgid "Quantity"
 msgstr "الكميه"
 
@@ -1272,6 +1519,7 @@ msgstr "عرض سعر"
 
 #. module: sale_siic
 #: model:ir.model.fields.selection,name:sale_siic.selection__sale_order__state__sent
+#: model:ir.model.fields.selection,name:sale_siic.selection__sale_total_report__state__sent
 msgid "Quotation Sent"
 msgstr "تم إرسال عرض السعر"
 
@@ -1286,6 +1534,11 @@ msgid "Receipt Date"
 msgstr "تاريخ الاستلام"
 
 #. module: sale_siic
+#: model_terms:ir.ui.view,arch_db:sale_siic.sale_daily_report_view
+msgid "Receipt No"
+msgstr ""
+
+#. module: sale_siic
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return__receipts_count
 msgid "Receipt Orders"
 msgstr "اوامر الاستلام"
@@ -1294,6 +1547,11 @@ msgstr "اوامر الاستلام"
 #: model:ir.model.fields,help:sale_siic.field_sale_return__origin
 msgid "Reference of the document that generated this Return order request."
 msgstr ""
+
+#. module: sale_siic
+#: model:ir.model.fields,field_description:sale_siic.field_sale_report_advance__type
+msgid "Report Print By"
+msgstr "تمت الطباعة بواسطة"
 
 #. module: sale_siic
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_return_product_search
@@ -1327,6 +1585,11 @@ msgstr "المرتجع تم"
 #: model_terms:ir.ui.view,arch_db:sale_siic.sale_return_view_tree
 msgid "Return Number"
 msgstr "رقم المرتجع"
+
+#. module: sale_siic
+#: model_terms:ir.ui.view,arch_db:sale_siic.discount_sale_view_form
+msgid "Return On-Delivery"
+msgstr ""
 
 #. module: sale_siic
 #: model:ir.model.fields.selection,name:sale_siic.selection__sale_net_report__trans_type__return_order
@@ -1366,9 +1629,20 @@ msgstr ""
 #: model:ir.model.fields,field_description:sale_siic.field_sale_order__sale_contract
 #: model:ir.model.fields,field_description:sale_siic.field_sale_order_line__sale_contract
 #: model:ir.model.fields,field_description:sale_siic.field_sale_report__sale_contract
+#: model:ir.model.fields,field_description:sale_siic.field_sale_total_report__sale_contract
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_sale_report_siic_search
 msgid "Sale Contract"
 msgstr "امر شحن"
+
+#. module: sale_siic
+#: model:ir.actions.act_window,name:sale_siic.action_sale_daily_orders
+msgid "Sale Daily Orders"
+msgstr "يومية المبيعات"
+
+#. module: sale_siic
+#: model_terms:ir.ui.view,arch_db:sale_siic.sale_daily_report_view
+msgid "Sale Daily Report"
+msgstr "تقرير يومية المبيعات"
 
 #. module: sale_siic
 #: model:ir.model,name:sale_siic.model_sale_delivery_vehicle
@@ -1381,9 +1655,30 @@ msgid "Sale Discount Approval"
 msgstr "اعتماد خصم المبيعات"
 
 #. module: sale_siic
+#: model:ir.model.fields,field_description:sale_siic.field_sale_order_tax__sale_id
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return__sale_id
 msgid "Sale Order"
 msgstr "امر بيع"
+
+#. module: sale_siic
+#: model:ir.model,name:sale_siic.model_sale_order_tax
+msgid "Sale Order Tax"
+msgstr "ضرائب امر البيع"
+
+#. module: sale_siic
+#: model_terms:ir.ui.view,arch_db:sale_siic.sale_report_view
+msgid "Sale Price"
+msgstr "سعر البيع"
+
+#. module: sale_siic
+#: model:ir.ui.menu,name:sale_siic.sale_advanced_report
+msgid "Sale Product"
+msgstr ""
+
+#. module: sale_siic
+#: model:ir.actions.act_window,name:sale_siic.sale_report_advance
+msgid "Sale Report"
+msgstr "تقرير المبيعات"
 
 #. module: sale_siic
 #: model:ir.model.fields,field_description:sale_siic.field_account_move__sale_return_id
@@ -1392,6 +1687,7 @@ msgid "Sale Return"
 msgstr "مرتجع مبيعات"
 
 #. module: sale_siic
+#: model:ir.actions.report,name:sale_siic.action_sale_report
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_contract_form
 msgid "Sales"
 msgstr "المبيعات"
@@ -1414,6 +1710,11 @@ msgstr ""
 #: model:ir.model,name:sale_siic.model_sale_report
 msgid "Sales Analysis Report"
 msgstr "تقرير المبيعات التحليلي"
+
+#. module: sale_siic
+#: model:ir.model,name:sale_siic.model_sale_total_report
+msgid "Sales Analysis Total Report"
+msgstr "تقرير تحليل المبيعات اجمالي"
 
 #. module: sale_siic
 #: model:ir.model,name:sale_siic.model_sale_contract
@@ -1440,6 +1741,21 @@ msgid "Sales Contracts"
 msgstr "اوامر الشحن"
 
 #. module: sale_siic
+#: model:ir.model,name:sale_siic.model_sale_daily_order
+msgid "Sales Daily Orders"
+msgstr "اوامر البيع اليمومية"
+
+#. module: sale_siic
+#: model:ir.actions.report,name:sale_siic.action_sale_daily_report
+msgid "Sales Daily Report"
+msgstr "تقرير المبيعات اليومي"
+
+#. module: sale_siic
+#: model:ir.model.fields.selection,name:sale_siic.selection__sale_total_report__state__done
+msgid "Sales Done"
+msgstr ""
+
+#. module: sale_siic
 #: model:ir.actions.act_window,name:sale_siic.action_sales_net_report
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_sale_net_graph
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_sale_net_pivot
@@ -1460,6 +1776,7 @@ msgstr "تقرير صافي المبيعات"
 #. module: sale_siic
 #: model:ir.model,name:sale_siic.model_sale_order
 #: model:ir.model.fields.selection,name:sale_siic.selection__sale_net_report__trans_type__sales_order
+#: model:ir.model.fields.selection,name:sale_siic.selection__sale_total_report__state__sale
 msgid "Sales Order"
 msgstr "أمر البيع"
 
@@ -1472,6 +1789,11 @@ msgstr "بند أمر المبيعات"
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_contract_form
 msgid "Sales Orders"
 msgstr "اوامر البيع"
+
+#. module: sale_siic
+#: model_terms:ir.ui.view,arch_db:sale_siic.sale_report_view
+msgid "Sales Report"
+msgstr "تقرير المبيعات"
 
 #. module: sale_siic
 #: model:ir.model,name:sale_siic.model_sale_return
@@ -1521,9 +1843,23 @@ msgid "Sales Team"
 msgstr "فريق المبيعات"
 
 #. module: sale_siic
+#: model:ir.ui.menu,name:sale_siic.sale_total_report
+msgid "Sales Total"
+msgstr "اجمالي المبيعات"
+
+#. module: sale_siic
+#: model:ir.actions.act_window,name:sale_siic.action_sale_total_report
+#: model_terms:ir.ui.view,arch_db:sale_siic.view_sale_total_report_graph
+#: model_terms:ir.ui.view,arch_db:sale_siic.view_sale_total_report_pivot
+#: model_terms:ir.ui.view,arch_db:sale_siic.view_sale_total_report_search
+msgid "Sales Total Analysis"
+msgstr "تحليل اجمالي المبيعات"
+
+#. module: sale_siic
 #: model:ir.model.fields,field_description:sale_siic.field_sale_contract__user_id
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return__user_id
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return_report__user_id
+#: model:ir.model.fields,field_description:sale_siic.field_sale_total_report__user_id
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_return_product_search
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_sales_contract_filter
 msgid "Salesperson"
@@ -1548,14 +1884,10 @@ msgstr ""
 #. module: sale_siic
 #: model:ir.model.fields,field_description:sale_siic.field_sale_contract_line__sequence
 #: model:ir.model.fields,field_description:sale_siic.field_sale_delivery_vehicle__sequence
+#: model:ir.model.fields,field_description:sale_siic.field_sale_order_tax__sequence
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return_line__sequence
 msgid "Sequence"
 msgstr "الترتيب"
-
-#. module: sale_siic
-#: model_terms:ir.ui.view,arch_db:sale_siic.view_contract_form
-msgid "Set Draft"
-msgstr "تحويل الى مسوده"
 
 #. module: sale_siic
 #: model_terms:ir.ui.view,arch_db:sale_siic.sale_return_view_form
@@ -1588,6 +1920,7 @@ msgid "Shipping Methods"
 msgstr "طُرُق الشَّحن"
 
 #. module: sale_siic
+#: model:ir.model.fields,field_description:sale_siic.field_sale_contract__shipping_type
 #: model:ir.model.fields,field_description:sale_siic.field_sale_order__shipping_type
 #: model:ir.model.fields,field_description:sale_siic.field_sale_report__shipping_type
 msgid "Shipping Type"
@@ -1607,12 +1940,21 @@ msgid "Source Document"
 msgstr ""
 
 #. module: sale_siic
+#: model:ir.model.fields,field_description:sale_siic.field_sale_daily_order__from_date
+#: model:ir.model.fields,field_description:sale_siic.field_sale_report_advance__from_date
+msgid "Start Date"
+msgstr "من تاريخ"
+
+#. module: sale_siic
 #: model:ir.model.fields,field_description:sale_siic.field_sale_contract__state
+#: model:ir.model.fields,field_description:sale_siic.field_sale_daily_order__status
 #: model:ir.model.fields,field_description:sale_siic.field_sale_net_report__state
 #: model:ir.model.fields,field_description:sale_siic.field_sale_order__state
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return__state
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return_report__state
+#: model:ir.model.fields,field_description:sale_siic.field_sale_total_report__state
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_return_product_search
+#: model_terms:ir.ui.view,arch_db:sale_siic.view_sale_total_report_search
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_sales_contract_filter
 msgid "Status"
 msgstr "الحالة"
@@ -1636,15 +1978,42 @@ msgstr "اجمالي فرعي"
 
 #. module: sale_siic
 #: model:ir.model.fields.selection,name:sale_siic.selection__sale_contract__contract_source__sugar
+#: model:ir.model.fields.selection,name:sale_siic.selection__sale_daily_order__order_source__sugar
 #: model:ir.model.fields.selection,name:sale_siic.selection__sale_order__order_source__sugar
 #: model:ir.model.fields.selection,name:sale_siic.selection__sale_report__order_source__sugar
+#: model:ir.model.fields.selection,name:sale_siic.selection__sale_total_report__order_source__sugar
 msgid "Sugar"
 msgstr "سكر"
 
 #. module: sale_siic
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_sale_report_siic_search
+#: model_terms:ir.ui.view,arch_db:sale_siic.view_sale_total_report_search
 msgid "Sugar Orders"
 msgstr "اوامر السكر"
+
+#. module: sale_siic
+#: model:ir.model.fields,field_description:sale_siic.field_sale_order_tax__tax_id
+#: model:ir.model.fields,field_description:sale_siic.field_sale_total_report__tax_id
+#: model_terms:ir.ui.view,arch_db:sale_siic.view_sale_total_report_search
+msgid "Tax"
+msgstr "الضريبه"
+
+#. module: sale_siic
+#: model:ir.model.fields,field_description:sale_siic.field_sale_order_tax__account_id
+#: model_terms:ir.ui.view,arch_db:sale_siic.report_saleorder_document
+msgid "Tax Account"
+msgstr "رقم حساب الضريبه"
+
+#. module: sale_siic
+#: model:ir.model.fields,field_description:sale_siic.field_sale_order_tax__name
+#: model_terms:ir.ui.view,arch_db:sale_siic.report_saleorder_document
+msgid "Tax Description"
+msgstr "وصف الضريبه"
+
+#. module: sale_siic
+#: model:ir.model.fields,field_description:sale_siic.field_sale_order__tax_line_ids
+msgid "Tax Lines"
+msgstr ""
 
 #. module: sale_siic
 #: model_terms:ir.ui.view,arch_db:sale_siic.orders_delivery_followup_tree
@@ -1652,6 +2021,11 @@ msgstr "اوامر السكر"
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_contract_tree
 msgid "Tax Total"
 msgstr "اجمالي الضرائب"
+
+#. module: sale_siic
+#: model:ir.model.fields,field_description:sale_siic.field_sale_total_report__tax_value
+msgid "Tax Value"
+msgstr "قيمة الضريبه"
 
 #. module: sale_siic
 #: model:ir.model.fields,field_description:sale_siic.field_sale_contract__amount_by_group
@@ -1664,6 +2038,7 @@ msgstr "اجمالي الضرائب مجمع"
 #: model:ir.model.fields,field_description:sale_siic.field_sale_order__amount_tax
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return__amount_tax
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return_line__tax_id
+#: model_terms:ir.ui.view,arch_db:sale_siic.discount_sale_view_form
 #: model_terms:ir.ui.view,arch_db:sale_siic.product_category_form_view_sale_inherit
 msgid "Taxes"
 msgstr "الضرائب"
@@ -1702,6 +2077,8 @@ msgid ""
 msgstr ""
 
 #. module: sale_siic
+#: model:ir.model.fields,help:sale_siic.field_sale_contract__branch_id
+#: model:ir.model.fields,help:sale_siic.field_sale_daily_order__branch_id
 #: model:ir.model.fields,help:sale_siic.field_sale_order__branch_id
 msgid "This is branch to set"
 msgstr "يجب تسجيل الفرع"
@@ -1735,6 +2112,16 @@ msgstr "تقرير تحليل صافي المبيعات"
 #. module: sale_siic
 #: model_terms:ir.actions.act_window,help:sale_siic.action_return_report_all
 msgid "This report performs analysis on your Sales Return Transaction."
+msgstr ""
+
+#. module: sale_siic
+#: model_terms:ir.actions.act_window,help:sale_siic.action_sale_total_report
+msgid "This report performs analysis on your Sales Total Transaction."
+msgstr ""
+
+#. module: sale_siic
+#: model_terms:ir.ui.view,arch_db:sale_siic.sale_report_view
+msgid "To"
 msgstr ""
 
 #. module: sale_siic
@@ -1788,6 +2175,11 @@ msgstr "الشحنة"
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return__picking_ids
 msgid "Transfers"
 msgstr ""
+
+#. module: sale_siic
+#: model_terms:ir.ui.view,arch_db:sale_siic.sale_daily_report_view
+msgid "Truck No"
+msgstr "رقم المقطورة"
 
 #. module: sale_siic
 #: model:ir.model.fields,field_description:sale_siic.field_sale_order__order_type
@@ -1901,6 +2293,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:sale_siic.field_sale_contract__warehouse_id
 #: model:ir.model.fields,field_description:sale_siic.field_sale_order__warehouse_id
 #: model:ir.model.fields,field_description:sale_siic.field_sale_return__warehouse_id
+#: model_terms:ir.ui.view,arch_db:sale_siic.view_sales_contract_filter
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_sales_order_delivery_filter
 msgid "Warehouse"
 msgstr "المخزن"
@@ -1921,13 +2314,16 @@ msgstr ""
 
 #. module: sale_siic
 #: model:ir.model.fields.selection,name:sale_siic.selection__sale_contract__contract_source__wood
+#: model:ir.model.fields.selection,name:sale_siic.selection__sale_daily_order__order_source__wood
 #: model:ir.model.fields.selection,name:sale_siic.selection__sale_order__order_source__wood
 #: model:ir.model.fields.selection,name:sale_siic.selection__sale_report__order_source__wood
+#: model:ir.model.fields.selection,name:sale_siic.selection__sale_total_report__order_source__wood
 msgid "Wood"
 msgstr "خشب"
 
 #. module: sale_siic
 #: model_terms:ir.ui.view,arch_db:sale_siic.view_sale_report_siic_search
+#: model_terms:ir.ui.view,arch_db:sale_siic.view_sale_total_report_search
 msgid "Wood Orders"
 msgstr "اوامر الخشب"
 
@@ -1962,8 +2358,18 @@ msgid ""
 msgstr ""
 
 #. module: sale_siic
+#: model:ir.model.fields,field_description:sale_siic.field_sale_order__is_authority_modify
+msgid "able to modify"
+msgstr ""
+
+#. module: sale_siic
 #: model_terms:ir.ui.view,arch_db:sale_siic.sale_return_view_form
 msgid "receive products"
+msgstr ""
+
+#. module: sale_siic
+#: model:ir.model,name:sale_siic.model_sale_report_advance
+msgid "sale.report.advance"
 msgstr ""
 
 #. module: sale_siic
