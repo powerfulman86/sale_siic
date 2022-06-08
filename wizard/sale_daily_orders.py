@@ -83,6 +83,7 @@ class SaleDailyOrders(models.TransientModel):
                 'delivery_receipt_number': so.order_id.delivery_receipt_number,
                 'delivery_vehicle': so.order_id.delivery_vehicle,
                 'delivery_truck': so.order_id.delivery_truck,
+                'state': so.order_id.state
             }
             result.append(res)
 

@@ -27,7 +27,7 @@
         'reports/sale_total_report.xml',
         'reports/report_saleorder.xml',
         'reports/sale_report_view.xml',
-        'reports/sale_daily_report.xml',
+        'templates/sale_daily_report.xml',
         'wizard/sale_report.xml',
         'wizard/sale_daily_orders.xml',
         'reports/sale_analytic_report_view.xml',

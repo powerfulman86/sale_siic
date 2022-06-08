@@ -356,12 +356,13 @@
             </field>
         </record>
 
-        <record id="action_sales_contracts" model="ir.actions.act_window">
+        <record id="action_sale_contract_all" model="ir.actions.act_window">
             <field name="name">Sales Contracts</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">sale.contract</field>
             <field name="view_mode">tree,kanban,form,calendar,pivot,graph</field>
             <field name="context">{'search_default_my_sale_contracts_filter': 1}</field>
+            <field name="domain">[('state', '!=', 'draft')]</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
                     Create a new Sales Contract!
@@ -369,11 +370,25 @@
             </field>
         </record>
 
-        <menuitem id="menu_sale_contract"
-                  name="Contracts"
-                  parent="sale.sale_menu_root"
-                  action="action_sales_contracts"
-                  sequence="3"/>
+        <record id="action_sale_contract_draft" model="ir.actions.act_window">
+            <field name="name">Sales Contracts</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.contract</field>
+            <field name="view_mode">tree,kanban,form,calendar,pivot,graph</field>
+            <field name="context">{}</field>
+            <field name="domain">[('state', '=', 'draft')]</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new Sales Contract!
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="menu_sale_contract" name="Contracts" groups="sales_team.group_sale_salesman" parent="sale.sale_menu_root" sequence="3"/>
+        <menuitem id="menu_sale_contract_draft" name="Draft Contract" parent="menu_sale_contract"
+                  action="action_sale_contract_draft" sequence="10"/>
+        <menuitem id="menu_sale_contract_all" name="Sales Contract" parent="menu_sale_contract"
+                  action="action_sale_contract_all" sequence="11"/>
 
     </data>
 </odoo>

@@ -18,6 +18,13 @@
             <field name="groups" eval="[(4, ref('sales_team.group_sale_salesman_all_leads'))]"/>
         </record>
 
+        <record id="sale_contract_manager" model="ir.rule">
+            <field name="name">All sale contracts</field>
+            <field name="model_id" ref="model_sale_contract"/>
+            <field name="domain_force">[(1,'=',1)]</field>
+            <field name="groups" eval="[(4, ref('sales_team.group_sale_manager'))]"/>
+        </record>
+
         <!--sale order branch-->
         <record id="sale.sale_order_personal_rule" model="ir.rule" forcecreate="True">
             <field name="name">Personal Orders</field>
@@ -33,6 +40,13 @@
             <field name="model_id" ref="model_sale_order"/>
             <field name="domain_force">[('branch_id','=',user.branch_id.id)]</field>
             <field name="groups" eval="[(4, ref('sales_team.group_sale_salesman_all_leads'))]"/>
+        </record>
+
+        <record id="sale_order_manager" model="ir.rule">
+            <field name="name">All sale orders</field>
+            <field name="model_id" ref="model_sale_order"/>
+            <field name="domain_force">[(1,'=',1)]</field>
+            <field name="groups" eval="[(4, ref('sales_team.group_sale_manager'))]"/>
         </record>
     </data>
 </odoo>
