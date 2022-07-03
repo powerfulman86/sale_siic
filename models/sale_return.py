@@ -20,6 +20,13 @@ class SaleReturn(models.Model):
     _description = "Sales Return"
     _order = 'id desc'
 
+    @api.model
+    def _get_branch(self):
+        if self.env.user.branch_id:
+            return self.env.user.branch_id.id
+        else:
+            return self.env['res.branch'].search([], limit=1, order='id').id
+
     @api.depends('order_line.price_total')
     def _amount_all(self):
         for order in self:
@@ -72,6 +79,11 @@ class SaleReturn(models.Model):
                                  auto_join=True)
 
     company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
+    branch_id = fields.Many2one(comodel_name="res.branch", string="Branch", required=True, readonly=True, tracking=1,
+                                index=True, help='This is branch to set', states={'draft': [('readonly', False)]},
+                                default=_get_branch)
+    sale_contract = fields.Many2one('sale.contract', "Sale Contract", required=False, readonly=True, tracking=3,
+                                    domain="[('state', '=', 'progress')]", states={'draft': [('readonly', False)]})
     partner_id = fields.Many2one(
         'res.partner', string='Customer', readonly=True,
         states={'draft': [('readonly', False)]},
@@ -130,6 +142,7 @@ class SaleReturn(models.Model):
                     'product_id': line.product_id.id,
                     'name': line.name,
                     'product_uom_qty': line.product_uom_qty,
+                    'so_product_uom_qty': line.product_uom_qty,
                     'product_uom': line.product_uom.id,
                     'price_unit': line.price_unit,
                     'tax_id': [(6, 0, line.tax_id.ids)],
@@ -196,7 +209,6 @@ class SaleReturn(models.Model):
             'view_id': view_id,
             'res_id': invoice_id.id
         }
-        return result
 
     @api.onchange('company_id')
     def _onchange_company_id(self):
@@ -208,7 +220,6 @@ class SaleReturn(models.Model):
     @api.model
     def _default_warehouse_id(self):
         company = self.env.company.id
-        # print(">>>>>>>>>>>>>>>>>>>   ", company)
         warehouse_ids = self.env['stock.warehouse'].search([('company_id', '=', company)], limit=1)
         return warehouse_ids
 
@@ -364,9 +375,8 @@ class SaleReturn(models.Model):
 
     def action_confirm(self):
         if self._get_forbidden_state_confirm() & set(self.mapped('state')):
-            raise UserError(_(
-                'It is not allowed to confirm an order in the following states: %s'
-            ) % (', '.join(self._get_forbidden_state_confirm())))
+            raise UserError(_('It is not allowed to confirm an order in the following states: %s'
+                              ) % (', '.join(self._get_forbidden_state_confirm())))
 
         for order in self.filtered(lambda order: order.partner_id not in order.message_partner_ids):
             order.message_subscribe([order.partner_id.id])
@@ -536,6 +546,8 @@ class SaleReturnLine(models.Model):
     product_updatable = fields.Boolean(string='Can Edit Product', readonly=True, default=True)
 
     product_uom_qty = fields.Float(string='Quantity', digits='Product Unit of Measure', required=False, default=1.0)
+    so_product_uom_qty = fields.Float(string='SO Quantity', digits='Product Unit of Measure', required=False,
+                                      default=1.0)
     product_uom = fields.Many2one('uom.uom', string='Unit of Measure',
                                   domain="[('category_id', '=', product_uom_category_id)]")
     product_uom_category_id = fields.Many2one(related='product_id.uom_id.category_id', readonly=True)
@@ -546,9 +558,19 @@ class SaleReturnLine(models.Model):
 
     # M2M holding the values of product.attribute with create_variant field set to 'no_variant'
     # It allows keeping track of the extra_price associated to those attribute values and add them to the SO line description
-
+    state = fields.Selection([
+        ('draft', 'Quotation'),
+        ('return', 'Return Order'),
+        ('done', 'Locked'),
+        ('cancel', 'Cancelled'),
+    ], string='Status', related='order_id.state')
     order_partner_id = fields.Many2one(related='order_id.partner_id', store=True, string='Customer', readonly=False)
     company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
+    sale_id = fields.Many2one(related='order_id.sale_id', string="Sale Order", )
+    branch_id = fields.Many2one(related='order_id.branch_id', string="Branch", )
+    sale_contract = fields.Many2one(related='order_id.sale_contract', string="Sale Contract", )
+    contract_line_id = fields.Many2one('sale.contract.line', 'Contract details Lines', ondelete='set null', index=True,
+                                       copy=False)
 
     def _get_display_price(self, product):
         # TO DO: move me in master/saas-16 on sale.order
@@ -635,6 +657,10 @@ class SaleReturnLine(models.Model):
         Compute the amounts of the SO line.
         """
         for line in self:
+            if self.sale_id:
+                if line.product_uom_qty > line.so_product_uom_qty:
+                    raise UserError(_('Returned Quantity Must not exceed Sale Order Quantity.'))
+
             price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
             taxes = line.tax_id.compute_all(price, False, line.product_uom_qty, product=line.product_id,
                                             partner=line.order_id.partner_id)

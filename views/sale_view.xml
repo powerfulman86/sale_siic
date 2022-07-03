@@ -44,7 +44,6 @@
                 </xpath>
 
                 <xpath expr="//field[@name='partner_id']" position="before">
-                    <field name="internal_reference"/>
                     <field name="date_order"/>
                     <field name="order_type"/>
                     <field name="branch_id"/>
@@ -73,7 +72,6 @@
                 </xpath>
 
                 <xpath expr="//field[@name='partner_id']" position="before">
-                    <field name="internal_reference"/>
                     <field name="order_type"/>
                     <field name="branch_id"/>
                     <field name="warehouse_id"/>
@@ -119,7 +117,6 @@
                 </xpath>
 
                 <xpath expr="//field[@name='partner_id']" position="before">
-                    <field name="internal_reference"/>
                     <field name="order_type"/>
                     <field name="branch_id" options="{'no_create': True}"/>
                 </xpath>
@@ -162,15 +159,21 @@
                                 <field name="shipping_date" widget="date"/>
                                 <field name="delivery_receipt_number"
                                        attrs="{'readonly': [('is_authority_modify', '=', False)]}"/>
-                                <field name="delivery_vehicle"/>
-                                <field name="delivery_truck"/>
+                                <field name="delivery_company" options="{'no_create': True}"/>
+                                <label for="delivery_vehicle"/>
+                                <div class="o_row">
+                                    <field name="delivery_vehicle" class="mr8"/>
+                                    <strong class="mr8">Truck</strong>
+                                    <div class="o_row">
+                                        <field name="delivery_truck"/>
+                                    </div>
+                                </div>
                                 <field name="is_authority_modify" invisible="1"/>
                             </group>
                             <group string="Shipping Company">
                                 <field name="delivery_date" widget="date"/>
                                 <field name="actual_shipping_id"/>
                                 <field name="delivery_voucher"/>
-                                <field name="delivery_company" options="{'no_create': True}"/>
                                 <field name="delivery_user_id"/>
                             </group>
                         </group>
@@ -265,7 +268,7 @@
             <field name="arch" type="xml">
                 <search string="Search Sales Order">
                     <field name="name" string="Order"
-                           filter_domain="['|', '|','|', ('name', 'ilike', self), ('client_order_ref', 'ilike', self), ('partner_id', 'child_of', self), ('internal_reference', 'ilike', self)]"/>
+                           filter_domain="['|', '|', ('name', 'ilike', self), ('client_order_ref', 'ilike', self), ('partner_id', 'child_of', self)]"/>
                     <field name="partner_id" operator="child_of"/>
                     <!--                    <field name="user_id"/>-->
                     <!--                    <field name="order_type"/>-->
@@ -311,7 +314,6 @@
                 <tree string="Orders" class="o_sale_order" decoration-bf="message_needaction==True"
                       decoration-muted="state=='cancel'" multi_edit="1">
                     <field name="message_needaction" invisible="1"/>
-                    <field name="internal_reference"/>
                     <field name="date_order"/>
                     <field name="partner_id" readonly="1"/>
                     <field name="partner_shipping_id"/>

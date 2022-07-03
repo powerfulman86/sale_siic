@@ -242,7 +242,6 @@ class SaleContract(models.Model):
             sale_id = self.env['sale.order'].create({
                 'partner_id': self.partner_id.id,
                 'partner_shipping_id': ship_id,
-                'internal_reference': 1234,
                 'branch_id': self.branch_id.id,
                 'date_order': date.today(),
                 'origin': self.name,
@@ -256,7 +255,6 @@ class SaleContract(models.Model):
         else:
             sale_id = self.env['sale.order'].create({
                 'partner_id': self.partner_id.id,
-                'internal_reference': 1234,
                 'branch_id': self.branch_id.id,
                 'date_order': date.today(),
                 'origin': self.name,
@@ -339,7 +337,7 @@ class SaleContractLine(models.Model):
         ('progress', 'In Progress'),
         ('done', 'Locked'),
         ('cancel', 'Cancelled'),
-    ], related='contract_id.state', string='Contract Status', readonly=True, copy=False, store=True, default='draft')
+    ], related='contract_id.state', string='Contract Status', )
 
     price_unit = fields.Float('Unit Price', required=True, digits='Product Price', default=0.0)
 
@@ -360,6 +358,9 @@ class SaleContractLine(models.Model):
     issue_lines = fields.One2many('sale.order.line', 'contract_line_id', string='Issue Lines', copy=False)
     qty_issued = fields.Float('Issued Quantity', copy=False, compute='_compute_qty_issued',
                               compute_sudo=True, store=True, digits='Product Unit of Measure', default=0.0)
+    return_lines = fields.One2many('sale.return.line', 'contract_line_id', string='Return Lines', copy=False)
+    qty_returned = fields.Float('Returned Quantity', copy=False, compute='_compute_qty_return',
+                                compute_sudo=True, store=True, digits='Product Unit of Measure', default=0.0)
 
     @api.depends('issue_lines.state', 'issue_lines.product_uom_qty')
     def _compute_qty_issued(self):
@@ -370,6 +371,16 @@ class SaleContractLine(models.Model):
                     qty += inv_line.product_uom._compute_quantity(inv_line.product_uom_qty, line.product_uom)
 
             line.qty_issued = qty
+
+    @api.depends('return_lines.state', 'return_lines.product_uom_qty')
+    def _compute_qty_return(self):
+        for line in self:
+            qty = 0.0
+            for inv_line in line.return_lines:
+                if inv_line.state not in ['cancel']:
+                    qty += inv_line.product_uom._compute_quantity(inv_line.product_uom_qty, line.product_uom)
+
+            line.qty_returned = qty
 
     def name_get(self):
         result = []

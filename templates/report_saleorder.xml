@@ -3,6 +3,19 @@
     <data>
 
         <template id="report_saleorder_document" inherit_id="sale.report_saleorder_document">
+            <!--            <xpath expr="//span[@t-field='line.discount']" position="replace">-->
+            <!--                <span t-esc="'%.2f'%(line.discount)"/>-->
+            <!--            </xpath>-->
+            <xpath expr="//tr[hasclass('border-black')]" position="after">
+                <tr>
+                    <td>Total Discount</td>
+                    <td class="text-right">
+                        <span t-field="doc.amount_discount"
+                              t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                    </td>
+                </tr>
+            </xpath>
+
             <xpath expr="//div[@name='total']" position="replace">
             </xpath>
 
@@ -17,14 +30,14 @@
                                         <th>Tax Account</th>
                                         <th class="text-right">Amount</th>
                                     </tr>
-                            </thead>
-                            <tbody>
+                                </thead>
+                                <tbody>
                                     <tr t-foreach="doc.tax_line_ids" t-as="l">
                                         <td>
-                                        <span t-field="l.name"/>
+                                            <span t-field="l.name"/>
                                         </td>
                                         <td>
-                                        <span t-field="l.account_id"/>
+                                            <span t-field="l.account_id"/>
                                         </td>
                                         <td class="text-right">
                                             <span t-field="l.amount_total"/>
@@ -37,7 +50,9 @@
                         <div t-attf-class="#{'col-4 pull-right' if report_type != 'html' else 'col-sm-7 col-md-5'} ml-auto">
                             <table class="table table-sm">
                                 <tr class="border-black o_subtotal" style="">
-                                    <td><strong>Subtotal</strong></td>
+                                    <td>
+                                        <strong>Subtotal</strong>
+                                    </td>
                                     <td class="text-right">
                                         <span t-field="doc.amount_untaxed"/>
                                     </td>
@@ -47,37 +62,52 @@
                                         <t t-if="amount_by_group[3] == 1 and doc.amount_untaxed == amount_by_group[2]">
                                             <td>
                                                 <span t-esc="amount_by_group[0]"/>
-                                                <span>&amp;nbsp;<span>on</span>&amp;nbsp;<t t-esc="amount_by_group[2]" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/></span>
+                                                <span>&amp;nbsp;<span>on</span>&amp;nbsp;
+                                                    <t t-esc="amount_by_group[2]"
+                                                       t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                                                </span>
                                             </td>
                                             <td class="text-right o_price_total">
                                                 <span t-esc="amount_by_group[1]"
-                                                    t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                                                      t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
                                             </td>
                                         </t>
-                                        <t t-else ="">
+                                        <t t-else="">
                                             <td>
                                                 <span t-esc="amount_by_group[0]"/>
                                             </td>
                                             <td class="text-right o_price_total">
                                                 <span t-esc="amount_by_group[1]"
-                                                    t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                                                      t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
                                             </td>
                                         </t>
                                     </tr>
                                 </t>
                                 <tr class="border-black o_total">
-                                    <td><strong>Total</strong></td>
+                                    <td>
+                                        <strong>Total</strong>
+                                    </td>
                                     <td class="text-right">
                                         <span t-field="doc.amount_total"/>
                                     </td>
                                 </tr>
                             </table>
                         </div>
+                    </div>
+                </div>
+            </xpath>
 
+            <!--add shipping data-->
+            <xpath expr="//p[@t-field='doc.note']" position="after">
+                <div t-if="doc.shipping_type" class="mobility-options row" id="shipping_data">
+                    <div class="col-md-7 offset-md-3">
+                        <strong>Shipping Type:</strong>
+                    </div>
+                    <div class="col-md-7 offset-md-3">
+                         <p t-field="doc.shipping_type"/>
                     </div>
                 </div>
             </xpath>
         </template>
-
     </data>
 </odoo>

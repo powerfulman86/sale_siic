@@ -59,8 +59,6 @@ class SaleOrder(models.Model):
                                    track_visibility='always')
     amount_discount = fields.Monetary(string='Discount', store=True, readonly=True, compute='_amount_all',
                                       digits=dp.get_precision('Account'), track_visibility='always')
-    internal_reference = fields.Char(string="Order Number", required=True, readonly=True,
-                                     states={'draft': [('readonly', False)]})
     order_type = fields.Selection(string="Type", selection=[('in', 'Local'), ('out', 'Foreign'), ], required=True,
                                   readonly=True, tracking=1, default='in', states={'draft': [('readonly', False)]})
     branch_id = fields.Many2one(comodel_name="res.branch", string="Branch", required=True, readonly=True, tracking=1,
@@ -79,7 +77,7 @@ class SaleOrder(models.Model):
 
     delivery_company = fields.Many2one(comodel_name="res.partner", string="Delivery Company", required=False,
                                        domain="[('delivery_company','=',True)]", readonly=True,
-                                       states={'ondelivery': [('readonly', False)]}, tracking=1, )
+                                       states={'draft': [('readonly', False)]}, tracking=1, )
 
     delivery_date = fields.Datetime('Delivered Date', states={'ondelivery': [('readonly', False)]},
                                     copy=False, readonly=True, )
@@ -99,7 +97,8 @@ class SaleOrder(models.Model):
                                          states={'ondelivery': [('readonly', False)]},
                                          domain="[('parent_id', '=', partner_id),('type','=','delivery')]", )
     sale_contract = fields.Many2one('sale.contract', "Sale Contract", required=False, readonly=True, tracking=3,
-                                    domain="[('state', '=', 'progress')]", states={'draft': [('readonly', False)]})
+                                    domain="[('state', '=', 'progress'),('contract_source','=',order_source),('partner_id','=',partner_id)]",
+                                    states={'draft': [('readonly', False)]})
     warehouse_id = fields.Many2one('stock.warehouse', string='Warehouse', required=True, readonly=True,
                                    states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
                                    domain="['|',('branch_id', '=', branch_id),('branch_id','=',False)]",
@@ -150,7 +149,7 @@ class SaleOrder(models.Model):
 
     def action_close(self):
         if self.shipping_type == 'bycompany':
-            if not (self.delivery_date or self.delivery_voucher or self.delivery_company or self.actual_shipping_id):
+            if not (self.delivery_date or self.delivery_voucher or self.actual_shipping_id):
                 raise ValidationError(_("Delivery Data Must Be Completed Before Close !"))
 
         # if self.partner_shipping_id.parent_id != self.actual_shipping_id.parent_id:
@@ -192,12 +191,6 @@ class SaleOrder(models.Model):
         self.supply_rate()
         return True
 
-    @api.constrains('internal_reference')
-    def constrains_internal_reference(self):
-        for rec in self:
-            if not rec.internal_reference.isdigit():
-                raise ValidationError(_("Order Number Must Be In Digits"))
-
     def action_confirm(self):
         if not self.user_has_groups('sales_team.group_sale_salesman_all_leads'):
             return
@@ -206,7 +199,7 @@ class SaleOrder(models.Model):
             date = rec.date_order
             # check required data in case of shipping by company
             if self.shipping_type == 'bycompany':
-                if not (self.shipping_date or self.delivery_receipt_number):
+                if not (self.shipping_date or self.delivery_receipt_number or self.delivery_company):
                     raise ValidationError(_("Delivery Data Must Be Completed Before Approve !"))
 
             if len(rec.order_line.ids) == 0:
@@ -277,6 +270,8 @@ class SaleOrder(models.Model):
             branch = self.env['res.branch'].browse(vals['branch_id'])
             vals['name'] = branch.sale_sequence_id.next_by_id()
         res = super(SaleOrder, self).create(vals)
+        if not res.delivery_receipt_number:
+            res.write({'delivery_receipt_number': res.name})
         return res
 
 
