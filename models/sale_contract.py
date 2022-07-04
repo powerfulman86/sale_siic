@@ -250,8 +250,7 @@ class SaleContract(models.Model):
                 'warehouse_id': self.warehouse_id.id,
                 'order_source': self.contract_source,
                 'order_type': 'in',
-                'pricelist_id': self.pricelist_id.id,
-            })
+                'pricelist_id': self.pricelist_id.id, })
         else:
             sale_id = self.env['sale.order'].create({
                 'partner_id': self.partner_id.id,
@@ -263,8 +262,7 @@ class SaleContract(models.Model):
                 'warehouse_id': self.warehouse_id.id,
                 'order_source': self.contract_source,
                 'order_type': 'in',
-                'pricelist_id': self.pricelist_id.id,
-            })
+                'pricelist_id': self.pricelist_id.id, })
 
         for line in self.contract_line:
             self.env['sale.order.line'].create({
@@ -273,8 +271,7 @@ class SaleContract(models.Model):
                 'name': line.product_id.name,
                 'product_uom': line.product_uom.id,
                 'price_unit': line.price_unit,
-                'product_uom_qty': line.product_uom_qty,
-            })
+                'product_uom_qty': line.product_uom_qty, })
 
         return {
             'type': 'ir.actions.act_window',
@@ -282,8 +279,7 @@ class SaleContract(models.Model):
             'res_model': 'sale.order',
             'view_mode': 'tree,form',
             'domain': [('id', '=', sale_id.id)],
-            'context': {'create': False},
-        }
+            'context': {'create': False}, }
 
     def _cron_update_contract_status(self):
         # 1st update related contract line
@@ -298,6 +294,12 @@ class SaleContract(models.Model):
                      ])
                 if sale_contract_line.ids != 0:
                     line.contract_line_id = sale_contract_line
+
+        # 2nd update contract status
+        sale_contracts = self.search([('state', '=', 'draft')])
+        for contract in sale_contracts:
+            contract.action_approve()
+            contract.action_progress()
 
 
 class SaleContractLine(models.Model):

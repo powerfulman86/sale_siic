@@ -27,6 +27,8 @@
         'templates/report_saleorder.xml',
         'templates/sale_report_view.xml',
         'templates/sale_daily_report.xml',
+        'templates/sale_contract_template.xml',
+        'templates/sale_return_template.xml',
         'wizard/sale_report.xml',
         'wizard/sale_daily_orders.xml',
         'reports/sale_analytic_report_view.xml',
