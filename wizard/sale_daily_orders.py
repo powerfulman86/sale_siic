@@ -127,6 +127,7 @@ class SaleDailyOrders(models.TransientModel):
                 'sale_contract': so.order_id.sale_contract.internal_reference,
             }
             result.append(res)
+        result.sort(key=lambda b: b['delivery_receipt_number'])
 
         datas = {
             'ids': self,
