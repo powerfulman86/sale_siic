@@ -309,8 +309,7 @@ class SaleContractLine(models.Model):
     _check_company_auto = True
 
     contract_id = fields.Many2one('sale.contract', string='Order Reference', required=True, ondelete='cascade',
-                                  index=True,
-                                  copy=False)
+                                  index=True, copy=False)
     name = fields.Text(string='Description', )
     sequence = fields.Integer(string='Sequence', default=10)
     product_id = fields.Many2one(

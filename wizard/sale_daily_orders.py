@@ -16,6 +16,14 @@ class SaleDailyOrders(models.TransientModel):
         else:
             return self.env['res.branch'].search([], limit=1, order='id').id
 
+    @api.model
+    def _get_warehouse(self):
+        if self.env.user.branch_id:
+            return self.env['stock.warehouse'].search([('branch_id', '=', self.env.user.branch_id.id)], limit=1,
+                                                      order='id').id
+        else:
+            return self.env['stock.warehouse'].search([], limit=1, order='id').id
+
     from_date = fields.Date(string="Start Date", default=fields.Date.today(), reqired=True)
     to_date = fields.Date(string="End Date", default=fields.Date.today(), reqired=True)
     order_source = fields.Selection(string="Order Source",
@@ -26,6 +34,9 @@ class SaleDailyOrders(models.TransientModel):
                                                ('moulas', 'Moulas'), ], default='all', )
     branch_id = fields.Many2one(comodel_name="res.branch", string="Branch", help='This is branch to set',
                                 default=_get_branch)
+    warehouse_id = fields.Many2one('stock.warehouse', string='Warehouse',
+                                   domain="['|',('branch_id', '=', branch_id),('branch_id','=',False)]",
+                                   default=_get_warehouse)
     status = fields.Selection([('all', 'All'),
                                ('draft', 'Draft'),
                                ('done', 'Done'),
@@ -36,29 +47,58 @@ class SaleDailyOrders(models.TransientModel):
     customer_ids = fields.Many2many('res.partner', string="Customers", )
     product_ids = fields.Many2many('product.product', string='Products')
 
+    @api.onchange('branch_id')
+    def _branch_reset_warehouse(self):
+        self.update({'warehouse_id': False, })
+
     def get_sale_daily_report(self):
         datas = self._get_data()
         return self.env.ref('sale_siic.action_sale_daily_report').report_action([], data=datas)
 
     def _get_data(self):
         # apply status role and source rule
-        if self.order_source == 'all':
-            if self.status == 'all':
-                sale_order_line = self.env['sale.order.line'].search([('order_id.branch_id', '=', self.branch_id.id)])
+        if self.warehouse_id:
+            if self.order_source == 'all':
+                if self.status == 'all':
+                    sale_order_line = self.env['sale.order.line'].search(
+                        [('order_id.branch_id', '=', self.branch_id.id),
+                         ('order_id.warehouse_id', '=', self.warehouse_id.id)])
+                else:
+                    sale_order_line = self.env['sale.order.line'].search(
+                        [('order_id.branch_id', '=', self.branch_id.id),
+                         ('order_id.warehouse_id', '=', self.warehouse_id.id),
+                         ('order_id.state', '=', self.status)])
             else:
-                sale_order_line = self.env['sale.order.line'].search(
-                    [('order_id.branch_id', '=', self.branch_id.id),
-                     ('order_id.state', '=', self.status)])
+                if self.status == 'all':
+                    sale_order_line = self.env['sale.order.line'].search(
+                        [('order_id.branch_id', '=', self.branch_id.id),
+                         ('order_id.warehouse_id', '=', self.warehouse_id.id),
+                         ('order_id.order_source', '=', self.order_source)])
+                else:
+                    sale_order_line = self.env['sale.order.line'].search(
+                        [('order_id.branch_id', '=', self.branch_id.id),
+                         ('order_id.warehouse_id', '=', self.warehouse_id.id),
+                         ('order_id.state', '=', self.status),
+                         ('order_id.order_source', '=', self.order_source)])
         else:
-            if self.status == 'all':
-                sale_order_line = self.env['sale.order.line'].search(
-                    [('order_id.branch_id', '=', self.branch_id.id),
-                     ('order_id.order_source', '=', self.order_source)])
+            if self.order_source == 'all':
+                if self.status == 'all':
+                    sale_order_line = self.env['sale.order.line'].search(
+                        [('order_id.branch_id', '=', self.branch_id.id)])
+                else:
+                    sale_order_line = self.env['sale.order.line'].search(
+                        [('order_id.branch_id', '=', self.branch_id.id),
+                         ('order_id.state', '=', self.status)])
             else:
-                sale_order_line = self.env['sale.order.line'].search(
-                    [('order_id.branch_id', '=', self.branch_id.id),
-                     ('order_id.state', '=', self.status),
-                     ('order_id.order_source', '=', self.order_source)])
+                if self.status == 'all':
+                    sale_order_line = self.env['sale.order.line'].search(
+                        [('order_id.branch_id', '=', self.branch_id.id),
+                         ('order_id.order_source', '=', self.order_source)])
+                else:
+                    sale_order_line = self.env['sale.order.line'].search(
+                        [('order_id.branch_id', '=', self.branch_id.id),
+                         ('order_id.state', '=', self.status),
+                         ('order_id.order_source', '=', self.order_source)])
 
         filtered = self._get_filtered(sale_order_line)
         result = []
@@ -83,7 +123,8 @@ class SaleDailyOrders(models.TransientModel):
                 'delivery_receipt_number': so.order_id.delivery_receipt_number,
                 'delivery_vehicle': so.order_id.delivery_vehicle,
                 'delivery_truck': so.order_id.delivery_truck,
-                'state': so.order_id.state
+                'state': so.order_id.state,
+                'sale_contract': so.order_id.sale_contract.internal_reference,
             }
             result.append(res)
 
@@ -97,6 +138,7 @@ class SaleDailyOrders(models.TransientModel):
             'end_date': self.to_date,
             'status': self.status,
             'branch_id': self.branch_id.name,
+            'warehouse_id': self.warehouse_id.name,
             'order_source': self.order_source,
             'no_value': False,
             'same_date': False,

@@ -81,7 +81,8 @@ class SaleOrder(models.Model):
 
     delivery_date = fields.Datetime('Delivered Date', states={'ondelivery': [('readonly', False)]},
                                     copy=False, readonly=True, )
-    delivery_receipt_number = fields.Char(string="Delivery Number", tracking=3, )
+    delivery_receipt_number = fields.Char(string="Delivery Number", tracking=3, readonly=True,
+                                          states={'ondelivery': [('readonly', False)]})
     delivery_voucher = fields.Char(string="Delivery Voucher", readonly=True,
                                    states={'ondelivery': [('readonly', False)]})
     delivery_vehicle = fields.Char(string="Delivery Vehicle", readonly=True, required=False,
@@ -111,7 +112,8 @@ class SaleOrder(models.Model):
     shipping_type = fields.Selection(string="Shipping Type",
                                      selection=[('bycompany', 'By Company'), ('byclient', 'By Client'),
                                                 ('noshipping', 'No Shipping'), ],
-                                     required=False, default='bycompany')
+                                     required=False, default='bycompany', readonly=True,
+                                     states={'draft': [('readonly', False)]})
     is_authority_modify = fields.Boolean(string="able to modify", default=True, compute='_check_modify_able', )
 
     delivery_user_id = fields.Many2one('res.users', 'Delivery User', readonly=True, )
@@ -149,7 +151,7 @@ class SaleOrder(models.Model):
 
     def action_close(self):
         if self.shipping_type == 'bycompany':
-            if not (self.delivery_date or self.delivery_voucher or self.actual_shipping_id):
+            if not self.delivery_date or not self.delivery_voucher or not self.actual_shipping_id:
                 raise ValidationError(_("Delivery Data Must Be Completed Before Close !"))
 
         # if self.partner_shipping_id.parent_id != self.actual_shipping_id.parent_id:

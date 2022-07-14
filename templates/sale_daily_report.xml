@@ -4,19 +4,15 @@
         <template id="sale_daily_report_view">
             <t t-call="web.html_container">
                 <t t-call="web.external_layout">
-                    <t class="page">
+                    <div class="page">
                         <div class="oe_structure"/>
-                        <center>
-                            <b>
-                                <h3>Sale Daily Report</h3>
-                            </b>
-                        </center>
+                        <h3>Sale Daily Report</h3>
                         <div class="row mt32 mb32">
-                            <div class="col-3 bm-2">
+                            <div class="col-2 bm-2">
                                 <strong>Start Date:</strong>
                                 <p t-esc="start_date"/>
                             </div>
-                            <div class="col-3 bm-2">
+                            <div class="col-2 bm-2">
                                 <strong>To Date:</strong>
                                 <p t-esc="end_date"/>
                             </div>
@@ -25,128 +21,133 @@
                                 <p t-esc="branch_id"/>
                             </div>
                             <div class="col-3 bm-2">
+                                <strong>Warehouse:</strong>
+                                <p t-esc="warehouse_id"/>
+                            </div>
+                            <div class="col-2 bm-2">
                                 <strong>Status:</strong>
                                 <p t-esc="status"/>
                             </div>
-                            <div class="col-3 bm-2">
+                            <div class="col-2 bm-2">
                                 <strong>Source:</strong>
                                 <p t-esc="order_source"/>
                             </div>
                         </div>
-
-                        <t t-if="same_date == True">
-                            <table class="table table-sm o_main_table">
-                                <t t-set="t_qty" t-value="0"/>
-                                <thead>
-                                    <tr style="text-align:center;vertical-align:middle;font-size: 15px;">
-                                        <th style="width:10%">Order</th>
-                                        <th style="width:10%">Receipt No</th>
-                                        <th style="width:10%">Status</th>
-                                        <th style="width:15%">Product</th>
-                                        <th style="width:5%">Quantity</th>
-                                        <th style="width:20%">Customer</th>
-                                        <th style="width:20%">Address</th>
-                                        <th style="width:10%">Car Data</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr t-foreach="form" t-as="order">
-                                        <td>
-                                            <span t-esc="order['so']"/>
-                                        </td>
-                                        <td>
-                                            <span t-esc="order['delivery_receipt_number']"/>
-                                        </td>
-                                        <td>
-                                            <span t-esc="order['state']"/>
-                                        </td>
-                                        <td>
-                                            <span t-esc="order['product']"/>
-                                        </td>
-                                        <td>
-                                            <span t-esc="order['quantity']"/>
-                                            <t t-set="t_qty" t-value="t_qty + order['quantity']"/>
-                                        </td>
-                                        <td>
-                                            <span t-esc="order['partner']"/>
-                                        </td>
-                                        <td>
-                                            <span t-esc="order['partner_shipping_id']"/>
-                                        </td>
-                                        <td>
-                                            <span t-esc="order['delivery_vehicle']"/>
-                                            /
-                                            <span t-esc="order['delivery_truck']"/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <span>Total Quantity</span>
-                                            <t t-esc="t_qty"/>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </t>
-                        <t t-if="same_date == False">
-                            <table class="table table-condensed">
-                                <t t-set="t_qty" t-value="0"/>
-                                <thead>
-                                    <tr style="text-align:center;vertical-align:middle;font-size: 15px;">
-                                        <th style="width:8%">Date</th>
-                                        <th style="width:10%">Order</th>
-                                        <th style="width:10%">Receipt No</th>
-                                        <th style="width:8%">Status</th>
-                                        <th style="width:15%">Product</th>
-                                        <th style="width:5%">Quantity</th>
-                                        <th style="width:15%">Customer</th>
-                                        <th style="width:19%">Address</th>
-                                        <th style="width:10%">Car Data</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr t-foreach="form" t-as="order">
-                                        <td>
-                                            <span t-esc="order['date']" t-options='{"widget": "date"}'/>
-                                        </td>
-                                        <td>
-                                            <span t-esc="order['so']"/>
-                                        </td>
-                                        <td>
-                                            <span t-esc="order['delivery_receipt_number']"/>
-                                        </td>
-                                        <td>
-                                            <span t-esc="order['state']"/>
-                                        </td>
-                                        <td>
-                                            <span t-esc="order['product']"/>
-                                        </td>
-                                        <td>
-                                            <span t-esc="order['quantity']"/>
-                                            <t t-set="t_qty" t-value="t_qty + order['quantity']"/>
-                                        </td>
-                                        <td>
-                                            <span t-esc="order['partner']"/>
-                                        </td>
-                                        <td>
-                                            <span t-esc="order['partner_shipping_id']"/>
-                                        </td>
-                                        <td>
-                                            <span t-esc="order['delivery_vehicle']"/>
-                                            /
-                                            <span t-esc="order['delivery_truck']"/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <span>Total Quantity</span>
-                                            <t t-esc="t_qty"/>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </t>
-                    </t>
+                        <div class="col-md-6">
+                            <t t-if="same_date == True">
+                                <table class="table table-sm o_main_table">
+                                    <t t-set="t_qty" t-value="0"/>
+                                    <thead>
+                                        <tr style="text-align:center;vertical-align:middle;font-size: 15px;">
+                                            <th style="width:10%">Contract</th>
+                                            <th style="width:10%">Receipt No</th>
+                                            <th style="width:10%">Status</th>
+                                            <th style="width:15%">Product</th>
+                                            <th style="width:5%">Quantity</th>
+                                            <th style="width:20%">Customer</th>
+                                            <th style="width:20%">Address</th>
+                                            <th style="width:10%">Car Data</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-foreach="form" t-as="order">
+                                            <td>
+                                                <span t-esc="order['sale_contract']"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="order['delivery_receipt_number']"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="order['state']"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="order['product']"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="order['quantity']"/>
+                                                <t t-set="t_qty" t-value="t_qty + order['quantity']"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="order['partner']"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="order['partner_shipping_id']"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="order['delivery_vehicle']"/>
+                                                /
+                                                <span t-esc="order['delivery_truck']"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <span>Total Quantity</span>
+                                                <t t-esc="t_qty"/>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </t>
+                            <t t-if="same_date == False">
+                                <table class="table table-condensed">
+                                    <t t-set="t_qty" t-value="0"/>
+                                    <thead>
+                                        <tr style="text-align:center;vertical-align:middle;font-size: 15px;">
+                                            <th style="width:8%">Contract</th>
+                                            <th style="width:8%">Date</th>
+                                            <th style="width:8%">Receipt No</th>
+                                            <th style="width:8%">Status</th>
+                                            <th style="width:15%">Product</th>
+                                            <th style="width:5%">Quantity</th>
+                                            <th style="width:19%">Customer</th>
+                                            <th style="width:17%">Address</th>
+                                            <th style="width:10%">Car Data</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-foreach="form" t-as="order">
+                                            <td>
+                                                <span t-esc="order['sale_contract']"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="order['date']" t-options='{"widget": "date"}'/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="order['delivery_receipt_number']"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="order['state']"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="order['product']"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="order['quantity']"/>
+                                                <t t-set="t_qty" t-value="t_qty + order['quantity']"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="order['partner']"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="order['partner_shipping_id']"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="order['delivery_vehicle']"/>
+                                                /
+                                                <span t-esc="order['delivery_truck']"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <span>Total Quantity</span>
+                                                <t t-esc="t_qty"/>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </t>
+                        </div>
+                    </div>
                 </t>
             </t>
         </template>
@@ -158,7 +159,9 @@
                     report_type="qweb-pdf"
                     file="sale_siic.sale_daily_report_view"
                     name="sale_siic.sale_daily_report_view"
+                    print_report_name="'Daily Sales Order - %s' % (object.name)"
                     paperformat="paperformat_landscape_siic"/>
+
         </data>
     </data>
 </odoo>
