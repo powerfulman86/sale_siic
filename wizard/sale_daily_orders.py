@@ -116,7 +116,7 @@ class SaleDailyOrders(models.TransientModel):
             res = {
                 'so': so.order_id.name,
                 'date': so.order_id.date_order,
-                'product': so.product_id.name,
+                'product': so.product_id.display_name,
                 'quantity': so.product_uom_qty,
                 'partner': so.order_id.partner_id.name,
                 'partner_shipping_id': so.order_id.partner_shipping_id.name,
