@@ -207,6 +207,10 @@ class SaleOrder(models.Model):
             if len(rec.order_line.ids) == 0:
                 raise ValidationError(_('You Must Add Products Data.'))
 
+            if rec.order_source == 'sugar' and self.sale_contract:
+                if len(rec.order_line.ids) != 1:
+                    raise ValidationError(_('Sugar Orders Must Be 1 line of product.'))
+
             res = super(SaleOrder, rec).action_confirm()
             rec.date_order = date
             return res

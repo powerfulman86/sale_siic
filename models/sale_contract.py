@@ -105,7 +105,7 @@ class SaleContract(models.Model):
                                                 ('noshipping', 'No Shipping'), ], required=True, default='bycompany')
 
     _sql_constraints = [
-        ("contract_reference_uniq", "unique (internal_reference)", "Contract Number already exists !"),
+        ("contract_reference_uniq", "unique (internal_reference,contract_source)", "Contract Number already exists !"),
     ]
 
     @api.depends('orders_ids')

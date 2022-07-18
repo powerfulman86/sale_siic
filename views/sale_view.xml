@@ -157,8 +157,16 @@
                         <group>
                             <group string="Branch Shipping">
                                 <field name="shipping_date" widget="date"/>
-                                <field name="delivery_receipt_number"
-                                       attrs="{'readonly': [('is_authority_modify', '=', False)]}"/>
+                                <label for="delivery_receipt_number"/>
+                                <div class="o_row">
+                                    <field name="delivery_receipt_number"
+                                           attrs="{'readonly': [('is_authority_modify', '=', False)]}"/>
+                                    <span name="update_cost_price">
+                                        <button string="Change" type="action" groups="sales_team.group_sale_manager"
+                                                name="%(action_view_change_delivery_number)d"
+                                                class="oe_link pt-0 oe_inline"/>
+                                    </span>
+                                </div>
                                 <field name="delivery_company" options="{'no_create': True}"/>
                                 <label for="delivery_vehicle"/>
                                 <div class="o_row">

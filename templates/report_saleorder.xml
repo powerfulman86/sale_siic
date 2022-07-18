@@ -20,6 +20,7 @@
             </xpath>
 
             <xpath expr="//p[@t-field='doc.note']" position="before">
+                <br/>
                 <div class="clearfix">
                     <div id="total" class="row" name="total">
                         <div t-attf-class="#{'col-8 pull-left' if report_type != 'html' else 'col-sm-7 col-md-5 pull-left'} ml-auto">
@@ -99,12 +100,18 @@
 
             <!--add shipping data-->
             <xpath expr="//p[@t-field='doc.note']" position="after">
-                <div t-if="doc.shipping_type" class="mobility-options row" id="shipping_data">
-                    <div class="col-md-7 offset-md-3">
+                <div t-if="doc.shipping_type" class="row mt32 mb32" id="shipping_informations">
+                    <div t-if="doc.shipping_type" class="col-3 bm-2">
                         <strong>Shipping Type:</strong>
+                        <p t-field="doc.shipping_type" class="m-0"/>
                     </div>
-                    <div class="col-md-7 offset-md-3">
-                         <p t-field="doc.shipping_type"/>
+                    <div t-if="doc.shipping_date" class="col-3 bm-2">
+                        <strong>Shipping Date:</strong>
+                        <p t-field="doc.shipping_date" class="m-0"/>
+                    </div>
+                    <div t-if="doc.delivery_company" class="col-3 bm-2">
+                        <strong>Delivery Company:</strong>
+                        <p t-field="doc.delivery_company" class="m-0"/>
                     </div>
                 </div>
             </xpath>
