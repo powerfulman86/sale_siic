@@ -122,10 +122,10 @@
                                                context="{'company_id': parent.company_id}"
                                                groups="uom.group_uom" options='{"no_open": True}' optional="show"/>
 
-                                        <field name="qty_reserved"/>
-                                        <field name="qty_issued"/>
-                                        <field name="qty_returned"/>
-                                        <field name="qty_available"/>
+<!--                                        <field name="qty_reserved"/>-->
+<!--                                        <field name="qty_issued"/>-->
+<!--                                        <field name="qty_returned"/>-->
+<!--                                        <field name="qty_available"/>-->
                                         <field name="price_unit"/>
                                         <field name="tax_id" widget="many2many_tags" options="{'no_create': True}"
                                                domain="[('type_tax_use','=','sale'),('company_id','=',parent.company_id)]"
