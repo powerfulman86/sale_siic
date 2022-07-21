@@ -374,9 +374,9 @@ class SaleContractLine(models.Model):
 
     discount = fields.Float(string='Discount (%)', digits='Discount', default=0.0)
     issue_lines = fields.One2many('sale.order.line', 'contract_line_id', string='Issue Lines', copy=False)
-    qty_reserved = fields.Float('Reserved Quantity', copy=False, compute='_compute_qty_reserved',
+    qty_reserved = fields.Float('Reserved Quantity', copy=False, compute='_compute_sale_qty',
                                 compute_sudo=True, store=True, digits='Product Unit of Measure', default=0.0)
-    qty_issued = fields.Float('Issued Quantity', copy=False, compute='_compute_qty_issued',
+    qty_issued = fields.Float('Issued Quantity', copy=False, compute='_compute_sale_qty',
                               compute_sudo=True, store=True, digits='Product Unit of Measure', default=0.0)
     return_lines = fields.One2many('sale.return.line', 'contract_line_id', string='Return Lines', copy=False)
     qty_returned = fields.Float('Returned Quantity', copy=False, compute='_compute_qty_return',
@@ -389,24 +389,19 @@ class SaleContractLine(models.Model):
             line.qty_available = line.product_uom_qty - line.qty_reserved - line.qty_issued + line.qty_returned
 
     @api.depends('issue_lines.state', 'issue_lines.product_uom_qty')
-    def _compute_qty_reserved(self):
+    def _compute_sale_qty(self):
         for line in self:
-            qty = 0.0
-            for inv_line in line.issue_lines:
-                if inv_line.state in ['draft', 'sale']:
-                    qty += inv_line.product_uom._compute_quantity(inv_line.product_uom_qty, line.product_uom)
+            issue_qty = 0.0
+            reserve_qty = 0.0
 
-            line.qty_reserved = qty
-
-    @api.depends('issue_lines.state', 'issue_lines.product_uom_qty')
-    def _compute_qty_issued(self):
-        for line in self:
-            qty = 0.0
             for inv_line in line.issue_lines:
                 if inv_line.state not in ['draft', 'sale', 'cancel']:
-                    qty += inv_line.product_uom._compute_quantity(inv_line.product_uom_qty, line.product_uom)
+                    issue_qty += inv_line.product_uom._compute_quantity(inv_line.product_uom_qty, line.product_uom)
+                if inv_line.state in ['draft', 'sale']:
+                    reserve_qty += inv_line.product_uom._compute_quantity(inv_line.product_uom_qty, line.product_uom)
 
-            line.qty_issued = qty
+            line.qty_reserved = reserve_qty
+            line.qty_issued = issue_qty
 
     @api.depends('return_lines.state', 'return_lines.product_uom_qty')
     def _compute_qty_return(self):
