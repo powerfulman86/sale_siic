@@ -94,6 +94,8 @@ class SaleContract(models.Model):
 
     orders_ids = fields.One2many('sale.order', 'sale_contract', string='Orders')
     orders_count = fields.Integer(string='Orders Count', compute='_compute_order_ids')
+    return_ids = fields.One2many('sale.return', 'sale_contract', string='Return Orders')
+    returns_count = fields.Integer(string='Returns Count', compute='_compute_return_ids')
     contract_source = fields.Selection(string="Contract Source", readonly=True, states={'draft': [('readonly', False)]},
                                        selection=[('default', 'Default'), ('sugar', 'Sugar'), ('wood', 'Wood'), ],
                                        required=True, default='default')
@@ -112,6 +114,11 @@ class SaleContract(models.Model):
     def _compute_order_ids(self):
         for contract in self:
             contract.orders_count = len(contract.orders_ids)
+
+    @api.depends('return_ids')
+    def _compute_return_ids(self):
+        for contract in self:
+            contract.returns_count = len(contract.return_ids)
 
     def name_get(self):
         res = []
@@ -213,6 +220,16 @@ class SaleContract(models.Model):
             'view_mode': 'tree,form,pivot',
             'domain': [('sale_contract', '=', self.id)],
             # 'context': {"default_sale_contract": self.id, },
+        }
+
+    def action_view_return_orders(self):
+        self.ensure_one()
+        return {
+            'name': _('Contract Return Orders'),
+            'res_model': 'sale.return',
+            'type': 'ir.actions.act_window',
+            'view_mode': 'tree,form,pivot',
+            'domain': [('sale_contract', '=', self.id)],
         }
 
     def action_approve(self):
@@ -357,18 +374,36 @@ class SaleContractLine(models.Model):
 
     discount = fields.Float(string='Discount (%)', digits='Discount', default=0.0)
     issue_lines = fields.One2many('sale.order.line', 'contract_line_id', string='Issue Lines', copy=False)
+    qty_reserved = fields.Float('Reserved Quantity', copy=False, compute='_compute_qty_reserved',
+                                compute_sudo=True, store=True, digits='Product Unit of Measure', default=0.0)
     qty_issued = fields.Float('Issued Quantity', copy=False, compute='_compute_qty_issued',
                               compute_sudo=True, store=True, digits='Product Unit of Measure', default=0.0)
     return_lines = fields.One2many('sale.return.line', 'contract_line_id', string='Return Lines', copy=False)
     qty_returned = fields.Float('Returned Quantity', copy=False, compute='_compute_qty_return',
                                 compute_sudo=True, store=True, digits='Product Unit of Measure', default=0.0)
+    qty_available = fields.Float('Available Quantity', copy=False, compute='_compute_available_qty',
+                                 compute_sudo=True, store=True, digits='Product Unit of Measure', default=0.0)
+
+    def _compute_available_qty(self):
+        for line in self:
+            line.qty_available = line.product_uom_qty - line.qty_reserved - line.qty_issued + line.qty_returned
+
+    @api.depends('issue_lines.state', 'issue_lines.product_uom_qty')
+    def _compute_qty_reserved(self):
+        for line in self:
+            qty = 0.0
+            for inv_line in line.issue_lines:
+                if inv_line.state in ['draft', 'sale']:
+                    qty += inv_line.product_uom._compute_quantity(inv_line.product_uom_qty, line.product_uom)
+
+            line.qty_reserved = qty
 
     @api.depends('issue_lines.state', 'issue_lines.product_uom_qty')
     def _compute_qty_issued(self):
         for line in self:
             qty = 0.0
             for inv_line in line.issue_lines:
-                if inv_line.state not in ['cancel']:
+                if inv_line.state not in ['draft', 'sale', 'cancel']:
                     qty += inv_line.product_uom._compute_quantity(inv_line.product_uom_qty, line.product_uom)
 
             line.qty_issued = qty

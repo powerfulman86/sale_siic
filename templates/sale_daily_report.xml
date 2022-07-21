@@ -5,7 +5,10 @@
             <t t-call="web.html_container">
                 <t t-call="web.external_layout">
                     <div class="page">
-                        <h2>Sale Daily Report</h2>
+                        <div class="row">
+                            <t t-set="title">Sale Daily Report</t>
+                            <h4 class="mt0" t-esc="title" style="text-align: center;"/>
+                        </div>
                         <div class="oe_structure"/>
                         <div class="row mt32 mb32">
                             <div class="col-2 bm-2">
@@ -83,6 +86,8 @@
                                     <tr>
                                         <td>
                                             <span>Total Quantity</span>
+                                        </td>
+                                        <td>
                                             <t t-esc="t_qty"/>
                                         </td>
                                     </tr>
@@ -142,6 +147,8 @@
                                     <tr>
                                         <td>
                                             <span>Total Quantity</span>
+                                        </td>
+                                        <td>
                                             <t t-esc="t_qty"/>
                                         </td>
                                     </tr>

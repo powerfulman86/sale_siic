@@ -12,7 +12,7 @@
         'data/sequence.xml',
         'data/cron.xml',
         'data/report_paperformat_data.xml',
-        'wizard/sale_order_change_delivery_number.xml',
+        'wizard/sale_order_change_data.xml',
         'views/sale_view.xml',
         'views/account_invoice_view.xml',
         'views/invoice_report.xml',

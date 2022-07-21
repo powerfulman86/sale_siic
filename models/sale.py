@@ -199,10 +199,6 @@ class SaleOrder(models.Model):
 
         for rec in self:
             date = rec.date_order
-            # check required data in case of shipping by company
-            if self.shipping_type == 'bycompany':
-                if not (self.shipping_date or self.delivery_receipt_number or self.delivery_company):
-                    raise ValidationError(_("Delivery Data Must Be Completed Before Approve !"))
 
             if len(rec.order_line.ids) == 0:
                 raise ValidationError(_('You Must Add Products Data.'))
@@ -210,6 +206,11 @@ class SaleOrder(models.Model):
             if rec.order_source == 'sugar' and self.sale_contract:
                 if len(rec.order_line.ids) != 1:
                     raise ValidationError(_('Sugar Orders Must Be 1 line of product.'))
+
+            # check required data in case of shipping by company
+            if self.shipping_type == 'bycompany':
+                if not self.shipping_date or not self.delivery_receipt_number or not self.delivery_company:
+                    raise ValidationError(_("Delivery Data Must Be Completed Before Approve !"))
 
             res = super(SaleOrder, rec).action_confirm()
             rec.date_order = date

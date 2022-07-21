@@ -123,7 +123,16 @@
 
                 <xpath expr="//field[@name='date_order']" position="after">
                     <field name="order_source"/>
-                    <field name="sale_contract" options="{'no_create': True}"/>
+                    <label for="sale_contract"/>
+                    <div class="o_row">
+                        <field name="sale_contract" options="{'no_create': True}"/>
+                        <span name="update_sale_contract">
+                            <button string="Change" type="action" groups="sales_team.group_sale_manager"
+                                    name="%(action_view_change_sale_contract)d"
+                                    states="done,ondelivery"
+                                    class="oe_link pt-0 oe_inline"/>
+                        </span>
+                    </div>
                 </xpath>
 
                 <xpath expr="//field[@name='order_line']" position="attributes">
@@ -164,6 +173,7 @@
                                     <span name="update_cost_price">
                                         <button string="Change" type="action" groups="sales_team.group_sale_manager"
                                                 name="%(action_view_change_delivery_number)d"
+                                                states="done,ondelivery"
                                                 class="oe_link pt-0 oe_inline"/>
                                     </span>
                                 </div>

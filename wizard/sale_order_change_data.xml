@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_change_delivery_number" model="ir.ui.view">
+            <field name="name">Change Delivery Number</field>
+            <field name="model">sale.order.change.delivery.number</field>
+            <field name="arch" type="xml">
+              <form string="Change Delivery Number">
+                  <separator string="Delivery Number"/>
+                  <group>
+                      <group>
+                          <field name="new_receipt_number" string="Delivery Number"/>
+                      </group>
+                  </group>
+                  <footer>
+                      <button name="change_delivery_number" string="_Apply" type="object" class="btn-primary"/>
+                      <button string="Cancel" class="btn-secondary" special="cancel" />
+                  </footer>
+              </form>
+            </field>
+        </record>
+
+        <record id="action_view_change_delivery_number" model="ir.actions.act_window">
+            <field name="name">Change Delivery Number</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order.change.delivery.number</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_change_delivery_number"/>
+            <field name="target">new</field>
+        </record>
+
+        <record id="view_change_sale_contract" model="ir.ui.view">
+            <field name="name">Change Sale Contract</field>
+            <field name="model">sale.order.change.delivery.number</field>
+            <field name="arch" type="xml">
+              <form string="Change Sale Contract Number">
+                  <separator string="Sale Contract"/>
+                  <group>
+                      <group>
+                          <field name="branch_id" string="Branch"/>
+                          <field name="partner_id" string="Partner"/>
+                          <field name="order_source" string="Order Source"/>
+                          <field name="sale_contract" string="Sale Contract"/>
+                      </group>
+                  </group>
+                  <footer>
+                      <button name="change_sale_contract" string="_Apply" type="object" class="btn-primary"/>
+                      <button string="Cancel" class="btn-secondary" special="cancel" />
+                  </footer>
+              </form>
+            </field>
+        </record>
+
+        <record id="action_view_change_sale_contract" model="ir.actions.act_window">
+            <field name="name">Change Contract Number</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order.change.delivery.number</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_change_sale_contract"/>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>

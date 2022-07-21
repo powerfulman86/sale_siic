@@ -29,6 +29,12 @@
                                     icon="fa-ticket ">
                                 <field name="orders_count" widget="statinfo" string="Sales Orders"/>
                             </button>
+                            <button type="object"
+                                    name="action_view_return_orders"
+                                    class="oe_stat_button"
+                                    icon="fa-ticket ">
+                                <field name="returns_count" widget="statinfo" string="Return Orders"/>
+                            </button>
                         </div>
                         <div class="oe_title">
                             <h1>
@@ -103,7 +109,7 @@
                                           'default_description_sale': name}"
                                                domain="[('sale_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]"
                                                widget="product_configurator"/>
-                                        <field name="name" widget="section_and_note_text" optional="show"/>
+                                        <field name="name" widget="section_and_note_text" optional="hide"/>
                                         <field name="product_uom_qty"
                                                context="{
                                             'partner_id': parent.partner_id,
@@ -116,11 +122,14 @@
                                                context="{'company_id': parent.company_id}"
                                                groups="uom.group_uom" options='{"no_open": True}' optional="show"/>
 
+                                        <field name="qty_reserved"/>
                                         <field name="qty_issued"/>
+                                        <field name="qty_returned"/>
+                                        <field name="qty_available"/>
                                         <field name="price_unit"/>
                                         <field name="tax_id" widget="many2many_tags" options="{'no_create': True}"
                                                domain="[('type_tax_use','=','sale'),('company_id','=',parent.company_id)]"
-                                               optional="show"/>
+                                               optional="hide"/>
                                         <field name="discount" string="Disc.%"
                                                groups="product.group_discount_per_so_line" optional="show"/>
                                         <field name="price_subtotal" widget="monetary"
