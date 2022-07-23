@@ -36,7 +36,6 @@
                                 <p t-esc="order_source"/>
                             </div>
                         </div>
-                        <br/>
                         <t t-if="same_date == True">
                             <table class="table table-sm o_main_table table-condensed table-statement">
                                 <t t-set="t_qty" t-value="0"/>
