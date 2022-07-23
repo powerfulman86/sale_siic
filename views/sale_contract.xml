@@ -331,6 +331,7 @@
                 <search string="Search Sales Contract">
                     <field name="name" string="Contract"
                            filter_domain="['|',('name', 'ilike', self), ('internal_reference', 'ilike', self)]"/>
+                    <field name="internal_reference" />
                     <field name="partner_id" operator="child_of"/>
                     <field name="contract_source"/>
                     <field name="user_id"/>
