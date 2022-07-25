@@ -27,13 +27,13 @@ class SaleDailyOrders(models.TransientModel):
     from_date = fields.Date(string="Start Date", default=fields.Date.today(), reqired=True)
     to_date = fields.Date(string="End Date", default=fields.Date.today(), reqired=True)
     order_source = fields.Selection(string="Order Source",
-                                    selection=[('all', 'ALL'),
+                                    selection=[('all', 'All'),
                                                ('default', 'Default'),
                                                ('sugar', 'Sugar'),
                                                ('wood', 'Wood'),
                                                ('moulas', 'Moulas'), ], default='all', )
     branch_id = fields.Many2one(comodel_name="res.branch", string="Branch", help='This is branch to set',
-                                default=_get_branch)
+                                default=_get_branch,reqired=True)
     warehouse_id = fields.Many2one('stock.warehouse', string='Warehouse',
                                    domain="['|',('branch_id', '=', branch_id),('branch_id','=',False)]",
                                    default=_get_warehouse)
@@ -152,6 +152,8 @@ class SaleDailyOrders(models.TransientModel):
         return datas
 
     def _get_filtered(self, sale_order_line):
+        # from_date = self.inventory_date.strftime('%Y-%m-%d') + " 00:00:00"
+        # to_date = self.inventory_date.strftime('%Y-%m-%d') + " 23:59:59"
         if self.from_date and self.to_date and self.company_ids:
             filtered = list(filter(lambda
                                        x: self.from_date <= x.order_id.date_order.date() <= self.to_date and x.order_id.company_id in self.company_ids,
