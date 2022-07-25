@@ -122,10 +122,10 @@
                                                context="{'company_id': parent.company_id}"
                                                groups="uom.group_uom" options='{"no_open": True}' optional="show"/>
 
-<!--                                        <field name="qty_reserved"/>-->
-<!--                                        <field name="qty_issued"/>-->
-<!--                                        <field name="qty_returned"/>-->
-<!--                                        <field name="qty_available"/>-->
+                                        <!--                                        <field name="qty_reserved"/>-->
+                                        <!--                                        <field name="qty_issued"/>-->
+                                        <!--                                        <field name="qty_returned"/>-->
+                                        <!--                                        <field name="qty_available"/>-->
                                         <field name="price_unit"/>
                                         <field name="tax_id" widget="many2many_tags" options="{'no_create': True}"
                                                domain="[('type_tax_use','=','sale'),('company_id','=',parent.company_id)]"
@@ -331,7 +331,7 @@
                 <search string="Search Sales Contract">
                     <field name="name" string="Contract"
                            filter_domain="['|',('name', 'ilike', self), ('internal_reference', 'ilike', self)]"/>
-                    <field name="internal_reference" />
+                    <field name="internal_reference"/>
                     <field name="partner_id" operator="child_of"/>
                     <field name="contract_source"/>
                     <field name="user_id"/>
@@ -340,14 +340,14 @@
                     <field name="branch_id" string="Branch"/>
                     <field name="contract_line" string="Product"
                            filter_domain="[('contract_line.product_id', 'ilike', self)]"/>
-                    <filter string="My In-Progress Contracts"
-                            domain="['|',('user_id', '=', uid),('state', '=', 'progress')]"
-                            name="my_sale_contracts_filter"/>
                     <separator/>
                     <filter string="New" domain="[('state', '=', 'draft')]" name="sale_contracts_new"/>
                     <filter string="Approved" domain="[('state', '=', 'approved')]" name="sale_contracts_approved"/>
                     <filter string="In Progress" domain="[('state', '=', 'progress')]" name="sale_contracts_progress"/>
                     <filter string="Done" domain="[('state', '=', 'done')]" name="sale_contracts_done"/>
+                    <separator/>
+                    <filter string="Sugar" domain="[('contract_source', '=', 'sugar')]" name="sale_contracts_sugar"/>
+                    <filter string="Wood" domain="[('contract_source', '=', 'wood')]" name="sale_contracts_wood"/>
                     <group expand="0" string="Group By">
                         <filter string="Salesperson" name="salesperson" domain="[]" context="{'group_by': 'user_id'}"/>
                         <filter name="customer" string="Customer" domain="[]" context="{'group_by': 'partner_id'}"/>
@@ -356,8 +356,6 @@
                         <filter name="branch_id" string="Branch" domain="[]" context="{'group_by': 'branch_id'}"/>
                         <filter name="warehouse_id" string="Warehouse" domain="[]"
                                 context="{'group_by': 'warehouse_id'}"/>
-                        <filter name="contract_source" string="Source" domain="[]"
-                                context="{'group_by': 'contract_source'}"/>
                         <filter string="Contract Date" name="contract_month" domain="[]"
                                 context="{'group_by': 'date_contract'}"/>
                         <filter name="state" string="Status" domain="[]" context="{'group_by': 'state'}"/>
@@ -371,7 +369,7 @@
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">sale.contract</field>
             <field name="view_mode">tree,kanban,form,calendar,pivot,graph</field>
-            <field name="context">{'search_default_my_sale_contracts_filter': 1}</field>
+            <field name="context">{}</field>
             <field name="domain">[('state', '!=', 'draft')]</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
