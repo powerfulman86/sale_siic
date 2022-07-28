@@ -105,8 +105,11 @@ class SaleOrder(models.Model):
                                    domain="['|',('branch_id', '=', branch_id),('branch_id','=',False)]",
                                    default=_default_warehouse_id, )
     order_source = fields.Selection(string="Order Source",
-                                    selection=[('default', 'Default'), ('sugar', 'Sugar'), ('wood', 'Wood'),
-                                               ('moulas', 'Moulas'), ],
+                                    selection=[('default', 'Default'),
+                                               ('sugar', 'Sugar'),
+                                               ('wood', 'Wood'),
+                                               ('moulas', 'Moulas'),
+                                               ('taqtier', 'taqtier'), ],
                                     required=False, default='default', readonly=True,
                                     states={'draft': [('readonly', False)]})
     shipping_type = fields.Selection(string="Shipping Type",

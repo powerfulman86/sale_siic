@@ -97,7 +97,11 @@ class SaleContract(models.Model):
     return_ids = fields.One2many('sale.return', 'sale_contract', string='Return Orders')
     returns_count = fields.Integer(string='Returns Count', compute='_compute_return_ids')
     contract_source = fields.Selection(string="Contract Source", readonly=True, states={'draft': [('readonly', False)]},
-                                       selection=[('default', 'Default'), ('sugar', 'Sugar'), ('wood', 'Wood'), ],
+                                       selection=[('default', 'Default'),
+                                                  ('sugar', 'Sugar'),
+                                                  ('wood', 'Wood'),
+                                                  ('moulas', 'Moulas'),
+                                                  ('taqtier', 'taqtier'), ],
                                        required=True, default='default')
     partner_shipping_id = fields.Many2one('res.partner', string='Delivery Address', readonly=True,
                                           states={'draft': [('readonly', False)]},

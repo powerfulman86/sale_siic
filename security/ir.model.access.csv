@@ -19,3 +19,4 @@ access_sale_net_report_salesman,sale_net_report,model_sale_net_report,sales_team
 access_sale_net_report_manager,sale_net_report,model_sale_net_report,sales_team.group_sale_manager,1,1,1,1
 access_sale_order_tax,access_sale_order_tax,model_sale_order_tax,sales_team.group_sale_salesman,1,1,1,1
 access_sale_total_report,access_sale_total_report,model_sale_total_report,sales_team.group_sale_manager,1,1,1,1
+access_sale_contract_report,access_sale_contract_report,model_sale_contract_report,sales_team.group_sale_manager,1,0,0,0

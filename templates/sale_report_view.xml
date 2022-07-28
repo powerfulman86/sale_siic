@@ -30,12 +30,11 @@
                             <table class="table table-condensed">
                                 <thead>
                                     <tr>
-                                        <th>Order</th>
-                                        <th>Date</th>
-                                        <th>Product</th>
-                                        <th>Quantity</th>
-                                        <th>Cost</th>
-                                        <th>Sale Price</th>
+                                        <th style="width:20%">Order</th>
+                                        <th style="width:20%">Date</th>
+                                        <th style="width:30%">Product</th>
+                                        <th style="width:15%">Quantity</th>
+                                        <th style="width:15%">Sale Price</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -54,27 +53,10 @@
                                                 <span t-esc="order['quantity']"/>
                                             </td>
                                             <td>
-                                                <span t-esc="order['cost']"/>
-                                                <t t-set="t_cost" t-value="t_cost + order['cost']"></t>
-                                            </td>
-                                            <td>
                                                 <span t-esc="order['price']"/>
                                                 <t t-set="t_price" t-value="t_price + order['price']"></t>
                                             </td>
-                                            <td>
-                                                <span t-esc="order['margin']"/>
-                                            </td>
                                         </t>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <span>Total cost</span>
-                                            <t t-esc="t_cost"/>
-                                        </td>
-                                        <td>
-                                            <span>Total Price:</span>
-                                            <t t-esc="t_price"/>
-                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -93,12 +75,11 @@
                             <table class="table table-condensed">
                                 <thead>
                                     <tr>
-                                        <th>Order</th>
-                                        <th>Date</th>
-                                        <th>Customer</th>
-                                        <th>Quantity</th>
-                                        <th>Cost</th>
-                                        <th>Sale Price</th>
+                                        <th style="width:20%">Order</th>
+                                        <th style="width:20%">Date</th>
+                                        <th style="width:30%">Customer</th>
+                                        <th style="width:15%">Quantity</th>
+                                        <th style="width:15%">Sale Price</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -117,24 +98,10 @@
                                                 <span t-esc="order['quantity']"/>
                                             </td>
                                             <td>
-                                                <span t-esc="order['cost']"/>
-                                                <t t-set="t_cost" t-value="t_cost + order['cost']"></t>
-                                            </td>
-                                            <td>
                                                 <span t-esc="order['price']"/>
                                                 <t t-set="t_price" t-value="t_price + order['price']"></t>
                                             </td>
                                         </t>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <span>Total cost</span>
-                                            <t t-esc="t_cost"/>
-                                        </td>
-                                        <td>
-                                            <span>Total Price:</span>
-                                            <t t-esc="t_price"/>
-                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -146,13 +113,12 @@
                             <t t-set="t_price" t-value="0"/>
                             <thead>
                                 <tr>
-                                    <th>Order</th>
-                                    <th>Date</th>
-                                    <th>Customer</th>
-                                    <th>Product</th>
-                                    <th>Quantity</th>
-                                    <th>Cost</th>
-                                    <th>Sale Price</th>
+                                    <th style="width:10%">Order</th>
+                                    <th style="width:10%">Date</th>
+                                    <th style="width:30%">Customer</th>
+                                    <th style="width:20%">Product</th>
+                                    <th style="width:15%">Quantity</th>
+                                    <th style="width:15%">Sale Price</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -173,22 +139,8 @@
                                         <span t-esc="order['quantity']"/>
                                     </td>
                                     <td>
-                                        <span t-esc="order['cost']"/>
-                                        <t t-set="t_cost" t-value="t_cost + order['cost']"></t>
-                                    </td>
-                                    <td>
                                         <span t-esc="order['price']"/>
                                         <t t-set="t_price" t-value="t_price + order['price']"></t>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <span>Total cost</span>
-                                        <t t-esc="t_cost"/>
-                                    </td>
-                                    <td>
-                                        <span>Total Price:</span>
-                                        <t t-esc="t_price"/>
                                     </td>
                                 </tr>
                             </tbody>
@@ -200,13 +152,12 @@
                             <t t-set="t_price" t-value="0"/>
                             <thead>
                                 <tr>
-                                    <th>Order</th>
-                                    <th>Date</th>
-                                    <th>Customer</th>
-                                    <th>Product</th>
-                                    <th>Quantity</th>
-                                    <th>Cost</th>
-                                    <th>Sale Price</th>
+                                    <th style="width:10%">Order</th>
+                                    <th style="width:10%">Date</th>
+                                    <th style="width:30%">Customer</th>
+                                    <th style="width:20%">Product</th>
+                                    <th style="width:15%">Quantity</th>
+                                    <th style="width:15%">Sale Price</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -227,22 +178,8 @@
                                         <span t-esc="order['quantity']"/>
                                     </td>
                                     <td>
-                                        <span t-esc="order['cost']"/>
-                                        <t t-set="t_cost" t-value="t_cost + order['cost']"></t>
-                                    </td>
-                                    <td>
                                         <span t-esc="order['price']"/>
                                         <t t-set="t_price" t-value="t_price + order['price']"></t>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <span>Total cost</span>
-                                        <t t-esc="t_cost"/>
-                                    </td>
-                                    <td>
-                                        <span>Total Price:</span>
-                                        <t t-esc="t_price"/>
                                     </td>
                                 </tr>
                             </tbody>

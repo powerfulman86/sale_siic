@@ -25,6 +25,7 @@
         'reports/sale_report.xml',
         'reports/sale_return_report.xml',
         'reports/sale_total_report.xml',
+        'reports/sale_contract_report.xml',
         'templates/report_saleorder.xml',
         'templates/sale_report_view.xml',
         'templates/sale_daily_report.xml',
